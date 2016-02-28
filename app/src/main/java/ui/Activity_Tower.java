@@ -6,24 +6,37 @@ import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.lbg.yan01.R;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Activity_Tower extends Activity implements OnClickListener {
-    public static EditText reg_username, reg_password, reg_repassword, edtValidCode,
-            register_npwd, register_rpwd;
+    public static EditText reg_username, reg_password, reg_repassword;
+    private static final int PHOTO_REQUEST_CAMERA = 1;// 拍照
+    private static final int PHOTO_REQUEST_CUT = 3;// 结果
+    /* 头像名称 */
+    private static final String PHOTO_FILE_NAME = "temp_photo.jpg";
     Button btnCancel;
     Button pic_fullview;
     Button tower_head;
@@ -41,6 +54,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
         setContentView(R.layout.tower_detail);
         //设置初始化视图
+        this.mFace = (ImageView) findViewById(R.id.iv_fullview);
 
         pic_fullview = (Button) findViewById(R.id.pic_fullview);
         tower_head = (Button) findViewById(R.id.tower_head);
@@ -65,7 +79,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.pic_fullview:
-                showMsg("pic_fullview");
+                camera();
                 break;
             case R.id.tower_head:
                 showMsg("tower_head");
@@ -85,7 +99,80 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 break;
         }
     }
+    public void camera() {
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        // 判断存储卡是否可以用，可用进行存储
+        if (hasSdcard()) {
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                    Uri.fromFile(new File(Environment
+                            .getExternalStorageDirectory(), PHOTO_FILE_NAME)));
+        }
+        startActivityForResult(intent, PHOTO_REQUEST_CAMERA);
+    }
+    File  tempFile;
+    private Bitmap bitmap;
+    private ImageView mFace;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       if (requestCode == PHOTO_REQUEST_CAMERA) {
+            if (hasSdcard()) {
+                tempFile = new File(Environment.getExternalStorageDirectory(),
+                        PHOTO_FILE_NAME);
+                crop(Uri.fromFile(tempFile));
+            } else {
+                Toast.makeText(Activity_Tower.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT)
+                        .show();
+            }
 
+        } else if (requestCode == PHOTO_REQUEST_CUT) {
+            try {
+                bitmap = data.getParcelableExtra("data");
+                this.mFace.setImageBitmap(bitmap);
+
+                File upFile = new File(Environment.getExternalStorageDirectory(),
+                         "aaalbg.jpg");
+                saveMyBitmap( bitmap,upFile);
+                 boolean delete = tempFile.delete();
+                 System.out.println("delete = " + delete);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        else if (3 == requestCode && data != null) {
+            Bundle b = data.getExtras(); // data为B中回传的Intent
+            String str = b.getString("barcode");// str即为回传的值"Hello, this is B speaking"
+
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    public void saveMyBitmap( Bitmap mBitmap,File upFile) {
+        // 首先将byte数组转为bitmap
+        try {
+            FileOutputStream out = new FileOutputStream(upFile);
+            if (mBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                out.flush();
+                out.close();
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // land do nothing is ok
+        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // port do nothing is ok
+        }
+    }
     @SuppressLint("HandlerLeak")
     public Handler mMsgReciver = new Handler() {
         @Override
@@ -135,7 +222,40 @@ public class Activity_Tower extends Activity implements OnClickListener {
             }
         }
     };
+    /**
+     * 剪切图片
+     *
+     * @function:
+     * @author:Jerry
+     * @date:2013-12-30
+     * @param uri
+     */
+    private void crop(Uri uri) {
+        // 裁剪图片意图
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        // 裁剪框的比例�?�?
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // 裁剪后输出图片的尺寸大小
+        intent.putExtra("outputX", 250);
+        intent.putExtra("outputY", 250);
+        // 图片格式
+        intent.putExtra("outputFormat", "JPEG");
+        intent.putExtra("noFaceDetection", true);// 取消人脸识别
+        intent.putExtra("return-data", true);// true:不返回uri，false：返回uri
+        startActivityForResult(intent, PHOTO_REQUEST_CUT);
+    }
 
+    private boolean hasSdcard() {
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public void showregisterMessage(final String msg) {
         // 创建提示框提醒是否登录成功
         Builder builder = new Builder(Activity_Tower.this);
