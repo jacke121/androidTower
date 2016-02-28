@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+<RelativeLayout
+            android:id="@+id/menu_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/attachment_region_bg"
+            android:paddingRight="2.0dip" >
+            <!--<ImageView-->
+                <!--android:id="@+id/title_btn_sequence"-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_alignWithParentIfMissing="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="8.0dip"-->
+                <!--android:background="@drawable/login_back" />-->
+            <FrameLayout
+                android:id="@+id/title_selector_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="3.0dip" >
+                <TextView
+                    android:id="@+id/tv_title"
+                    style="@style/title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="国家电网运检0.4KV低压线路采录"
+                    android:paddingRight="@dimen/padding_view_right_14" />
+            </FrameLayout>
+            <TextView
+                android:id="@+id/tv_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="3.0dip"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp20"
+                android:visibility="gone" />
+        </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/main_linearLayout01"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dip"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/main_txtUser"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="IP: "
+            android:textSize="18dip"
+            android:textColor="@color/black" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="2.5"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/main_eTxtUser"
+                android:layout_width="250dip"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:textColor="@color/red" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/main_linearLayout02"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dip"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="horizontal" >
+        <!--<TextView-->
+            <!--android:id="@+id/main_txtPwd"-->
+             <!--android:layout_width="0dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/pwd"-->
+            <!--android:textSize="18dip"-->
+            <!--android:textColor="@color/black" />-->
+<!--<LinearLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="2.5"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="horizontal" >-->
+        <!--<EditText-->
+            <!--android:id="@+id/main_eTxtPwd"-->
+            <!--android:layout_width="250dip"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint=""-->
+            <!--android:inputType="textPassword"-->
+            <!--android:textColor="@color/red" />-->
+    <!--</LinearLayout>-->
+ </LinearLayout>
+    <LinearLayout
+        android:id="@+id/main_linearLayout03"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="25dip"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="horizontal" >
+        <Button
+            android:id="@+id/btnAuthorize"
+            android:layout_width="100dip"
+            android:layout_height="40dp"
+            android:background="@drawable/desktop_floatbtn_normal"
+            android:text="进入系统" />
+    </LinearLayout>
+
+</LinearLayout>

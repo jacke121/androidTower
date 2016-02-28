@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/repairheader"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/maintainNum"
+        android:layout_width="0dip"
+        android:layout_height="fill_parent"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:textColor="#ffd23636"
+        android:text="序号" />
+
+    <com.listview.CHScrollView
+        android:id="@+id/item_scroll"
+        android:layout_width="0dip"
+        android:layout_height="fill_parent"
+        android:layout_weight="10"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/orderState"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#011" />
+            <TextView
+                android:id="@+id/assetCode"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#011" />
+
+            <TextView
+                android:id="@+id/assetName"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#191" />
+
+            <TextView
+                android:id="@+id/assetSize"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#101" />
+
+            <TextView
+                android:id="@+id/yt"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#111" />
+
+            <TextView
+                android:id="@+id/department"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#071" />
+
+            <TextView
+                android:id="@+id/person"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#071" />
+
+            <TextView
+                android:id="@+id/maintainType"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#111" />
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#111" />
+
+            <TextView
+                android:id="@+id/applyDate"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#071" />
+
+            <TextView
+                android:id="@+id/issuer"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#071" />
+
+            <TextView
+                android:id="@+id/maintainPerson"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#071" />
+
+            <TextView
+                android:id="@+id/maintainDate"
+                android:layout_width="100dip"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="#071" />
+        </LinearLayout>
+    </com.listview.CHScrollView>
+
+</LinearLayout>

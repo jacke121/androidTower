@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:background="@color/notebook" >
+	<RelativeLayout
+            android:id="@+id/menu_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/attachment_region_bg"
+            android:paddingRight="2.0dip" >
+
+            <ImageView
+                android:id="@+id/title_btn_back"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8.0dip"
+                android:background="@drawable/login_back" />
+
+            <FrameLayout
+                android:id="@+id/title_selector_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="3.0dip"
+                >
+    <!--             下拉选择三角图表背景
+        android:background="@drawable/selector_title_switch" -->
+                <TextView
+                    android:id="@+id/tv_title"
+                    style="@style/title_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setting"
+                    android:paddingRight="@dimen/padding_view_right_14" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="3.0dip"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp20"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+     <ListView
+            android:id="@+id/list_settinginfo"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scrollbars="horizontal"
+             android:dividerHeight="0.1dp"
+            android:divider="@color/diviceline"
+             >
+     </ListView>
+</LinearLayout>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/common_bg"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/title"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        layout="@layout/title" />
+
+    <LinearLayout
+        android:id="@+id/line_head"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/txt_1201"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            android:gravity="center_vertical"
+            android:text="维修单号"
+            android:textColor="#850" />
+
+        <com.listview.CHScrollView
+            android:id="@+id/repairheader"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="10"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/txt_1202"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="发布日期"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1203"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="设备名称"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1204"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="规格型号"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1205"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="维修类别"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1206"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:text="维修人"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1207"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="工单状态"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1208"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="工单状态"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1209"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:text="工单状态"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1210"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:text="工单状态"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1211"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:text="工单状态"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1212"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="工单状态"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1213"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="工单状态"
+                    android:textColor="#850" />
+
+                <TextView
+                    android:id="@+id/txt_1214"
+                    android:layout_width="100dip"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical"
+                    android:text="工单状态"
+                    android:textColor="#850" />
+            </LinearLayout>
+        </com.listview.CHScrollView>
+    </LinearLayout>
+<LinearLayout 
+    android:layout_width="fill_parent"
+	  android:layout_height="0dip"
+        android:layout_weight="3"
+		android:focusableInTouchMode="true">
+		
+    <ListView
+        android:id="@+id/scroll_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:scrollbars="none" >
+    </ListView>
+</LinearLayout>
+    <LinearLayout
+        android:id="@+id/line_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/sence_check"
+            style="@style/common_button_red"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_weight="1"
+            android:text="增加台区" />
+
+        <Button
+            android:id="@+id/repair_regis"
+            style="@style/common_button_red"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_weight="1"
+            android:text="导出" />
+    </LinearLayout>
+
+</LinearLayout>

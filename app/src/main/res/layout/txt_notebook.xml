@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal" >
+	<TextView android:text="@+id/txtNote_txtID" android:id="@+id/txtNote_txtID" android:layout_height="wrap_content" android:layout_width="30dp"></TextView>
+	<TextView android:text="@+id/txtNote_txtDate" android:id="@+id/txtNote_txtDate" android:layout_height="wrap_content" android:layout_width="100dp"></TextView>
+
+<TextView
+	android:id="@+id/txtNote_txtTitle"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="@+id/txtNote_txtTitle" >
+</TextView>
+
+</LinearLayout>
