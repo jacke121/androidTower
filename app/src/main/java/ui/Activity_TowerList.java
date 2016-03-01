@@ -1,5 +1,9 @@
 package ui;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,9 +18,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
@@ -25,15 +29,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
-import com.objs.RepairOrder;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.objs.TowerInfo;
 
 public class Activity_TowerList extends Activity {
 
@@ -55,7 +56,7 @@ public class Activity_TowerList extends Activity {
 	public HorizontalScrollView mTouchView;
 	// 装入所有的HScrollView
 	protected List<CHScrollView> mHScrollViews = new ArrayList<CHScrollView>();
-	RepairOrder repairOrder;
+	TowerInfo TowerInfo;
 	private LayoutInflater mInflater;
 
 	LinearLayout repairhead;
@@ -83,6 +84,7 @@ public class Activity_TowerList extends Activity {
 		TextView title_text = (TextView) findViewById(R.id.title_text);
 
 		title_text.setText("塔杆列表");
+
 
 		ImageButton b_back = (ImageButton) findViewById(R.id.b_back);
 		b_back.setOnClickListener(new OnClickListener() {
@@ -120,20 +122,18 @@ public class Activity_TowerList extends Activity {
 									}).create().show();
 					return;
 				}
-				String maintainNum = repairOrder.rows.get(selectItem).maintainNum;
-				String assetCode = repairOrder.rows.get(selectItem).assetCode;
-				String content = repairOrder.rows.get(selectItem).content;
-				String assetName = repairOrder.rows.get(selectItem).assetName;
-//				Intent intent = new Intent(Activity_TaskList.this,
-//						Activity_SceneCheck.class);
+				String cityname = TowerInfo.rows.get(selectItem).cityname;
+				String assetCode = TowerInfo.rows.get(selectItem).assetCode;
+				String content = TowerInfo.rows.get(selectItem).content;
+				String assetName = TowerInfo.rows.get(selectItem).assetName;
 				Bundle bundle = new Bundle();
 				/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-				bundle.putString("maintainNum", maintainNum);
+				bundle.putString("cityname", cityname);
 				bundle.putString("assetCode", assetCode);
 				bundle.putString("content", content);
 				bundle.putString("assetName", assetName);
 				bundle.putInt("maintainType",
-						repairOrder.rows.get(selectItem).maintainType);
+						TowerInfo.rows.get(selectItem).maintainType);
 				/* 把bundle对象assign给Intent */
 //				intent.putExtras(bundle);
 //				startActivityForResult(intent, 1);
@@ -162,31 +162,26 @@ public class Activity_TowerList extends Activity {
 					return;
 				}
 				Intent intent = null;
-				if (repairOrder.rows.size() > selectItem) {
-					String maintainNum = repairOrder.rows.get(selectItem).maintainNum;
-					String assetCode = repairOrder.rows.get(selectItem).assetCode;
-					String assetName = repairOrder.rows.get(selectItem).assetName;
-
-
-//						intent = new Intent(Activity_TaskList.this,
-//								Activity_RepairStep.class);
-
+				if (TowerInfo.rows.size() > selectItem) {
+					String cityname = TowerInfo.rows.get(selectItem).cityname;
+					String assetCode = TowerInfo.rows.get(selectItem).assetCode;
+					String assetName = TowerInfo.rows.get(selectItem).assetName;
 					Bundle bundle = new Bundle();
 
-					String content = repairOrder.rows.get(selectItem).content;
+					String content = TowerInfo.rows.get(selectItem).content;
 					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-					bundle.putString("maintainNum", maintainNum);
+					bundle.putString("cityname", cityname);
 					bundle.putString("content", content);
 					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
 					bundle.putString("assetCode", assetCode);
 					bundle.putString("assetName", assetName);
 					bundle.putString("department",
-							repairOrder.rows.get(selectItem).department);
+							TowerInfo.rows.get(selectItem).department);
 					bundle.putString("issuer",
-							repairOrder.rows.get(selectItem).issuer);
+							TowerInfo.rows.get(selectItem).issuer);
 
 					bundle.putInt("maintainType",
-							repairOrder.rows.get(selectItem).maintainType);
+							TowerInfo.rows.get(selectItem).maintainType);
 					/* 把bundle对象assign给Intent */
 					intent.putExtras(bundle);
 					// startActivity(intent);
@@ -248,14 +243,14 @@ public class Activity_TowerList extends Activity {
 		// visibleItemCount, int totalItemCount) {
 		// }
 		// });
-		if (repairOrder == null) {
+		if (TowerInfo == null) {
 			// mListView.setVisibility(View.GONE);
-			repairOrder = new RepairOrder();
+			TowerInfo = new TowerInfo();
 			 for (int i = 0; i < 30; i++) {
 
-			 RepairOrder.Rows rows = repairOrder.new Rows();
+				 TowerInfo.Rows rows = TowerInfo.new Rows();
 
-			 rows.maintainNum = "" + i;
+			 rows.cityname = "" + i;
 			 rows.assetCode = "code" + i;
 			 rows.assetName = "name" + i;
 			 rows.maintainPerson = "weixiuren" + i;
@@ -263,14 +258,12 @@ public class Activity_TowerList extends Activity {
 			 rows.department = "department" + i;
 			 rows.maintainType = i;
 			 rows.person = "person" + i;
-			 rows.yt = "yt" + i;
 			 rows.assetSize = i + "";
 			 rows.maintainType = i;
 			 rows.content = i + "content";
-			 rows.applyDate = i + "applyDate";
 			 rows.issuer = i + "issuer";
 			 rows.orderState=i+"";
-			 repairOrder.rows.add(rows);
+			 TowerInfo.rows.add(rows);
 			 }
 		}
 		adapter = new DataAdapter();
@@ -305,16 +298,16 @@ public class Activity_TowerList extends Activity {
 				if (mdlg != null) {
 					mdlg.dismiss();
 					mdlg = null;
-					java.lang.reflect.Type type = new TypeToken<RepairOrder>() {
+					java.lang.reflect.Type type = new TypeToken<TowerInfo>() {
 					}.getType();
 					gson = new Gson();
-					repairOrder = gson.fromJson(message, type);
+					TowerInfo = gson.fromJson(message, type);
 
-					List<RepairOrder.Rows> mqList = repairOrder.rows;
+					List<TowerInfo.Rows> mqList = TowerInfo.rows;
 					Iterator iter = mqList.iterator();
 					while (iter.hasNext()) {
 
-						RepairOrder.Rows s = (RepairOrder.Rows) iter.next();
+						TowerInfo.Rows s = (TowerInfo.Rows) iter.next();
 						if (typeName.equals("check")
 								&& !s.orderState.equals("1")) {
 							iter.remove();
@@ -326,7 +319,7 @@ public class Activity_TowerList extends Activity {
 
 					List<String> maintainNums = new ArrayList<String>();
 
-					for (RepairOrder.Rows element : repairOrder.rows) {
+					for (TowerInfo.Rows element : TowerInfo.rows) {
 						maintainNums.add(element.maintainNum);
 					}
 //					MainActivity.maintaincodes = (String[]) maintainNums
@@ -394,7 +387,7 @@ public class Activity_TowerList extends Activity {
 
 		@Override
 		public int getCount() {
-			return repairOrder.rows.size();
+			return TowerInfo.rows.size();
 		}
 
 		public void setSelectItem(int tselectItem) {
@@ -407,24 +400,24 @@ public class Activity_TowerList extends Activity {
 
 			// if (convertView == null) {
 
-			convertView = mInflater.inflate(R.layout.lay_task_row, null);
+			convertView = mInflater.inflate(R.layout.lay_tower_row, null);
 			convertView.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					setSelectItem(position); // 自定义的变量，以便让adapter知道要选中哪一项
-					RepairOrder.Rows tmpRepairOrder = repairOrder.rows.get(position);
-					if (tmpRepairOrder.orderState.equals("1")) {
+					TowerInfo.Rows tmpTowerInfo = TowerInfo.rows.get(position);
+					if (tmpTowerInfo.orderState.equals("1")) {
 						// holder.orderState.setText("发布");
 						repair_record.setEnabled(false);
 						sence_check.setEnabled(true);
-					} else if (tmpRepairOrder.orderState.equals("2")
-							|| tmpRepairOrder.orderState.equals("4")) {
+					} else if (tmpTowerInfo.orderState.equals("2")
+							|| tmpTowerInfo.orderState.equals("4")) {
 						// holder.orderState.setText("维修申请  ");
 						repair_record.setEnabled(false);
 						sence_check.setEnabled(false);
-					} else if (tmpRepairOrder.orderState.equals("3")) {
+					} else if (tmpTowerInfo.orderState.equals("3")) {
 
 						repair_record.setEnabled(true);
 						sence_check.setEnabled(false);
@@ -473,38 +466,35 @@ public class Activity_TowerList extends Activity {
 					.findViewById(R.id.maintainDate);
 			holder.orderState = (TextView) convertView
 					.findViewById(R.id.orderState);
-			final RepairOrder.Rows tmpRepairOrder = repairOrder.rows.get(position);
+			final TowerInfo.Rows tmpTowerInfo = TowerInfo.rows.get(position);
 
-			if (tmpRepairOrder.orderState.equals("1")) {
+			if (tmpTowerInfo.orderState.equals("1")) {
 				holder.orderState.setText("发布");
-			} else if (tmpRepairOrder.orderState.equals("2")) {
+			} else if (tmpTowerInfo.orderState.equals("2")) {
 				holder.orderState.setText("维修申请  ");
-			} else if (tmpRepairOrder.orderState.equals("3")) {
+			} else if (tmpTowerInfo.orderState.equals("3")) {
 				holder.orderState.setText("审批通过");
-			} else if (tmpRepairOrder.orderState.equals("4")) {
+			} else if (tmpTowerInfo.orderState.equals("4")) {
 				holder.orderState.setText("维修完成");
 			}
-			holder.maintainNum.setText(tmpRepairOrder.maintainNum);
-			// holder.maintainNum.setText(Html.fromHtml("<u>"+tmpRepairOrder.maintainNum+"</u>"));
-			holder.assetCode.setText(tmpRepairOrder.assetCode);
-			holder.assetName.setText(tmpRepairOrder.assetName);
-			holder.assetSize.setText(tmpRepairOrder.assetSize);
-			holder.yt.setText(tmpRepairOrder.yt);
-			holder.department.setText(tmpRepairOrder.department);
-			holder.person.setText(tmpRepairOrder.person);
-			if (tmpRepairOrder.maintainType.toString().endsWith("1")) {
+			// holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
+			holder.assetCode.setText(tmpTowerInfo.assetCode);
+			holder.assetName.setText(tmpTowerInfo.assetName);
+			holder.assetSize.setText(tmpTowerInfo.assetSize);
+			holder.department.setText(tmpTowerInfo.department);
+			holder.person.setText(tmpTowerInfo.person);
+			if (tmpTowerInfo.maintainType.toString().endsWith("1")) {
 				holder.maintainType.setText("设备升级");
-			} else if (tmpRepairOrder.maintainType.toString().endsWith("2")) {
+			} else if (tmpTowerInfo.maintainType.toString().endsWith("2")) {
 				holder.maintainType.setText("设备维修");
-			} else if (tmpRepairOrder.maintainType.toString().endsWith("3")) {
+			} else if (tmpTowerInfo.maintainType.toString().endsWith("3")) {
 				holder.maintainType.setText("重做系统");
 			}
 
-			holder.content.setText(tmpRepairOrder.content);
-			holder.applyDate.setText(tmpRepairOrder.applyDate);
-			holder.issuer.setText(tmpRepairOrder.issuer);
-			holder.maintainPerson.setText(tmpRepairOrder.maintainPerson);
-			holder.maintainDate.setText(tmpRepairOrder.maintainDate);
+			holder.content.setText(tmpTowerInfo.content);
+			holder.issuer.setText(tmpTowerInfo.issuer);
+			holder.maintainPerson.setText(tmpTowerInfo.maintainPerson);
+			holder.maintainDate.setText(tmpTowerInfo.maintainDate);
 
 			convertView.setTag(holder);
 

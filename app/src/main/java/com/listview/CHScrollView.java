@@ -15,7 +15,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.HorizontalScrollView;
 
-import ui.Activity_TaskList;
+import ui.Activity_TowerList;
 
 public class CHScrollView extends HorizontalScrollView {
 	
@@ -33,7 +33,7 @@ public class CHScrollView extends HorizontalScrollView {
 
 
 
-	Activity_TaskList ractivity;
+	Activity_TowerList ractivity;
 //	Activity_TaskGuide guidactivity;
 //	Activity_TaskGuideType guidetype;
 //	Asset_Config asset_Config;
@@ -74,8 +74,8 @@ public class CHScrollView extends HorizontalScrollView {
 //如果这个没有，则只会滚动当前行
 	private void getActivity(Context context){
 
-		 if(context instanceof Activity_TaskList ){
-			ractivity= (Activity_TaskList) context;
+		 if(context instanceof Activity_TowerList){
+			ractivity= (Activity_TowerList) context;
 		}
 
 	}

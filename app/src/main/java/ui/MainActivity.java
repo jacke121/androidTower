@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this,
-						Activity_TaskList
+						Activity_TowerList
 								.class);
 				Bundle bundle = new Bundle();
 				/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
