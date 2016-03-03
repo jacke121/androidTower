@@ -30,7 +30,7 @@ import com.google.gson.Gson;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
-import com.objs.AreaInfo;
+//import com.objs.AreaInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +49,9 @@ public class Activity_AreaList extends Activity {
 	public HorizontalScrollView mTouchView;
 	// 装入所有的HScrollView
 	protected List<CHScrollView> mHScrollViews = new ArrayList<CHScrollView>();
-	AreaInfo repairOrder;
+//	AreaInfo repairOrder;
 	private LayoutInflater mInflater;
-
+	SparseArray<Areas> areaslist;
 	LinearLayout repairhead;
 	private ListView mListView;
 	Gson gson;
@@ -63,15 +63,13 @@ public class Activity_AreaList extends Activity {
 		// 设置无标题（尽量在前面设置）
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.lay_area_list);
-
-
 		MyApplication myApplication = (MyApplication) getApplication();
 		helper=myApplication.getSqlHelper();
 		AreasDao od = new AreasDao(helper);
 		od.createTable(helper.getWritableDatabase());
 		// 查询数据库
-		SparseArray<Areas> rs = od.queryToList("", null);
-		if (rs == null || rs.size() == 0) {
+		 areaslist = od.queryToList("", null);
+		if (areaslist == null || areaslist.size() == 0) {
 		}
 
 		TextView title_text = (TextView) findViewById(R.id.title_text);
@@ -105,8 +103,8 @@ public class Activity_AreaList extends Activity {
 									}).create().show();
 					return;
 				}
-				String cityname = repairOrder.rows.get(selectItem).cityname;
-				String content = repairOrder.rows.get(selectItem).content;
+				String cityname = areaslist.get(selectItem).city;
+				String content =areaslist.get(selectItem).area;
 				Bundle bundle = new Bundle();
 				/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
 				bundle.putString("content", content);
@@ -134,18 +132,16 @@ public class Activity_AreaList extends Activity {
 					return;
 				}
 				Intent intent = null;
-				if (repairOrder.rows.size() > selectItem) {
-					String cityname = repairOrder.rows.get(selectItem).cityname;
+				if (areaslist.size() > selectItem) {
+					String cityname =areaslist.get(selectItem).city;
 
 					Bundle bundle = new Bundle();
 
-					String content = repairOrder.rows.get(selectItem).content;
+					String content =areaslist.get(selectItem).area;
 					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
 					bundle.putString("maintainNum", cityname);
 					bundle.putString("content", content);
-					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-					bundle.putString("department",
-							repairOrder.rows.get(selectItem).department);
+
 					/* 把bundle对象assign给Intent */
 					intent.putExtras(bundle);
 					// startActivity(intent);
@@ -175,17 +171,15 @@ public class Activity_AreaList extends Activity {
 		// 添加头滑动事件
 		mHScrollViews.add(headerScroll);
 		mListView = (ListView) findViewById(R.id.scroll_list);
-		if (repairOrder == null) {
+		if (areaslist == null) {
 			// mListView.setVisibility(View.GONE);
-			repairOrder = new AreaInfo();
+			areaslist = new SparseArray<Areas>();
 			 for (int i = 0; i < 30; i++) {
-			 AreaInfo.Rows rows = repairOrder.new Rows();
-			 rows.cityname = "" + i;
-			 rows.department = "department" + i;
-			 rows.assetSize = i + "";
-			 rows.content = i + "content";
-			 rows.orderState=i+"";
-			 repairOrder.rows.add(rows);
+				 Areas rows = new Areas();
+			 rows.city = "" + i;
+			 rows.area = i + "content";
+			 rows.areastatus=i;
+				 areaslist.put(areaslist.size(),rows);
 			 }
 		}
 		adapter = new DataAdapter();
@@ -247,7 +241,7 @@ public class Activity_AreaList extends Activity {
 
 		@Override
 		public int getCount() {
-			return repairOrder.rows.size();
+			return areaslist.size();
 		}
 
 		public void setSelectItem(int tselectItem) {
@@ -265,17 +259,17 @@ public class Activity_AreaList extends Activity {
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					setSelectItem(position); // 自定义的变量，以便让adapter知道要选中哪一项
-					AreaInfo.Rows tmpRepairOrder = repairOrder.rows.get(position);
-					if (tmpRepairOrder.orderState.equals("1")) {
+					Areas tmpRepairOrder =areaslist.get(position);
+					if (tmpRepairOrder.areastatus.equals("1")) {
 						// holder.orderState.setText("发布");
 						repair_record.setEnabled(false);
 						sence_check.setEnabled(true);
-					} else if (tmpRepairOrder.orderState.equals("2")
-							|| tmpRepairOrder.orderState.equals("4")) {
+					} else if (tmpRepairOrder.areastatus.equals("2")
+							|| tmpRepairOrder.areastatus.equals("4")) {
 						// holder.orderState.setText("维修申请  ");
 						repair_record.setEnabled(false);
 						sence_check.setEnabled(false);
-					} else if (tmpRepairOrder.orderState.equals("3")) {
+					} else if (tmpRepairOrder.areastatus.equals("3")) {
 
 						repair_record.setEnabled(true);
 						sence_check.setEnabled(false);
@@ -296,30 +290,27 @@ public class Activity_AreaList extends Activity {
 			// holder.maintainNum.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 			holder.areanmae = (TextView) convertView
 					.findViewById(R.id.areaname);
-			holder.department = (TextView) convertView
-					.findViewById(R.id.department);
-			holder.maintainType = (TextView) convertView
-					.findViewById(R.id.maintainType);
+
 			holder.content = (TextView) convertView.findViewById(R.id.content);
 			holder.orderState = (TextView) convertView
 					.findViewById(R.id.orderState);
 			holder.cityname=(TextView) convertView
 					.findViewById(R.id.cityname);
-			final AreaInfo.Rows tmpAreaInto = repairOrder.rows.get(position);
+			final Areas tmpAreaInto = areaslist.get(position);
 
-			if (tmpAreaInto.orderState.equals("1")) {
+			if (tmpAreaInto.areastatus.equals("1")) {
 				holder.orderState.setText("发布");
-			} else if (tmpAreaInto.orderState.equals("2")) {
+			} else if (tmpAreaInto.areastatus.equals("2")) {
 				holder.orderState.setText("  ");
-			} else if (tmpAreaInto.orderState.equals("3")) {
+			} else if (tmpAreaInto.areastatus.equals("3")) {
 				holder.orderState.setText("审批通过");
-			} else if (tmpAreaInto.orderState.equals("4")) {
+			} else if (tmpAreaInto.areastatus.equals("4")) {
 				holder.orderState.setText("维修完成");
 			}
-			holder.cityname.setText(tmpAreaInto.cityname);
+			holder.cityname.setText(tmpAreaInto.city);
 			// holder.maintainNum.setText(Html.fromHtml("<u>"+tmpRepairOrder.maintainNum+"</u>"));
-			holder.department.setText(tmpAreaInto.department);
-			holder.content.setText(tmpAreaInto.content);
+			holder.areanmae.setText(tmpAreaInto.area);
+//			holder.content.setText(tmpAreaInto.content);
 
 			convertView.setTag(holder);
 			CHScrollView ascrollView = (CHScrollView) convertView
@@ -369,8 +360,6 @@ public class Activity_AreaList extends Activity {
 	private class ViewHolder {
 		TextView cityname;
 		TextView areanmae;
-		TextView department;
-		TextView maintainType;
 		TextView content;
 		TextView orderState;
 	}

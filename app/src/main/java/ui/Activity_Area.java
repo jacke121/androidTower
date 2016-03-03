@@ -21,7 +21,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.baseDao.Areas;
+import com.baseDao.AreasDao;
 import com.baseDao.SqlHelper;
+import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 
 import webClient.DialogFactory;
@@ -34,11 +37,18 @@ public class Activity_Area extends Activity implements OnClickListener {
 		public static String name, pwd, rpwd, registerMessage, uuid, uuid_psw,message;
 		public static Activity_Area activityArea;
 		public String msg_show ;
+	SqlHelper helper;
+	AreasDao areasDao;
 	    @SuppressLint("NewApi")
 		@Override
 	    public void onCreate(Bundle savedInstanceState) {
 	    	  super.onCreate(savedInstanceState);
 	    	  requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
+			MyApplication myApplication = (MyApplication) getApplication();
+			 helper=myApplication.getSqlHelper();
+			areasDao = new AreasDao(helper);
+			// 查询数据库
+
 	    	///在Android2.2以后必须添加以下代码
 			//本应用采用的Android4.0
 			//设置线程的策略
@@ -226,6 +236,10 @@ public class Activity_Area extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_save:
+				Areas areas=new Areas();
+				areas.city="";
+				areas.area="";
+				areasDao.insert(areas);
 				break;
 			case R.id.register_btnCancel:
 				Intent intent=new Intent(Activity_Area.this, IndexActivity.class);
