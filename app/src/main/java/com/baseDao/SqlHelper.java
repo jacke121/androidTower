@@ -1,4 +1,4 @@
-package note.dao;
+package com.baseDao;
 
 import java.util.HashMap;
 

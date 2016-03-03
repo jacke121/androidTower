@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.baseDao.Areas;
+import com.baseDao.AreasDao;
+import com.baseDao.SqlHelper;
 import com.google.gson.Gson;
+import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
 import com.objs.AreaInfo;
@@ -51,13 +56,24 @@ public class Activity_AreaList extends Activity {
 	private ListView mListView;
 	Gson gson;
 	String message;
-
+	SqlHelper helper;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// 设置无标题（尽量在前面设置）
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.lay_area_list);
+
+
+		MyApplication myApplication = (MyApplication) getApplication();
+		helper=myApplication.getSqlHelper();
+		AreasDao od = new AreasDao(helper);
+		od.createTable(helper.getWritableDatabase());
+		// 查询数据库
+		SparseArray<Areas> rs = od.queryToList("", null);
+		if (rs == null || rs.size() == 0) {
+		}
+
 		TextView title_text = (TextView) findViewById(R.id.title_text);
 		title_text.setText("台区列表");
 		ImageButton b_back = (ImageButton) findViewById(R.id.b_back);
@@ -91,11 +107,9 @@ public class Activity_AreaList extends Activity {
 				}
 				String cityname = repairOrder.rows.get(selectItem).cityname;
 				String content = repairOrder.rows.get(selectItem).content;
-				String assetName = repairOrder.rows.get(selectItem).assetName;
 				Bundle bundle = new Bundle();
 				/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
 				bundle.putString("content", content);
-				bundle.putString("assetName", assetName);
 			}
 		});
 
@@ -122,7 +136,6 @@ public class Activity_AreaList extends Activity {
 				Intent intent = null;
 				if (repairOrder.rows.size() > selectItem) {
 					String cityname = repairOrder.rows.get(selectItem).cityname;
-					String assetName = repairOrder.rows.get(selectItem).assetName;
 
 					Bundle bundle = new Bundle();
 
@@ -131,7 +144,6 @@ public class Activity_AreaList extends Activity {
 					bundle.putString("maintainNum", cityname);
 					bundle.putString("content", content);
 					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-					bundle.putString("assetName", assetName);
 					bundle.putString("department",
 							repairOrder.rows.get(selectItem).department);
 					/* 把bundle对象assign给Intent */
@@ -169,7 +181,6 @@ public class Activity_AreaList extends Activity {
 			 for (int i = 0; i < 30; i++) {
 			 AreaInfo.Rows rows = repairOrder.new Rows();
 			 rows.cityname = "" + i;
-			 rows.assetName = "name" + i;
 			 rows.department = "department" + i;
 			 rows.assetSize = i + "";
 			 rows.content = i + "content";
@@ -284,9 +295,7 @@ public class Activity_AreaList extends Activity {
 			final ViewHolder holder = new ViewHolder();
 			// holder.maintainNum.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 			holder.areanmae = (TextView) convertView
-					.findViewById(R.id.areanmae);
-			holder.assetName = (TextView) convertView
-					.findViewById(R.id.assetName);
+					.findViewById(R.id.areaname);
 			holder.department = (TextView) convertView
 					.findViewById(R.id.department);
 			holder.maintainType = (TextView) convertView
@@ -294,6 +303,8 @@ public class Activity_AreaList extends Activity {
 			holder.content = (TextView) convertView.findViewById(R.id.content);
 			holder.orderState = (TextView) convertView
 					.findViewById(R.id.orderState);
+			holder.cityname=(TextView) convertView
+					.findViewById(R.id.cityname);
 			final AreaInfo.Rows tmpAreaInto = repairOrder.rows.get(position);
 
 			if (tmpAreaInto.orderState.equals("1")) {
@@ -307,7 +318,6 @@ public class Activity_AreaList extends Activity {
 			}
 			holder.cityname.setText(tmpAreaInto.cityname);
 			// holder.maintainNum.setText(Html.fromHtml("<u>"+tmpRepairOrder.maintainNum+"</u>"));
-			holder.assetName.setText(tmpAreaInto.assetName);
 			holder.department.setText(tmpAreaInto.department);
 			holder.content.setText(tmpAreaInto.content);
 
@@ -359,7 +369,6 @@ public class Activity_AreaList extends Activity {
 	private class ViewHolder {
 		TextView cityname;
 		TextView areanmae;
-		TextView assetName;
 		TextView department;
 		TextView maintainType;
 		TextView content;

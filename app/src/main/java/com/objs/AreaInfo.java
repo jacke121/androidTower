@@ -11,7 +11,7 @@ public class AreaInfo {
 		}
 	public class Rows{
 		public String cityname;
-		public String assetName;
+		public String areaname;
 		public String assetSize;
 		public String department;
 		public String content;

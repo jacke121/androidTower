@@ -1,4 +1,4 @@
-package note.dao;
+package com.baseDao;
 
 import java.util.Date;
 import android.text.TextUtils;
@@ -10,11 +10,11 @@ import java.text.SimpleDateFormat;
 import android.util.SparseArray;
 
 
-public class UsersDao{
- public static final String TABLENAME ="Users";
+public class AreasDao{
+ public static final String TABLENAME ="Areas";
  public static final Object SYNC= new Object();
  private final SQLiteOpenHelper mOpenHelper;
- public UsersDao(SQLiteOpenHelper openHelper){
+ public AreasDao(SQLiteOpenHelper openHelper){
    mOpenHelper=openHelper;
    }
    public Cursor query(String whereClause, String []whereArgs){
@@ -24,23 +24,23 @@ public class UsersDao{
      }
 
 
-     public SparseArray<Users> queryToList(String whereClause, String []whereArgs){
+     public SparseArray<Areas> queryToList(String whereClause, String []whereArgs){
      Cursor cursor=null;
      int index=0;
      try{
        synchronized(SYNC){
       if ( (cursor = query(whereClause, whereArgs) )==null || cursor.getCount()<1)return null;
-     SparseArray<Users> list = new SparseArray<Users>(cursor.getCount());
+     SparseArray<Areas> list = new SparseArray<Areas>(cursor.getCount());
       while (cursor.moveToNext()){
-      Users entity=new Users(); 
+      Areas entity=new Areas(); 
     entity.id=cursor.isNull(COLUMNINDEXS.id )? -1 :cursor.getInt(COLUMNINDEXS.id);
-    entity.username=cursor.isNull(COLUMNINDEXS.username )? "" :cursor.getString(COLUMNINDEXS.username);
-    entity.password=cursor.isNull(COLUMNINDEXS.password )? "" :cursor.getString(COLUMNINDEXS.password);
-    entity.repassword=cursor.isNull(COLUMNINDEXS.repassword )? "" :cursor.getString(COLUMNINDEXS.repassword);
-    entity.autologin=cursor.isNull(COLUMNINDEXS.autologin )? "" :cursor.getString(COLUMNINDEXS.autologin);
-    entity.countlogin=cursor.isNull(COLUMNINDEXS.countlogin )? -1 :cursor.getInt(COLUMNINDEXS.countlogin);
-    entity.lifestatus=cursor.isNull(COLUMNINDEXS.lifestatus )? -1 :cursor.getInt(COLUMNINDEXS.lifestatus);
-    entity.upgradeflag=cursor.isNull(COLUMNINDEXS.upgradeflag )? -1 :cursor.getInt(COLUMNINDEXS.upgradeflag);
+    entity.city=cursor.isNull(COLUMNINDEXS.city )? "" :cursor.getString(COLUMNINDEXS.city);
+    entity.area=cursor.isNull(COLUMNINDEXS.area )? "" :cursor.getString(COLUMNINDEXS.area);
+    entity.areastatus=cursor.isNull(COLUMNINDEXS.areastatus )? -1 :cursor.getInt(COLUMNINDEXS.areastatus);
+    entity.count=cursor.isNull(COLUMNINDEXS.count )? -1 :cursor.getInt(COLUMNINDEXS.count);
+    entity.okcount=cursor.isNull(COLUMNINDEXS.okcount )? -1 :cursor.getInt(COLUMNINDEXS.okcount);
+    entity.lifeStatus=cursor.isNull(COLUMNINDEXS.lifeStatus )? -1 :cursor.getInt(COLUMNINDEXS.lifeStatus);
+    entity.upgradeFlag=cursor.isNull(COLUMNINDEXS.upgradeFlag )? -1 :cursor.getInt(COLUMNINDEXS.upgradeFlag);
        list.append(index++,entity);
        }; 
       cursor.close(); 
@@ -50,7 +50,7 @@ public class UsersDao{
   ex.printStackTrace();       }finally{ 
  if (cursor!= null) cursor.close();
     }   return null;
- }       public int insert(Users entity){
+ }       public int insert(Areas entity){
          SQLiteDatabase db=null;
           try{
           return insert0(db=mOpenHelper.getWritableDatabase(), entity);
@@ -58,7 +58,7 @@ public class UsersDao{
           if (db!=null) db.close();
           }
         }
-       public boolean update(Users entity){
+       public boolean update(Areas entity){
          SQLiteDatabase db=null;
           try{
           return update0(db=mOpenHelper.getWritableDatabase(), entity, COLUMNS.id+"=?", new String[]{String.valueOf(entity.id)} );
@@ -66,7 +66,7 @@ public class UsersDao{
           if (db!=null) db.close();
           }
         }
-       public boolean delete(Users entity){
+       public boolean delete(Areas entity){
          SQLiteDatabase db=null;
           try{
           return delete0(db=mOpenHelper.getWritableDatabase(), COLUMNS.id+"=?", new String[]{String.valueOf(entity.id)} );
@@ -76,40 +76,40 @@ public class UsersDao{
         }
    public static final class COLUMNINDEXS{
     public static final int id=0;
-    public static final int username=1;
-    public static final int password=2;
-    public static final int repassword=3;
-    public static final int createtime=4;
-    public static final int autologin=5;
-    public static final int updatetime=6;
-    public static final int countlogin=7;
-    public static final int lifestatus=8;
-    public static final int upgradeflag=9;
+    public static final int city=1;
+    public static final int area=2;
+    public static final int areastatus=3;
+    public static final int count=4;
+    public static final int okcount=5;
+    public static final int createtime=6;
+    public static final int updatetime=7;
+    public static final int lifeStatus=8;
+    public static final int upgradeFlag=9;
    }
    public static final class COLUMNS{
     public static final String id="[id]";
-    public static final String username="[username]";
-    public static final String password="[password]";
-    public static final String repassword="[repassword]";
+    public static final String city="[city]";
+    public static final String area="[area]";
+    public static final String areastatus="[areastatus]";
+    public static final String count="[count]";
+    public static final String okcount="[okcount]";
     public static final String createtime="[createtime]";
-    public static final String autologin="[autologin]";
     public static final String updatetime="[updatetime]";
-    public static final String countlogin="[countlogin]";
-    public static final String lifestatus="[lifestatus]";
-    public static final String upgradeflag="[upgradeflag]";
+    public static final String lifeStatus="[lifeStatus]";
+    public static final String upgradeFlag="[upgradeFlag]";
    }
-       private int insert0(SQLiteDatabase db, Users entity){ 
+       private int insert0(SQLiteDatabase db, Areas entity){ 
        ContentValues cv=new ContentValues(); 
-    cv.put(COLUMNS.username, entity.username );
-    cv.put(COLUMNS.password, entity.password );
-    cv.put(COLUMNS.repassword, entity.repassword );
+    cv.put(COLUMNS.city, entity.city );
+    cv.put(COLUMNS.area, entity.area );
+    cv.put(COLUMNS.areastatus, entity.areastatus );
+    cv.put(COLUMNS.count, entity.count );
+    cv.put(COLUMNS.okcount, entity.okcount );
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     cv.put(COLUMNS.createtime, df.format(new Date()));
-    cv.put(COLUMNS.autologin, entity.autologin );
     SimpleDateFormat dfu = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    cv.put(COLUMNS.updatetime, dfu.format(new Date()));    cv.put(COLUMNS.countlogin, entity.countlogin );
-    cv.put(COLUMNS.lifestatus, entity.lifestatus );
-    cv.put(COLUMNS.upgradeflag, entity.upgradeflag );
+    cv.put(COLUMNS.updatetime, dfu.format(new Date()));    cv.put(COLUMNS.lifeStatus, entity.lifeStatus );
+    cv.put(COLUMNS.upgradeFlag, entity.upgradeFlag );
           int strid=-1;  
         if(db.insert(TABLENAME, null, cv)>0){ 
          Cursor cursor = db.rawQuery("select last_insert_rowid() from "+TABLENAME,null); 
@@ -119,18 +119,18 @@ public class UsersDao{
             }
           return strid; 
          }
-       private boolean update0(SQLiteDatabase db, Users entity, String whereClause, String []whereArgs){ 
+       private boolean update0(SQLiteDatabase db, Areas entity, String whereClause, String []whereArgs){ 
        ContentValues cv=new ContentValues(1); 
     cv.put(COLUMNS.id, entity.id );
-    cv.put(COLUMNS.username, entity.username );
-    cv.put(COLUMNS.password, entity.password );
-    cv.put(COLUMNS.repassword, entity.repassword );
-    cv.put(COLUMNS.autologin, entity.autologin );
+    cv.put(COLUMNS.city, entity.city );
+    cv.put(COLUMNS.area, entity.area );
+    cv.put(COLUMNS.areastatus, entity.areastatus );
+    cv.put(COLUMNS.count, entity.count );
+    cv.put(COLUMNS.okcount, entity.okcount );
     SimpleDateFormat dfu = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     cv.put(COLUMNS.updatetime, dfu.format(new Date()));
-    cv.put(COLUMNS.countlogin, entity.countlogin );
-    cv.put(COLUMNS.lifestatus, entity.lifestatus );
-    cv.put(COLUMNS.upgradeflag, entity.upgradeflag );
+    cv.put(COLUMNS.lifeStatus, entity.lifeStatus );
+    cv.put(COLUMNS.upgradeFlag, entity.upgradeFlag );
         return db.update(TABLENAME, cv, whereClause, whereArgs) >0; 
      }
  private boolean delete0(SQLiteDatabase db, String whereClause, String []whereArgs){
@@ -138,7 +138,7 @@ public class UsersDao{
      }
  public boolean drop(SQLiteDatabase db) {
         try { 
-     db.execSQL("drop table if exists Users");
+     db.execSQL("drop table if exists Areas");
      return true;
      } catch (Exception e) {
      e.printStackTrace();
@@ -146,6 +146,6 @@ public class UsersDao{
      }
      }
       public void createTable(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS [users] ( [id] INTEGER NOT NULL PRIMARY KEY,   [username] NVARCHAR2,   [password] NVARCHAR2,   [repassword] NVARCHAR2,   [createtime] DATETIME,   [autologin] NVARCHAR2,   [updatetime] DATETIME NOT NULL DEFAULT (datetime('now')),   [countlogin] INTEGER,   [lifestatus] INTEGER,   [upgradeflag] BIGINT NOT NULL  )"); 
+        db.execSQL("CREATE TABLE IF NOT EXISTS [areas] (  [id] INTEGER PRIMARY KEY,   [city] VARCHAR2(40),   [area] VARCHAR2(50),   [areastatus] INT,   [count] INT,   [okcount] INT,   [createtime] DATETIME NOT NULL DEFAULT (datetime('now')),   [updatetime] DATETIME NOT NULL,   [LifeStatus] INTEGER NOT NULL,   [upgradeFlag] BIGINT NOT NULL)"); 
      }
      }

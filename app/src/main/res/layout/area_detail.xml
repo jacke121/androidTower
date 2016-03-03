@@ -62,7 +62,6 @@
         android:paddingRight="10dp">
 
         <TextView
-            android:id="@+id/register_txtUser"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -79,7 +78,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/register_eTxtUser"
+                android:id="@+id/txt_qubian"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:ems="10"
@@ -133,7 +132,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/register_eTxtPwd"
+                android:id="@+id/txt_quxian"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:hint=""
@@ -184,7 +183,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/register_eTxtPwdSure"
+                android:id="@+id/txt_gongbian"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
@@ -216,7 +215,6 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
         <TextView
-            android:id="@+id/register_txtDepartment"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -232,7 +230,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/register_eTxtDepartment"
+                android:id="@+id/txt_danwei"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
@@ -270,12 +268,12 @@
             android:text="@string/cancel" />
 
         <Button
-            android:id="@+id/register_btnRegister"
+            android:id="@+id/btn_save"
             android:layout_width="100dip"
             android:layout_height="40dp"
             android:layout_marginLeft="15dip"
             android:background="@drawable/desktop_floatbtn_normal"
-            android:text="@string/register" />
+            android:text="保存" />
     </LinearLayout>
 
 </LinearLayout>
