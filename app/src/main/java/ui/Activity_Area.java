@@ -38,15 +38,26 @@ public class Activity_Area extends Activity implements OnClickListener {
     public String msg_show;
     SqlHelper helper;
     AreasDao areasDao;
-
+    String type;
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
+        Bundle bundle = this.getIntent().getExtras();
+        /* 获取Bundle中的数据，注意类型和key */
+        if (bundle != null) {
+            type = bundle.getString("type");
+            if(type.equals("add")){
+               showMsg("aaa");
+            }else{
+                showMsg("aaa");
+            }
+        }
         MyApplication myApplication = (MyApplication) getApplication();
         helper = myApplication.getSqlHelper();
         areasDao = new AreasDao(helper);
+
         // 查询数据库
         setContentView(R.layout.area_detail);
         //设置初始化视图
@@ -106,7 +117,7 @@ public class Activity_Area extends Activity implements OnClickListener {
         txt_danwei = (EditText) findViewById(R.id.txt_danwei);
         btn_save = (Button) findViewById(R.id.btn_save);
         btn_save.setOnClickListener(this);
-        Button register_btnCancel = (Button) findViewById(R.id.register_btnCancel);
+        Button register_btnCancel = (Button) findViewById(R.id.btnCancel);
         register_btnCancel.setOnClickListener(this);
         title_btn_sequence = (ImageView) findViewById(R.id.title_btn_sequence);
         title_btn_sequence.setOnClickListener(this);
@@ -137,16 +148,22 @@ public class Activity_Area extends Activity implements OnClickListener {
                String qubian = txt_qubian.getText().toString();
                 String  quxian = txt_quxian.getText().toString();
                 String gongbian = txt_gongbian.getText().toString();
+                String danwei = txt_danwei.getText().toString();
+
 //					registerRemoteService(name,pwd);
                 if (qubian.equals("") || quxian.equals("") || gongbian.equals("")) {
                     showMsg("信息不能为空!");
                 } else {
                     Areas areas = new Areas();
-                    areas.city = "";
-                    areas.area = "";
+                    areas.gongbian = gongbian;
+                    areas.qubian=qubian;
+                    areas.quxian=quxian;
+                    areas.danwei=danwei;
                     areasDao.insert(areas);
+                    Intent resultIntent = new Intent();
+                    Activity_Area.this.setResult(RESULT_OK, resultIntent);
+                    Activity_Area.this.finish();
                 }
-
                 break;
             case R.id.btnCancel:
                 Intent intent = new Intent(Activity_Area.this, IndexActivity.class);

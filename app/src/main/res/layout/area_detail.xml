@@ -83,7 +83,7 @@
                 android:layout_height="fill_parent"
                 android:ems="10"
                 android:hint=""
-                android:textColor="@color/red">
+                android:textColor="@color/black">
 
                 <requestFocus />
             </EditText>
@@ -136,7 +136,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:hint=""
-                android:textColor="@color/red" />
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -186,7 +186,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
-                android:textColor="@color/red" />
+                android:textColor="@color/main_color" />
         </LinearLayout>
 
         <LinearLayout
@@ -232,7 +232,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
-                android:textColor="@color/red" />
+                android:textColor="@color/main_color" />
         </LinearLayout>
 
         <LinearLayout

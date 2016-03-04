@@ -1,11 +1,8 @@
 package ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -50,6 +47,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 	LinearLayout repairhead;
 	private ListView mListView;
 	SqlHelper helper;
+    AreasDao areasDao;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,13 +56,10 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 		setContentView(R.layout.lay_area_list);
 		MyApplication myApplication = (MyApplication) getApplication();
 		helper=myApplication.getSqlHelper();
-		AreasDao od = new AreasDao(helper);
-		od.createTable(helper.getWritableDatabase());
+		 areasDao = new AreasDao(helper);
+		areasDao.createTable(helper.getWritableDatabase());
 		// 查询数据库
-		 areaslist = od.queryToList("", null);
-		if (areaslist == null || areaslist.size() == 0) {
-		}
-
+        geiDatas();
         btn_add= (Button) findViewById(R.id.btn_add);
         btn_add.setOnClickListener(this);
 		TextView title_text = (TextView) findViewById(R.id.title_text);
@@ -90,17 +85,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 		// 添加头滑动事件
 		mHScrollViews.add(headerScroll);
 		mListView = (ListView) findViewById(R.id.scroll_list);
-		if (areaslist == null) {
-			// mListView.setVisibility(View.GONE);
-			areaslist = new SparseArray<Areas>();
-			 for (int i = 0; i < 15; i++) {
-				 Areas rows = new Areas();
-			 rows.city = "" + i;
-			 rows.area = i + "content";
-			 rows.areastatus=i;
-				 areaslist.put(areaslist.size(),rows);
-			 }
-		}
+
 		adapter = new DataAdapter();
 		mListView.setAdapter(adapter);
 		mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -109,13 +94,30 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 		b_back.setOnClickListener(this);
 
 	}
+    public void geiDatas(){
+        areaslist = areasDao.queryToList("", null);
+        if (areaslist == null) {
+            // mListView.setVisibility(View.GONE);
+            areaslist = new SparseArray<Areas>();
+            for (int i = 0; i < 15; i++) {
+                Areas rows = new Areas();
+                rows.gongbian="gongbian";
+                rows.area = i + "content";
+                rows.areastatus=i;
+                areaslist.put(areaslist.size(),rows);
+            }
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add:
-                Intent intent=new Intent(Activity_AreaList.this, Activity_Area.class);
-                startActivity(intent);
-                Activity_AreaList.this.finish();
+				Bundle bundle = new Bundle();
+                Intent intent = new Intent(Activity_AreaList.this,
+                        Activity_Area.class);
+				bundle.putString("type", "add");
+				intent.putExtras(bundle);
+				startActivityForResult(intent, 1);
                 break;
             case R.id.b_back:
                 finish();
@@ -135,7 +137,6 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 				scrollView.smoothScrollTo(l, t);
 		}
 	}
-
 	public void addHViews(int position, final CHScrollView hScrollView) {
 		int size = 0;
 		if (!mHScrollViews.isEmpty()) {
@@ -160,11 +161,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 		} else {
 			mHScrollViews.set(position, hScrollView);
 		}
-
 	}
-
-
-
     private class DataAdapter extends BaseAdapter {
 
 		@Override
@@ -190,11 +187,8 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 					Areas tmpRepairOrder =areaslist.get(position);
 					if (tmpRepairOrder.areastatus.equals("1")) {
 						// holder.orderState.setText("发布");
-					} else if (tmpRepairOrder.areastatus.equals("2")
-							|| tmpRepairOrder.areastatus.equals("4")) {
+					} else if (tmpRepairOrder.areastatus.equals("2")	) {
 						// holder.orderState.setText("维修申请  ");
-					} else if (tmpRepairOrder.areastatus.equals("3")) {
-						// holder.orderState.setText("审批通过");
 					}
 					notifyDataSetChanged();// 提醒数据已经变动
 				}
@@ -232,7 +226,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 				holder.orderState.setText("维修完成");
 			}
 			holder.rownember.setText(position+1+"");
-			holder.cityname.setText(tmpAreaInto.city);
+			holder.cityname.setText(tmpAreaInto.quxian);
 			// holder.maintainNum.setText(Html.fromHtml("<u>"+tmpRepairOrder.maintainNum+"</u>"));
 			holder.areanmae.setText(tmpAreaInto.area);
 			convertView.setTag(holder);
@@ -263,13 +257,16 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 			return 0;
 		}
 	}
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// 可以根据多个请求代码来作相应的操作
-		if (1 == requestCode) {
-//			downData();
-		}
-	}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // 可以根据多个请求代码来作相应的操作
+        if (1 == requestCode) {
+            // 刷新界面
+            geiDatas();
+            adapter.notifyDataSetInvalidated();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
