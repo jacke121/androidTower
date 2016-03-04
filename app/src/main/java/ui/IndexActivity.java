@@ -26,16 +26,10 @@ import android.widget.EditText;
 
 import com.lbg.yan01.R;
 
-import note.dao.Note;
-import note.dao.NoteDao;
-import note.dao.SqlHelper;
-import note.dao.UsersDao;
 
 public class IndexActivity extends Activity {
 	/** Called when the activity is first created. */
-	public static note.dao.SqlHelper helper;
 	public static IndexActivity indexActivity;
-	UsersDao userDao;
 	public static String serverIp = "192.168.1.1";
 	public static String eTxtUser, eTxtPwd, message;
 	EditText  main_eTxtUser;
@@ -79,21 +73,8 @@ public class IndexActivity extends Activity {
 		
 		Button btnAuthorize = (Button) findViewById(R.id.btnAuthorize);
 		btnAuthorize.setOnClickListener(new RegisterListener());
-		String DATABASE_PATH = "/data/data/" + super.getApplication().getPackageName() + "/databases/";
-		try {
-			helper = new SqlHelper(this, DATABASE_PATH + "/DoorLock.db", 1);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		NoteDao CPDao = new NoteDao(helper);
-		CPDao.createTable(helper.getWritableDatabase());
-		SparseArray<Note> list_callPolice = new SparseArray<Note>();
 
-		list_callPolice = CPDao.queryToList("", null);
-		userDao = new UsersDao(IndexActivity.helper);
-		userDao.createTable(helper.getWritableDatabase());
 		// 断网情况直接进入笔记页面
 
 		//非首次登陆直接进入笔记页面

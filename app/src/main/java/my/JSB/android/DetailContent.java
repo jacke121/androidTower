@@ -98,14 +98,14 @@ public class DetailContent extends Activity{
 						
 					}
 					else{
-						DBHelper dbHelper=new DBHelper(DetailContent.this);
-						SQLiteDatabase db=dbHelper.getWritableDatabase();
-						ContentValues values=new ContentValues();
-						values.put("title", title);
-						values.put("contentDetail", mainContent);
-						values.put("date", date);
-						db.update("note_detail", values, "noteID=?", new String[]{noteID});
-						db.close();
+//						DBHelper dbHelper=new DBHelper(DetailContent.this);
+//						SQLiteDatabase db=dbHelper.getWritableDatabase();
+//						ContentValues values=new ContentValues();
+//						values.put("title", title);
+//						values.put("contentDetail", mainContent);
+//						values.put("date", date);
+//						db.update("note_detail", values, "noteID=?", new String[]{noteID});
+//						db.close();
 						setDialogActivity("温馨提示！","修改信息成功,系统将跳至主页面！");
 					}
 					
@@ -117,15 +117,15 @@ public class DetailContent extends Activity{
 						
 					}
 					else{
-						DBHelper dbHelper=new DBHelper(DetailContent.this);
-						SQLiteDatabase db=dbHelper.getWritableDatabase();
-						ContentValues values=new ContentValues();
-						values.put("name",extras.getString("name") );
-						values.put("date", date);
-						values.put("title", title);
-						values.put("contentDetail", mainContent);
-						db.insert("note_detail", null, values);
-						db.close();
+//						DBHelper dbHelper=new DBHelper(DetailContent.this);
+//						SQLiteDatabase db=dbHelper.getWritableDatabase();
+//						ContentValues values=new ContentValues();
+//						values.put("name",extras.getString("name") );
+//						values.put("date", date);
+//						values.put("title", title);
+//						values.put("contentDetail", mainContent);
+//						db.insert("note_detail", null, values);
+//						db.close();
 						setDialogActivity("温馨提示！","新增信息成功,系统将跳至主页面！");
 					}
 				}
@@ -172,9 +172,7 @@ public class DetailContent extends Activity{
   			builder.setPositiveButton("确认", new DialogInterface.OnClickListener(){
   				public void onClick(DialogInterface dialog,int which){
   					dialog.dismiss();
-  					   Intent intent=new Intent(DetailContent.this,PersonalBook.class);
-  					   //intent.setClassName(Register.this, activity);
-  					startActivity(intent);
+
   					 DetailContent.this.finish();
   				}
   				
@@ -190,8 +188,7 @@ public class DetailContent extends Activity{
   			builder.setTitle(title);
   			builder.setPositiveButton("确认", new DialogInterface.OnClickListener(){
   				public void onClick(DialogInterface dialog,int which){
-  					Intent intent=new Intent(DetailContent.this,PersonalBook.class);
-  					startActivity(intent);
+
   					DetailContent.this.finish();
   				}
   				
@@ -222,10 +219,10 @@ public class DetailContent extends Activity{
   								 setAlertDialog("警告","获取不到当前用户信息");
   							 }
   							 else{
-  									DBHelper dbHelper=new DBHelper(DetailContent.this);
-  									SQLiteDatabase db=dbHelper.getWritableDatabase();
-  									db.delete("note_detail", "noteID=?", new String[]{noteID});
-  									db.close();
+//  									DBHelper dbHelper=new DBHelper(DetailContent.this);
+//  									SQLiteDatabase db=dbHelper.getWritableDatabase();
+//  									db.delete("note_detail", "noteID=?", new String[]{noteID});
+//  									db.close();
   									setDialogActivity("温馨提示！","删除信息成功,系统将跳至主页面！");
   							 }
   							 

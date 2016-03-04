@@ -64,8 +64,8 @@ public class Activity_Tower extends Activity implements OnClickListener {
         nameplate.setOnClickListener(this);
         reg_username = (EditText) findViewById(R.id.register_eTxtUser);
         reg_username = (EditText) findViewById(R.id.register_eTxtUser);
-        reg_password = (EditText) findViewById(R.id.register_eTxtPwd);
-        reg_repassword = (EditText) findViewById(R.id.register_eTxtPwdSure);
+//        reg_password = (EditText) findViewById(R.id.register_eTxtPwd);
+//        reg_repassword = (EditText) findViewById(R.id.register_eTxtPwdSure);
         btnCancel = (Button) findViewById(R.id.btnCancel);
         Button register_btnCancel = (Button) findViewById(R.id.btnCancel);
         register_btnCancel.setOnClickListener(this);

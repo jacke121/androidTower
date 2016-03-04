@@ -3,10 +3,6 @@ package ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import my.JSB.android.SetMemo;
-import note.dao.Note;
-import note.dao.NoteDao;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -46,6 +42,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baseDao.Areas;
+import com.baseDao.AreasDao;
+import com.baseDao.SqlHelper;
+import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 
 public class NoteActivity extends Activity implements OnClickListener {
@@ -78,8 +78,8 @@ public class NoteActivity extends Activity implements OnClickListener {
 	public ListView lvTitle;// 显示当前用户的记事ID、日期、标题，单击某一行查看详细信息，长按可修改和删除该行信息
 	private ImageButton ibgBtnExit;
 	public MyAdapter mAdapter;
-	SparseArray<Note> mData,mallDatas;
-	NoteDao notesDao;
+	SparseArray<Areas> mData,mallDatas;
+	AreasDao notesDao;
 	public int Id = 0;
 	public int curLevel = 0;
 
@@ -104,8 +104,10 @@ public class NoteActivity extends Activity implements OnClickListener {
 		noteActivity=this;
 		//谈软键盘
 		final InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
-		
-		notesDao = new NoteDao(IndexActivity.helper);
+
+		MyApplication myApplication = (MyApplication) getApplication();
+		SqlHelper helper=myApplication.getSqlHelper();
+		notesDao = new AreasDao(helper);
 		// 新建笔记or文件夹
 //		menu_btn_new = (TextView) findViewById(R.id.menu_btn_new);
 //		menu_btn_setting = (TextView) findViewById(R.id.menu_btn_setting);
@@ -164,9 +166,9 @@ public class NoteActivity extends Activity implements OnClickListener {
 		LinearLayout linre = (LinearLayout) view1
 				.findViewById(R.id.content_layout);
 		LayoutInflater inflater = getLayoutInflater();
-		View convertView = inflater.inflate(R.layout.notebook, null);
-		linre.addView(convertView);
-		lvTitle = (ListView) view1.findViewById(R.id.note_lvTitle);
+//		View convertView = inflater.inflate(R.layout.notebook, null);
+//		linre.addView(convertView);
+//		lvTitle = (ListView) view1.findViewById(R.id.note_lvTitle);
 
 		mAdapter = new MyAdapter(getApplicationContext());
 		lvTitle.setAdapter(mAdapter);
@@ -219,7 +221,7 @@ public class NoteActivity extends Activity implements OnClickListener {
 		mData = notesDao.queryToList("parentid=?", new String[] { 0 + "" });
 
 		if (mData == null) {
-			mData = new SparseArray<Note>();
+			mData = new SparseArray<Areas>();
 		}
 		if (extras != null) {
 			settings.edit()
@@ -263,58 +265,11 @@ public class NoteActivity extends Activity implements OnClickListener {
 		lvTitle.setOnItemLongClickListener(new OnItemLongClickListener() {
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				final Note dataSet = mData.get(position);
-				if (dataSet.types.equals("types")) {
+				final Areas dataSet = mData.get(position);
+				if (dataSet.area.equals("types")) {
 					// 弹出删除修改目录对话框
 					Builder builder = new Builder(NoteActivity.this);
 					builder.setTitle("选择您的操作");
-//					builder.setItems(new String[] { "删除", "修改" },
-//							new DialogInterface.OnClickListener() {
-//
-//								@Override
-//								public void onClick(DialogInterface dialog,
-//										int which) {
-//									if (which == 0) {// del
-//										AlertDialog.Builder dialogmade = new AlertDialog.Builder(
-//												NoteActivity.this);
-//										dialogmade.setTitle("温馨提示");
-//										dialogmade
-//												.setMessage("确定要删除当前目录以及子目录么？");
-//										dialogmade
-//												.setIcon(android.R.drawable.ic_dialog_info);
-//
-//									} else {
-//										final EditText dirext = new EditText(
-//												NoteActivity.this);
-//										dirext.setText(dataSet.title);
-//										AlertDialog.Builder aa = new AlertDialog.Builder(
-//												NoteActivity.this);
-//										aa.setTitle("修改文件夹名称");
-//										aa.setIcon(android.R.drawable.ic_dialog_info);
-//										aa.setView(dirext);
-//										aa.setPositiveButton(
-//												"确定",
-//												new DialogInterface.OnClickListener() {
-//
-//													@Override
-//													public void onClick(
-//															DialogInterface dialog,
-//															int which) {
-//														// TODO Auto-generated
-//														// method stub
-//														dataSet.title = dirext
-//																.getText()
-//																.toString();
-//														notesDao.update(dataSet);
-//														loadData();
-//													}
-//												});
-//										aa.setNegativeButton("取消", null);
-//										aa.setCancelable(true);
-//										aa.show();
-//									}
-//								}
-//							});
 					builder.show();
 				} else {
 					// 弹出删除备忘录对话框
@@ -348,20 +303,20 @@ public class NoteActivity extends Activity implements OnClickListener {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				Note dataSet = mData.get(position);
+				Areas dataSet = mData.get(position);
 
-				if (dataSet.types.equals("types")) {
-					Id = dataSet.id;
-					curLevel += 1;
-					loadData();
-
-				} else if (dataSet.types.equals("note")) {
-					Intent intent = new Intent(NoteActivity.this, SetMemo.class);
-					intent.putExtra("edit", 1);// 0添加、1修改
-					intent.putExtra("Id", dataSet.id);
-					intent.putExtra("level", curLevel);
-					startActivity(intent);
-				}
+//				if (dataSet.types.equals("types")) {
+//					Id = dataSet.id;
+//					curLevel += 1;
+//					loadData();
+//
+//				} else if (dataSet.types.equals("note")) {
+//
+//					intent.putExtra("edit", 1);// 0添加、1修改
+//					intent.putExtra("Id", dataSet.id);
+//					intent.putExtra("level", curLevel);
+//					startActivity(intent);
+//				}
 
 			}
 
@@ -369,18 +324,6 @@ public class NoteActivity extends Activity implements OnClickListener {
 
 	}
 
-	// 添加记事事件调用这个方法
-	// 新增微记事
-	// class AddListener implements OnClickListener {
-	// public void onClick(View v) {
-	//
-	// Intent intent = new Intent(NoteActivity.this, SetMemo.class);
-	// intent.putExtra("edit", 0);//0添加、1修改
-	// intent.putExtra("Id", Id);
-	// intent.putExtra("level", curLevel);
-	// startActivity(intent);
-	// }
-	// }
 	View getView(int i) {
 		View viewd = null;
 		switch (i) {
@@ -539,22 +482,7 @@ public class NoteActivity extends Activity implements OnClickListener {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					Note notes = new Note();
-					notes.types = "types";
-					notes.parentid = Id;
-					notes.levels = curLevel;
-					notes.title = dirext.getText().toString();
-					notes.name = dirext.getText().toString();
-					notes.lifestatus = 1;
-					notes.upgradeflag = 1;
-					notes.id = notesDao.insert(notes);
-					mData.append(mData.size(), notes);
-					
-					mallDatas=notesDao.queryToList("", null);
-					mAdapter.notifyDataSetChanged();
-					
-					dialog.dismiss();
+
 				}
 			});
 			aa.setNegativeButton("取消", null);
@@ -568,11 +496,6 @@ public class NoteActivity extends Activity implements OnClickListener {
 				popupwindow = null;
 			}
 
-			Intent intent = new Intent(NoteActivity.this, SetMemo.class);
-			intent.putExtra("edit", 0);// 0添加、1修改
-			intent.putExtra("Id", Id);
-			intent.putExtra("level", curLevel);
-			startActivity(intent);
 
 			break;
 		default:
@@ -604,12 +527,12 @@ public class NoteActivity extends Activity implements OnClickListener {
 		builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 
-				SQLiteDatabase db = IndexActivity.helper.getWritableDatabase();
-				db.delete("user", "name=?", new String[] { txtUserName
-						.getText().toString().trim() });
-				db.close();
-				setAlertDialog("温馨提示！", "删除当前用户全部信息成功！");
-				onCreate(null);
+//				SQLiteDatabase db = IndexActivity.helper.getWritableDatabase();
+//				db.delete("user", "name=?", new String[] { txtUserName
+//						.getText().toString().trim() });
+//				db.close();
+//				setAlertDialog("温馨提示！", "删除当前用户全部信息成功！");
+//				onCreate(null);
 
 			}
 
@@ -628,21 +551,9 @@ public class NoteActivity extends Activity implements OnClickListener {
 	public void loadData() {
 		mData = notesDao.queryToList("parentid=? ", new String[] { Id + "" });
 		if (mData == null) {
-			mData = new SparseArray<Note>();
+			mData = new SparseArray<Areas>();
 		}
 		mAdapter.notifyDataSetChanged();
-	}
-
-	public void loadData2() {
-		mData = notesDao.queryToList("id=?", new String[] { Id + "" });
-		if (mData == null) {
-			mData = new SparseArray<Note>();
-		} else {
-			Id = mData.get(0).parentid;
-			loadData();
-		}
-
-		// mAdapter.notifyDataSetChanged();
 	}
 
 	// 自定义弹出对话框并选择是否退出程序
@@ -677,7 +588,6 @@ public class NoteActivity extends Activity implements OnClickListener {
 			// Do something.
 			if (curLevel > 0) {
 				curLevel -= 1;
-				loadData2();
 				return true;
 			} else if (curLevel == 0) {
 				if (quit) {
@@ -715,18 +625,13 @@ public class NoteActivity extends Activity implements OnClickListener {
 			convertView = inflater.inflate(R.layout.main_list_row, null, false);
 			ImageView img = (ImageView) convertView.findViewById(R.id.ico);// 用于显示图片
 			TextView tv = (TextView) convertView.findViewById(R.id.context);// 显示文字
-			final Note dataSet = mData.get(position);
-			tv.setText(dataSet.title);
-			if (dataSet.types.equals("types")) {
+			final Areas dataSet = mData.get(position);
+			tv.setText(dataSet.area);
+			if (dataSet.area.equals("types")) {
 				img.setImageResource(R.drawable.main_allnote);
-			} else if (dataSet.types.equals("note")) {
+			} else if (dataSet.area.equals("note")) {
 				img.setImageResource(R.drawable.main_newnote);
 			}
-			// if (position == selectItem) {
-			// convertView.setBackgroundColor(Color.YELLOW);
-			// } else {
-			// convertView.setBackgroundColor(Color.TRANSPARENT);
-			// }
 			return convertView;
 
 		}
@@ -759,16 +664,16 @@ public class NoteActivity extends Activity implements OnClickListener {
 	}
 
 	public void deleteNote(int id) {
-		SparseArray<Note> notes_sa = new SparseArray<Note>();
+		SparseArray<Areas> notes_sa = new SparseArray<Areas>();
 		notes_sa = notesDao.queryToList("parentid=?", new String[] { id + "" });
 		if (notes_sa == null) {
 			return;
 		}
 		for (int i = 0; i < notes_sa.size(); i++) {
-			Note note = notes_sa.get(i);
-			if (note.types.equals("types")) {
-				deleteNote(note.id);
-			}
+			Areas note = notes_sa.get(i);
+//			if (note.types.equals("types")) {
+//				deleteNote(note.id);
+//			}
 			notesDao.delete(note);
 		}
 

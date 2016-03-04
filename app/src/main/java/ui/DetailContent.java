@@ -3,9 +3,10 @@ package ui;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import com.baseDao.SqlHelper;
+import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
-import note.dao.Note;
-import note.dao.NoteDao;
+
 
 
 import android.app.Activity;
@@ -99,8 +100,10 @@ public class DetailContent extends Activity{
 						
 					}
 					else{
-						
-						SQLiteDatabase db= IndexActivity.helper.getWritableDatabase();
+
+						MyApplication myApplication = (MyApplication) getApplication();
+						SqlHelper helper=myApplication.getSqlHelper();
+						SQLiteDatabase db= helper.getWritableDatabase();
 						ContentValues values=new ContentValues();
 						values.put("title", title);
 						values.put("contentDetail", mainContent);
@@ -118,22 +121,20 @@ public class DetailContent extends Activity{
 						
 					}
 					else{
-						
-						
-						NoteDao CPDao = new NoteDao(IndexActivity.helper);
-						// CPDao.drop(helper.getWritableDatabase());
-						SparseArray<Note> list_callPolice = new SparseArray<Note>();
-
-						Note notes = new Note();
-						notes.parentid=1;
-						notes.types = "note";
-						notes.name=extras.getString("name") ;
-//						notes.datetimes=date;
-						notes.name=title;
-						notes.content=mainContent;
-						notes.lifestatus = 1;
-						notes.upgradeflag = 1;
-						CPDao.insert(notes);
+//						NoteDao CPDao = new NoteDao(IndexActivity.helper);
+//						// CPDao.drop(helper.getWritableDatabase());
+//						SparseArray<Note> list_callPolice = new SparseArray<Note>();
+//
+//						Note notes = new Note();
+//						notes.parentid=1;
+//						notes.types = "note";
+//						notes.name=extras.getString("name") ;
+////						notes.datetimes=date;
+//						notes.name=title;
+//						notes.content=mainContent;
+//						notes.lifestatus = 1;
+//						notes.upgradeflag = 1;
+//						CPDao.insert(notes);
 						setDialogActivity("温馨提示！","新增信息成功,系统将跳至主页面！");
 					}
 				}

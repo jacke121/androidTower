@@ -1,7 +1,5 @@
 package ui;
 
-import note.dao.Note;
-
 
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
@@ -18,6 +16,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.baseDao.SqlHelper;
+import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 
 public class SettingActivity extends Activity {
@@ -25,8 +25,7 @@ public class SettingActivity extends Activity {
 	ListView list_settinginfo;
 	SettingAdapter settingAdapter;
 	ImageView title_btn_back;
-	public static note.dao.SqlHelper helper;
-	SparseArray<Note> mData, mallDatas;
+	public static SqlHelper helper;
 	String updateurl = IndexActivity.serverIp +"/note_listAll.action";
 	String message = null;
 
@@ -75,7 +74,10 @@ public class SettingActivity extends Activity {
 		try {
 			String userName = IndexActivity.sharedPreferences_userInfo.getString("userName", "");
 			strSql = "select max(upgradeflag) as maxID from note where username='" + userName + "'";
-			cursor = IndexActivity.helper.getReadableDatabase().rawQuery(strSql, null);
+
+			MyApplication myApplication = (MyApplication) getApplication();
+			helper=myApplication.getSqlHelper();
+			cursor = helper.getReadableDatabase().rawQuery(strSql, null);
 			if (cursor != null) {
 				cursor.moveToFirst();
 				Id = cursor.getInt(cursor.getColumnIndex("maxID"));
