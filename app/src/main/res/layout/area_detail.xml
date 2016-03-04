@@ -136,7 +136,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:hint=""
-                android:inputType="textPassword"
                 android:textColor="@color/red" />
         </LinearLayout>
 
@@ -187,7 +186,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
-                android:inputType="textPassword"
                 android:textColor="@color/red" />
         </LinearLayout>
 
@@ -234,7 +232,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
-                android:inputType="textPassword"
                 android:textColor="@color/red" />
         </LinearLayout>
 
@@ -253,7 +250,6 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/register_linearLayout03"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dip"
@@ -261,7 +257,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/register_btnCancel"
+            android:id="@+id/btnCancel"
             android:layout_width="100dip"
             android:layout_height="40dp"
             android:background="@drawable/desktop_floatbtn_normal"
