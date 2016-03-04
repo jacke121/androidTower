@@ -159,6 +159,11 @@ public class Activity_Area extends Activity implements OnClickListener {
                     areas.qubian=qubian;
                     areas.quxian=quxian;
                     areas.danwei=danwei;
+                    areas.areastatus=1;
+                    areas.area="asd";
+                    areas.count=1;
+                    areas.okcount=2;
+                    areas.lifeStatus=1;
                     areasDao.insert(areas);
                     Intent resultIntent = new Intent();
                     Activity_Area.this.setResult(RESULT_OK, resultIntent);
