@@ -20,8 +20,15 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.baseDao.Areas;
+import com.baseDao.Ganta;
+import com.baseDao.GantaDao;
+import com.baseDao.SqlHelper;
+import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 
 import java.io.File;
@@ -32,7 +39,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Activity_Tower extends Activity implements OnClickListener {
-    public static EditText reg_username, reg_password, reg_repassword;
+    public static EditText ext_zuobiao, ext_towername, ext_taiqu;
+            RadioGroup radio_dianya;
     private static final int PHOTO_REQUEST_CAMERA = 1;// 拍照
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
     /* 头像名称 */
@@ -46,7 +54,8 @@ public class Activity_Tower extends Activity implements OnClickListener {
     public static Dialog mdlg;
     public static String name, pwd, rpwd, registerMessage, uuid, uuid_psw, message;
     public String msg_show;
-
+    GantaDao  gantaDao;
+    SqlHelper helper;
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,14 +65,20 @@ public class Activity_Tower extends Activity implements OnClickListener {
         //设置初始化视图
         this.mFace = (ImageView) findViewById(R.id.iv_fullview);
 
+        MyApplication myApplication = (MyApplication) getApplication();
+        helper=myApplication.getSqlHelper();
+        gantaDao   = new GantaDao(helper);
         pic_fullview = (Button) findViewById(R.id.pic_fullview);
         tower_head = (Button) findViewById(R.id.tower_head);
         nameplate = (Button) findViewById(R.id.nameplate);
         pic_fullview.setOnClickListener(this);
         tower_head.setOnClickListener(this);
         nameplate.setOnClickListener(this);
-        reg_username = (EditText) findViewById(R.id.register_eTxtUser);
-        reg_username = (EditText) findViewById(R.id.register_eTxtUser);
+        ext_zuobiao = (EditText) findViewById(R.id.ext_zuobiao);
+        ext_towername = (EditText) findViewById(R.id.txt_towername);
+        radio_dianya = (RadioGroup) findViewById(R.id.group_material);
+
+
         btnCancel = (Button) findViewById(R.id.btnCancel);
         Button register_btnCancel = (Button) findViewById(R.id.btnCancel);
         register_btnCancel.setOnClickListener(this);
@@ -92,6 +107,29 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 break;
             case R.id.nameplate:
                 showMsg("nameplate");
+                break;
+            case R.id.btn_save:
+                String qubian = ext_zuobiao.getText().toString();
+                String  quxian = ext_towername.getText().toString();
+                String gongbian = ext_taiqu.getText().toString();
+
+                RadioButton radioButton = (RadioButton)findViewById(radio_dianya.getCheckedRadioButtonId());
+
+                String text = radioButton.getText().toString();
+
+//					registerRemoteService(name,pwd);
+                if (qubian.equals("") || quxian.equals("") || gongbian.equals("")) {
+                    showMsg("信息不能为空!");
+                } else {
+                    Ganta  areas = new Ganta();
+
+                    areas.lifeStatus=1;
+                    areas.upgradeFlag=1;
+                    gantaDao.insert(areas);
+                    Intent resultIntent = new Intent();
+                    Activity_Tower.this.setResult(RESULT_OK, resultIntent);
+                    Activity_Tower.this.finish();
+                }
                 break;
             default:
                 break;
@@ -233,7 +271,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", "true");
-        // 裁剪框的比例�?�?
+        // 裁剪框的比例
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         // 裁剪后输出图片的尺寸大小
@@ -288,23 +326,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         return;
                     }
                 }).create().show();
-    }
-
-    /**
-     * 获取Struts2 Http 登录的请求信息
-     *
-     * @param userName
-     * @param password
-     * @return
-     */
-    public String registerRemoteService(String userName, String password, String repassword) {
-
-        Map<String, String> params = new LinkedHashMap<String, String>();
-        params.put("userName", reg_username.getText().toString());
-        params.put("password", reg_password.getText().toString());
-        params.put("repassword", reg_repassword.getText().toString());
-
-        return msg;
     }
 
 

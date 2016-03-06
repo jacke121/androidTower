@@ -1,7 +1,6 @@
 package ui;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -13,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,35 +31,36 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+import com.baseDao.AreasDao;
 import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
-import com.google.gson.reflect.TypeToken;
+import com.baseDao.SqlHelper;
+import com.google.android.gms.appindexing.Action;
+import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
-import com.objs.TowerInfo;
 
-public class Activity_TowerList extends Activity {
+public class Activity_TowerList extends Activity implements OnClickListener  {
 
 	Button add_new;
 	ImageButton b_back;
 	SharedPreferences sp;
 	private int selectItem = -1;
-	int[] headIds = new int[] { R.id.txt_1201, R.id.txt_1202, R.id.txt_1203,
-			R.id.txt_1204, R.id.txt_1205, R.id.txt_1206, R.id.txt_1207,
-			R.id.txt_1208, R.id.txt_1209, R.id.txt_1210, R.id.txt_1211,
-			R.id.txt_1212, R.id.txt_1213, R.id.txt_1214 };
-	String[] headers = new String[] { "维修单号", "工单状态", "设备编号", "资产名称", "规格型号",
-			"用途", "申请部门", "申请人", "维修类别", "详细描述", "发布日期", "发布人", "维修人员",
-			"计划维修日期" };
+	int[] headIds = new int[]{R.id.txt_1101, R.id.txt_1102, R.id.txt_1103,
+			R.id.txt_1104, R.id.txt_1105, R.id.txt_1106, R.id.txt_1107,
+			R.id.txt_1108, R.id.txt_1109, R.id.txt_1110, R.id.txt_1111,
+			R.id.txt_1112, R.id.txt_1113, R.id.txt_1114};
+	String[] headers = new String[]{"序号", "杆塔名称", "材质", "性质", "台区",
+			"回路数", "电压", "运行状态", "坐标点", "上级塔杆", "发布日期", "发布人", "维修人员",
+			"计划维修日期"};
 	// 方便测试，直接写的public
 	Button btn_add, btn_cailu;
 	DataAdapter adapter;
 	public HorizontalScrollView mTouchView;
 	// 装入所有的HScrollView
 	protected List<CHScrollView> mHScrollViews = new ArrayList<CHScrollView>();
-	TowerInfo TowerInfo;
 	private LayoutInflater mInflater;
-
+	SqlHelper helper;
 	LinearLayout repairhead;
 	private ListView mListView;
 	int id;
@@ -72,18 +73,22 @@ public class Activity_TowerList extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		Bundle bundle = this.getIntent().getExtras();
-        /* 获取Bundle中的数据，注意类型和key */
+		/* 获取Bundle中的数据，注意类型和key */
 		if (bundle != null) {
 			id = bundle.getInt("id");
-			if(id==0){
+			if (id == 0) {
 //				showMsg("aaa");
-			}else{
+			} else {
 //				showMsg("aaa");
 			}
 		}
 
 		setContentView(R.layout.lay_tower_list);
 
+		MyApplication myApplication = (MyApplication) getApplication();
+		helper=myApplication.getSqlHelper();
+		 gantaDao = new GantaDao(helper);
+		gantaDao.createTable(helper.getWritableDatabase());
 		TextView title_text = (TextView) findViewById(R.id.title_text);
 
 		title_text.setText("塔杆列表");
@@ -99,44 +104,7 @@ public class Activity_TowerList extends Activity {
 		btn_add = (Button) findViewById(R.id.btn_add);
 		btn_cailu = (Button) findViewById(R.id.btn_cailu);
 
-		btn_add.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (selectItem == -1) {
-					new AlertDialog.Builder(Activity_TowerList.this)
-							.setTitle("温馨提示")
-							.setMessage("请选择一行!")
-							.setPositiveButton("确定",
-									new DialogInterface.OnClickListener() {
-
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											return;
-										}
-									}).create().show();
-					return;
-				}
-				String cityname = TowerInfo.rows.get(selectItem).cityname;
-				String assetCode = TowerInfo.rows.get(selectItem).assetCode;
-				String content = TowerInfo.rows.get(selectItem).content;
-				String assetName = TowerInfo.rows.get(selectItem).assetName;
-				Bundle bundle = new Bundle();
-				/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-				bundle.putString("cityname", cityname);
-				bundle.putString("assetCode", assetCode);
-				bundle.putString("content", content);
-				bundle.putString("assetName", assetName);
-				bundle.putInt("maintainType",
-						TowerInfo.rows.get(selectItem).maintainType);
-				/* 把bundle对象assign给Intent */
-//				intent.putExtras(bundle);
-//				startActivityForResult(intent, 1);
-				// startActivity(intent);
-			}
-		});
+		btn_add.setOnClickListener(this);
 
 		btn_cailu.setOnClickListener(new OnClickListener() {
 
@@ -159,26 +127,12 @@ public class Activity_TowerList extends Activity {
 					return;
 				}
 				Intent intent = null;
-				if (TowerInfo.rows.size() > selectItem) {
-					String cityname = TowerInfo.rows.get(selectItem).cityname;
-					String assetCode = TowerInfo.rows.get(selectItem).assetCode;
-					String assetName = TowerInfo.rows.get(selectItem).assetName;
+				if (areaslist.size() > selectItem) {
+					int id = areaslist.get(selectItem).id;
 					Bundle bundle = new Bundle();
-
-					String content = TowerInfo.rows.get(selectItem).content;
 					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-					bundle.putString("cityname", cityname);
-					bundle.putString("content", content);
-					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-					bundle.putString("assetCode", assetCode);
-					bundle.putString("assetName", assetName);
-					bundle.putString("department",
-							TowerInfo.rows.get(selectItem).department);
-					bundle.putString("issuer",
-							TowerInfo.rows.get(selectItem).issuer);
+					bundle.putInt("id", id);
 
-					bundle.putInt("maintainType",
-							TowerInfo.rows.get(selectItem).maintainType);
 					/* 把bundle对象assign给Intent */
 					intent.putExtras(bundle);
 					// startActivity(intent);
@@ -214,27 +168,7 @@ public class Activity_TowerList extends Activity {
 		mHScrollViews.add(headerScroll);
 		mListView = (ListView) findViewById(R.id.scroll_list);
 
-		if (TowerInfo == null) {
-			// mListView.setVisibility(View.GONE);
-			TowerInfo = new TowerInfo();
-			 for (int i = 0; i < 30; i++) {
-			 TowerInfo.Rows rows = TowerInfo.new Rows();
-			 rows.cityname = "" + i;
-			 rows.assetCode = "code" + i;
-			 rows.assetName = "name" + i;
-			 rows.maintainPerson = "weixiuren" + i;
-			 rows.maintainDate = "release_date" + i;
-			 rows.department = "department" + i;
-			 rows.maintainType = i;
-			 rows.person = "person" + i;
-			 rows.assetSize = i + "";
-			 rows.maintainType = i;
-			 rows.content = i + "content";
-			 rows.issuer = i + "issuer";
-			 rows.orderState=i+"";
-			 TowerInfo.rows.add(rows);
-			 }
-		}
+		geiDatas();
 		adapter = new DataAdapter();
 
 		mListView.setAdapter(adapter);
@@ -252,73 +186,114 @@ public class Activity_TowerList extends Activity {
 				finish();
 			}
 		});
-
+		// ATTENTION: This was auto-generated to implement the App Indexing API.
+		// See https://g.co/AppIndexing/AndroidStudio for more information.
 	}
-	public void geiDatas(){
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_add:
+                Bundle bundle = new Bundle();
+                Intent intent = new Intent(Activity_TowerList.this,
+                        Activity_Tower.class);
+                bundle.putString("type", "add");
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 1);
+                break;
+            case R.id.b_back:
+                finish();
+                break;
+            case R.id.btn_child: {
+                if (selectItem == -1) {
+                    new AlertDialog.Builder(Activity_TowerList.this)
+                            .setTitle("温馨提示")
+                            .setMessage("请选择一行!")
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which) {
+                                            return;
+                                        }
+                                    }).create().show();
+                    return;
+                }
+                if (areaslist.size() > selectItem) {
+                    Integer id =areaslist.get(selectItem).id;
+
+                    bundle = new Bundle();
+                    bundle.putInt("id",id);
+                    intent = new Intent(Activity_TowerList.this,
+                            Activity_TowerList.class);
+					/* 把bundle对象assign给Intent */
+                    intent.putExtras(bundle);
+                    // startActivity(intent);
+                    startActivityForResult(intent, 1);
+                }
+            }
+            break;
+
+            case R.id.title_btn_sequence:
+                Activity_TowerList.this.finish();
+                break;
+            default:
+                break;
+        }
+    }
+	public void geiDatas() {
 		areaslist = gantaDao.queryToList("", null);
 		if (areaslist == null) {
 			// mListView.setVisibility(View.GONE);
 			areaslist = new SparseArray<Ganta>();
 			for (int i = 0; i < 15; i++) {
 				Ganta rows = new Ganta();
-				rows.caizhi=1;
-				rows.danwei = i + "content";
-				rows.pictatou=i+"";
-				areaslist.put(areaslist.size(),rows);
+				rows.caizhi = 1;
+				rows.name = i + "content";
+				rows.pictatou = i + "";
+				areaslist.put(areaslist.size(), rows);
 			}
 		}
 	}
+
 	Dialog mdlg;
 	@SuppressLint("HandlerLeak")
 	private Handler mMsgReciver = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-			case 1:
-				if (mdlg != null) {
-					mdlg.dismiss();
-					mdlg = null;
-					java.lang.reflect.Type type = new TypeToken<TowerInfo>() {
-					}.getType();
+				case 1:
+					if (mdlg != null) {
+						mdlg.dismiss();
+						mdlg = null;
 
-					List<TowerInfo.Rows> mqList = TowerInfo.rows;
-					Iterator iter = mqList.iterator();
-					while (iter.hasNext()) {
-
-						TowerInfo.Rows s = (TowerInfo.Rows) iter.next();
-					}
-					List<String> maintainNums = new ArrayList<String>();
-
-					for (TowerInfo.Rows element : TowerInfo.rows) {
-						maintainNums.add(element.maintainNum);
-					}
 //					MainActivity.maintaincodes = (String[]) maintainNums
 //							.toArray(new String[maintainNums.size()]);
 //					adapter.notifyDataSetInvalidated();
-				}
-				break;
-			case 2:
-				if (mdlg != null) {
-					mdlg.dismiss();
-					mdlg = null;
-					new AlertDialog.Builder(Activity_TowerList.this)
-							.setTitle("温馨提示")
-							.setMessage("网络超时了!")
-							.setPositiveButton("确定",
-									new DialogInterface.OnClickListener() {
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											return;
-										}
-									}).create().show();
-				}
-				break;
+					}
+					break;
+				case 2:
+					if (mdlg != null) {
+						mdlg.dismiss();
+						mdlg = null;
+						new AlertDialog.Builder(Activity_TowerList.this)
+								.setTitle("温馨提示")
+								.setMessage("网络超时了!")
+								.setPositiveButton("确定",
+										new DialogInterface.OnClickListener() {
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												return;
+											}
+										}).create().show();
+					}
+					break;
 			}
 		}
 	};
 
-	public void onScrollChanged (int l, int t, int oldl, int oldt) {
+	public void onScrollChanged(int l, int t, int oldl, int oldt) {
 		for (CHScrollView scrollView : mHScrollViews) {
 			// 防止重复滑动
 			if (mTouchView != scrollView)
@@ -353,14 +328,16 @@ public class Activity_TowerList extends Activity {
 	private class DataAdapter extends BaseAdapter {
 		@Override
 		public int getCount() {
-			return TowerInfo.rows.size();
+			return areaslist.size();
 		}
+
 		public void setSelectItem(int tselectItem) {
 			selectItem = tselectItem;
 		}
+
 		@Override
 		public View getView(final int position, View convertView,
-				ViewGroup parent) {
+							ViewGroup parent) {
 			// if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.lay_tower_row, null);
 			convertView.setOnClickListener(new OnClickListener() {
@@ -369,17 +346,17 @@ public class Activity_TowerList extends Activity {
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					setSelectItem(position); // 自定义的变量，以便让adapter知道要选中哪一项
-					TowerInfo.Rows tmpTowerInfo = TowerInfo.rows.get(position);
-					if (tmpTowerInfo.orderState.equals("1")) {
+					Ganta tmpTowerInfo = areaslist.get(position);
+					if (tmpTowerInfo.caizhi.equals("1")) {
 						// holder.orderState.setText("发布");
 						btn_cailu.setEnabled(false);
 						btn_add.setEnabled(true);
-					} else if (tmpTowerInfo.orderState.equals("2")
-							|| tmpTowerInfo.orderState.equals("4")) {
+					} else if (tmpTowerInfo.caizhi.equals("2")
+							|| tmpTowerInfo.caizhi.equals("4")) {
 						// holder.orderState.setText("维修申请  ");
 						btn_cailu.setEnabled(false);
 						btn_add.setEnabled(false);
-					} else if (tmpTowerInfo.orderState.equals("3")) {
+					} else if (tmpTowerInfo.caizhi.equals("3")) {
 
 						btn_cailu.setEnabled(true);
 						btn_add.setEnabled(false);
@@ -400,60 +377,35 @@ public class Activity_TowerList extends Activity {
 				convertView.setBackgroundColor(Color.TRANSPARENT);
 			}
 			final ViewHolder holder = new ViewHolder();
-			holder.maintainNum = (TextView) convertView
-					.findViewById(R.id.maintainNum);
-			// holder.maintainNum.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-			holder.assetCode = (TextView) convertView
-					.findViewById(R.id.assetCode);
-			holder.assetName = (TextView) convertView
-					.findViewById(R.id.assetName);
-			holder.assetSize = (TextView) convertView
-					.findViewById(R.id.assetSize);
-			holder.yt = (TextView) convertView.findViewById(R.id.yt);
-			holder.department = (TextView) convertView
-					.findViewById(R.id.department);
-			holder.person = (TextView) convertView.findViewById(R.id.person);
-			holder.maintainType = (TextView) convertView
-					.findViewById(R.id.maintainType);
-			holder.content = (TextView) convertView.findViewById(R.id.content);
-			holder.applyDate = (TextView) convertView
-					.findViewById(R.id.applyDate);
-			holder.issuer = (TextView) convertView.findViewById(R.id.issuer);
-			holder.maintainPerson = (TextView) convertView
-					.findViewById(R.id.maintainPerson);
-			holder.maintainDate = (TextView) convertView
-					.findViewById(R.id.maintainDate);
-			holder.orderState = (TextView) convertView
-					.findViewById(R.id.orderState);
-			final TowerInfo.Rows tmpTowerInfo = TowerInfo.rows.get(position);
 
-			if (tmpTowerInfo.orderState.equals("1")) {
-				holder.orderState.setText("发布");
-			} else if (tmpTowerInfo.orderState.equals("2")) {
-				holder.orderState.setText("维修申请  ");
-			} else if (tmpTowerInfo.orderState.equals("3")) {
-				holder.orderState.setText("审批通过");
-			} else if (tmpTowerInfo.orderState.equals("4")) {
-				holder.orderState.setText("维修完成");
+			for (int i = 0; i < headers.length; i++) {
+				holder.txts[i] = (TextView) convertView
+						.findViewById(headIds[i]);
+			}
+
+			final Ganta tmpTowerInfo =areaslist.get(position);
+
+			if (tmpTowerInfo.caizhi.equals("1")) {
+				holder.txts[2].setText("发布");
+			} else if (tmpTowerInfo.caizhi.equals("2")) {
+				holder.txts[2].setText("发布");
 			}
 			// holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
-			holder.assetCode.setText(tmpTowerInfo.assetCode);
-			holder.assetName.setText(tmpTowerInfo.assetName);
-			holder.assetSize.setText(tmpTowerInfo.assetSize);
-			holder.department.setText(tmpTowerInfo.department);
-			holder.person.setText(tmpTowerInfo.person);
-			if (tmpTowerInfo.maintainType.toString().endsWith("1")) {
-				holder.maintainType.setText("设备升级");
-			} else if (tmpTowerInfo.maintainType.toString().endsWith("2")) {
-				holder.maintainType.setText("设备维修");
-			} else if (tmpTowerInfo.maintainType.toString().endsWith("3")) {
-				holder.maintainType.setText("重做系统");
+			holder.txts[3].setText(tmpTowerInfo.caizhi+"");
+			holder.txts[4].setText(tmpTowerInfo.xingzhi+"");
+			holder.txts[5].setText(tmpTowerInfo.taiquid+"");
+			holder.txts[6].setText(tmpTowerInfo.huilu+"");
+			holder.txts[7].setText(tmpTowerInfo.dianya);
+			if (tmpTowerInfo.caizhi.toString().endsWith("1")) {
+				holder.txts[8].setText("220V");
+			} else if (tmpTowerInfo.caizhi.toString().endsWith("2")) {
+				holder.txts[8].setText("380V");
 			}
 
-			holder.content.setText(tmpTowerInfo.content);
-			holder.issuer.setText(tmpTowerInfo.issuer);
-			holder.maintainPerson.setText(tmpTowerInfo.maintainPerson);
-			holder.maintainDate.setText(tmpTowerInfo.maintainDate);
+			holder.txts[9].setText(tmpTowerInfo.yunxing+"");
+			holder.txts[10].setText(tmpTowerInfo.zuobiao+"");
+			holder.txts[11].setText(tmpTowerInfo.level+"");
+			holder.txts[12].setText(tmpTowerInfo.parentid+"");
 
 			convertView.setTag(holder);
 
@@ -467,7 +419,7 @@ public class Activity_TowerList extends Activity {
 					for (CHScrollView mscrollView : mHScrollViews) {
 						// 防止重复滑动
 //						if (mTouchView != mscrollView)
-							mscrollView.smoothScrollTo(l, t);
+						mscrollView.smoothScrollTo(l, t);
 					}
 				}
 			});
@@ -489,11 +441,11 @@ public class Activity_TowerList extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// 可以根据多个请求代码来作相应的操作
-
 		if (1 == requestCode) {
-//			downData();
-
+			geiDatas();
+			adapter.notifyDataSetInvalidated();
 		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -507,19 +459,6 @@ public class Activity_TowerList extends Activity {
 	}
 
 	private class ViewHolder {
-		TextView maintainNum;
-		TextView assetCode;
-		TextView assetName;
-		TextView assetSize;
-		TextView yt;
-		TextView department;
-		TextView person;
-		TextView maintainType;
-		TextView content;
-		TextView applyDate;
-		TextView issuer;
-		TextView maintainPerson;
-		TextView maintainDate;
-		TextView orderState;
+		TextView[] txts = new TextView[14];
 	}
 }

@@ -27,4 +27,5 @@ dependencies {
     compile 'com.android.support:design:23.2.0'
     compile files('libs/jxl.jar')
     compile files('libs/gson-2.5.jar')
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }
