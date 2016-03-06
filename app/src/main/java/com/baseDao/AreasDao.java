@@ -41,6 +41,7 @@ public class AreasDao {
                     Areas entity = new Areas();
                     entity.id = cursor.isNull(COLUMNINDEXS.id) ? -1 : cursor.getInt(COLUMNINDEXS.id);
                     entity.area = cursor.isNull(COLUMNINDEXS.area) ? "" : cursor.getString(COLUMNINDEXS.area);
+
                     entity.areastatus = cursor.isNull(COLUMNINDEXS.areastatus) ? -1 : cursor.getInt(COLUMNINDEXS.areastatus);
                     entity.count = cursor.isNull(COLUMNINDEXS.count) ? -1 : cursor.getInt(COLUMNINDEXS.count);
                     entity.okcount = cursor.isNull(COLUMNINDEXS.okcount) ? -1 : cursor.getInt(COLUMNINDEXS.okcount);
@@ -63,11 +64,19 @@ public class AreasDao {
         }
         return null;
     }
-
+public int getUpgrade( SQLiteDatabase db ){
+    int strid = 0;
+    Cursor cursor = db.rawQuery("select last_insert_rowid() from " + TABLENAME, null);
+    if (cursor.moveToFirst())
+        strid = cursor.getInt(0);
+    cursor.close();
+    return strid+1;
+}
     public int insert(Areas entity) {
-        SQLiteDatabase db = null;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         try {
-            return insert0(db = mOpenHelper.getWritableDatabase(), entity);
+            entity.upgradeFlag=getUpgrade(db);
+            return insert0(db , entity);
         } finally {
             if (db != null) db.close();
         }
@@ -159,7 +168,7 @@ public class AreasDao {
         SimpleDateFormat dfu = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         cv.put(COLUMNS.updatetime, dfu.format(new Date()));
         cv.put(COLUMNS.lifeStatus, entity.lifeStatus);
-        cv.put(COLUMNS.upgradeFlag, entity.upgradeFlag);
+        cv.put(COLUMNS.upgradeFlag, getUpgrade(db));
         cv.put(COLUMNS.gongbian, entity.gongbian);
         cv.put(COLUMNS.quxian, entity.quxian);
         cv.put(COLUMNS.qubian, entity.qubian);
@@ -182,6 +191,6 @@ public class AreasDao {
     }
 
     public void createTable(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS [Areas] (  [id] INTEGER PRIMARY KEY,   [area] VARCHAR2(50),   [areastatus] INT,   [count] INT,   [okcount] INT,   [createtime] DATETIME NOT NULL DEFAULT (datetime('now')),   [updatetime] DATETIME NOT NULL,   [LifeStatus] INTEGER NOT NULL,   [upgradeFlag] BIGINT NOT NULL,   [gongbian] NVARCHAR2(20),   [quxian] NVARCHAR2(30),   [qubian] NVARCHAR2(30),   [danwei] NVARCHAR2(40))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS [Areas] (  [id] INTEGER PRIMARY KEY AUTOINCREMENT,   [area] VARCHAR2(50),   [areastatus] INT,   [count] INT,   [okcount] INT,   [createtime] DATETIME NOT NULL DEFAULT (datetime('now')),   [updatetime] DATETIME NOT NULL,   [LifeStatus] INTEGER NOT NULL,   [upgradeFlag] BIGINT NOT NULL,   [gongbian] NVARCHAR2(20),   [quxian] NVARCHAR2(30),   [qubian] NVARCHAR2(30),   [danwei] NVARCHAR2(40))");
     }
 }

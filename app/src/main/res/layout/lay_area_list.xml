@@ -94,7 +94,16 @@
             android:layout_weight="1"
             android:text="增加台区" />
         <Button
-            android:id="@+id/repair_regis"
+            android:id="@+id/btn_child"
+            style="@style/common_button_red"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_weight="1"
+            android:text="塔杆列表" />
+        <Button
+            android:id="@+id/taiqu_export"
             style="@style/common_button_red"
             android:layout_width="0dip"
             android:layout_height="wrap_content"

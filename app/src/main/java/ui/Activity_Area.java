@@ -164,6 +164,7 @@ public class Activity_Area extends Activity implements OnClickListener {
                     areas.count=1;
                     areas.okcount=2;
                     areas.lifeStatus=1;
+                    areas.upgradeFlag=1;
                     areasDao.insert(areas);
                     Intent resultIntent = new Intent();
                     Activity_Area.this.setResult(RESULT_OK, resultIntent);

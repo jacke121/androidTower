@@ -61,17 +61,19 @@ public class GantaDao{
  if (cursor!= null) cursor.close();
     }   return null;
  }       public int insert(Ganta entity){
-         SQLiteDatabase db=null;
+         SQLiteDatabase db=mOpenHelper.getWritableDatabase();
           try{
-          return insert0(db=mOpenHelper.getWritableDatabase(), entity);
+          entity.upgradeFlag=getUpgrade(db);
+          return insert0(db, entity);
           }finally{
           if (db!=null) db.close();
           }
         }
        public boolean update(Ganta entity){
-         SQLiteDatabase db=null;
+         SQLiteDatabase db=mOpenHelper.getWritableDatabase();
           try{
-          return update0(db=mOpenHelper.getWritableDatabase(), entity, COLUMNS.id+"=?", new String[]{String.valueOf(entity.id)} );
+          entity.upgradeFlag=getUpgrade(db);
+          return update0(db, entity, COLUMNS.id+"=?", new String[]{String.valueOf(entity.id)} );
           }finally{
           if (db!=null) db.close();
           }
@@ -84,6 +86,14 @@ public class GantaDao{
           if (db!=null) db.close();
           }
         }
+		public int getUpgrade( SQLiteDatabase db ){
+	    int strid = 0;
+	    Cursor cursor = db.rawQuery("select last_insert_rowid() from ganta", null);
+	    if (cursor.moveToFirst())
+	        strid = cursor.getInt(0);
+	    cursor.close();
+	    return strid+1;
+	}
    public static final class COLUMNINDEXS{
     public static final int id=0;
     public static final int name=1;
@@ -196,6 +206,6 @@ public class GantaDao{
      }
      }
       public void createTable(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS [ganta] (  [id] INTEGER PRIMARY KEY,   [name] NVARCHAR2(50),   [areaid] INTEGER,   [danwei] NVARCHAR2(50),   [caizhi] INT,   [xingzhi] INT,   [taiquid] INT,   [huilu] INT,   [dianchi] INT,   [yunxing] INT,   [zuobiao] NVARCHAR2(50),   [level] INT,   [parentid] CHAR,   [picquanmao] VARCHAR2(100),   [pictatou] NVARCHAR2(100),   [picmingpai] NVARCHAR2(100),   [createtime] DATETIME NOT NULL DEFAULT (datetime('now')),   [updatetime] DATETIME NOT NULL,   [LifeStatus] INTEGER NOT NULL,   [upgradeFlag] BIGINT NOT NULL)"); 
+        db.execSQL("CREATE TABLE IF NOT EXISTS [ganta] (  [id] INTEGER PRIMARY KEY AUTOINCREMENT,   [name] NVARCHAR2(50),   [areaid] INTEGER,   [danwei] NVARCHAR2(50),   [caizhi] INT,   [xingzhi] INT,   [taiquid] INT,   [huilu] INT,   [dianchi] INT,   [yunxing] INT,   [zuobiao] NVARCHAR2(50),   [level] INT,   [parentid] CHAR,   [picquanmao] VARCHAR2(100),   [pictatou] NVARCHAR2(100),   [picmingpai] NVARCHAR2(100),   [createtime] DATETIME NOT NULL DEFAULT (datetime('now')),   [updatetime] DATETIME NOT NULL,   [LifeStatus] INTEGER NOT NULL,   [upgradeFlag] BIGINT NOT NULL)"); 
      }
      }

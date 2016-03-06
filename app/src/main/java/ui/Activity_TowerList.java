@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
-import com.google.gson.Gson;
+import com.baseDao.Ganta;
+import com.baseDao.GantaDao;
 import com.google.gson.reflect.TypeToken;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
@@ -39,7 +41,6 @@ import com.objs.TowerInfo;
 public class Activity_TowerList extends Activity {
 
 	Button add_new;
-
 	ImageButton b_back;
 	SharedPreferences sp;
 	private int selectItem = -1;
@@ -51,7 +52,7 @@ public class Activity_TowerList extends Activity {
 			"用途", "申请部门", "申请人", "维修类别", "详细描述", "发布日期", "发布人", "维修人员",
 			"计划维修日期" };
 	// 方便测试，直接写的public
-	Button sence_check, repair_record;
+	Button btn_add, btn_cailu;
 	DataAdapter adapter;
 	public HorizontalScrollView mTouchView;
 	// 装入所有的HScrollView
@@ -61,12 +62,9 @@ public class Activity_TowerList extends Activity {
 
 	LinearLayout repairhead;
 	private ListView mListView;
-	Gson gson;
-	int scrolledX;
-	int scrolledY;
-	String typeName;
-	String message;
-
+	int id;
+	GantaDao gantaDao;
+	SparseArray<Ganta> areaslist;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,9 +72,14 @@ public class Activity_TowerList extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		Bundle bundle = this.getIntent().getExtras();
-		/* 获取Bundle中的数据，注意类型和key */
+        /* 获取Bundle中的数据，注意类型和key */
 		if (bundle != null) {
-			typeName = bundle.getString("type");
+			id = bundle.getInt("id");
+			if(id==0){
+//				showMsg("aaa");
+			}else{
+//				showMsg("aaa");
+			}
 		}
 
 		setContentView(R.layout.lay_tower_list);
@@ -84,8 +87,6 @@ public class Activity_TowerList extends Activity {
 		TextView title_text = (TextView) findViewById(R.id.title_text);
 
 		title_text.setText("塔杆列表");
-
-
 		ImageButton b_back = (ImageButton) findViewById(R.id.b_back);
 		b_back.setOnClickListener(new OnClickListener() {
 
@@ -95,14 +96,10 @@ public class Activity_TowerList extends Activity {
 				finish();
 			}
 		});
-		sence_check = (Button) findViewById(R.id.sence_check);
-		repair_record = (Button) findViewById(R.id.repair_regis);
-		if (typeName.equals("check")) {
-			repair_record.setVisibility(View.GONE);
-		} else if (typeName.equals("record")) {
-			sence_check.setVisibility(View.GONE);
-		}
-		sence_check.setOnClickListener(new OnClickListener() {
+		btn_add = (Button) findViewById(R.id.btn_add);
+		btn_cailu = (Button) findViewById(R.id.btn_cailu);
+
+		btn_add.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -141,7 +138,7 @@ public class Activity_TowerList extends Activity {
 			}
 		});
 
-		repair_record.setOnClickListener(new OnClickListener() {
+		btn_cailu.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -217,39 +214,11 @@ public class Activity_TowerList extends Activity {
 		mHScrollViews.add(headerScroll);
 		mListView = (ListView) findViewById(R.id.scroll_list);
 
-		// mListView.setOnScrollListener(new OnScrollListener() {
-		//
-		// /**
-		// * 滚动状态改变时调用
-		// */
-		// @Override
-		// public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// // 不滚动时保存当前滚动到的位置
-		// if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
-		//
-		// // ListPos=list.getFirstVisiblePosition();
-		// // scrolledX = mListView.getScrollX();
-		// // scrolledY = mListView.getScrollY();
-		// scrolledY = mListView.getFirstVisiblePosition();
-		//
-		// }
-		// }
-		//
-		// /**
-		// * 滚动时调用
-		// */
-		// @Override
-		// public void onScroll(AbsListView view, int firstVisibleItem, int
-		// visibleItemCount, int totalItemCount) {
-		// }
-		// });
 		if (TowerInfo == null) {
 			// mListView.setVisibility(View.GONE);
 			TowerInfo = new TowerInfo();
 			 for (int i = 0; i < 30; i++) {
-
-				 TowerInfo.Rows rows = TowerInfo.new Rows();
-
+			 TowerInfo.Rows rows = TowerInfo.new Rows();
 			 rows.cityname = "" + i;
 			 rows.assetCode = "code" + i;
 			 rows.assetName = "name" + i;
@@ -285,38 +254,39 @@ public class Activity_TowerList extends Activity {
 		});
 
 	}
-
-
+	public void geiDatas(){
+		areaslist = gantaDao.queryToList("", null);
+		if (areaslist == null) {
+			// mListView.setVisibility(View.GONE);
+			areaslist = new SparseArray<Ganta>();
+			for (int i = 0; i < 15; i++) {
+				Ganta rows = new Ganta();
+				rows.caizhi=1;
+				rows.danwei = i + "content";
+				rows.pictatou=i+"";
+				areaslist.put(areaslist.size(),rows);
+			}
+		}
+	}
 	Dialog mdlg;
 	@SuppressLint("HandlerLeak")
 	private Handler mMsgReciver = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-
 			case 1:
 				if (mdlg != null) {
 					mdlg.dismiss();
 					mdlg = null;
 					java.lang.reflect.Type type = new TypeToken<TowerInfo>() {
 					}.getType();
-					gson = new Gson();
-					TowerInfo = gson.fromJson(message, type);
 
 					List<TowerInfo.Rows> mqList = TowerInfo.rows;
 					Iterator iter = mqList.iterator();
 					while (iter.hasNext()) {
 
 						TowerInfo.Rows s = (TowerInfo.Rows) iter.next();
-						if (typeName.equals("check")
-								&& !s.orderState.equals("1")) {
-							iter.remove();
-						} else if (typeName.equals("record")
-								&& !s.orderState.equals("3")) {
-							iter.remove();
-						}
 					}
-
 					List<String> maintainNums = new ArrayList<String>();
 
 					for (TowerInfo.Rows element : TowerInfo.rows) {
@@ -360,9 +330,7 @@ public class Activity_TowerList extends Activity {
 		int size = 0;
 		if (!mHScrollViews.isEmpty()) {
 			size = mHScrollViews.size();
-
 			CHScrollView scrollView = mHScrollViews.get(size - 1);
-
 			final int scrollX = scrollView.getScrollX();
 			// 第一次满屏后，向下滑动，有一条数据在开始时未加入
 			if (scrollX != 0) {
@@ -380,26 +348,20 @@ public class Activity_TowerList extends Activity {
 		} else {
 			mHScrollViews.set(position, hScrollView);
 		}
-
 	}
 
 	private class DataAdapter extends BaseAdapter {
-
 		@Override
 		public int getCount() {
 			return TowerInfo.rows.size();
 		}
-
 		public void setSelectItem(int tselectItem) {
 			selectItem = tselectItem;
 		}
-
 		@Override
 		public View getView(final int position, View convertView,
 				ViewGroup parent) {
-
 			// if (convertView == null) {
-
 			convertView = mInflater.inflate(R.layout.lay_tower_row, null);
 			convertView.setOnClickListener(new OnClickListener() {
 
@@ -410,17 +372,17 @@ public class Activity_TowerList extends Activity {
 					TowerInfo.Rows tmpTowerInfo = TowerInfo.rows.get(position);
 					if (tmpTowerInfo.orderState.equals("1")) {
 						// holder.orderState.setText("发布");
-						repair_record.setEnabled(false);
-						sence_check.setEnabled(true);
+						btn_cailu.setEnabled(false);
+						btn_add.setEnabled(true);
 					} else if (tmpTowerInfo.orderState.equals("2")
 							|| tmpTowerInfo.orderState.equals("4")) {
 						// holder.orderState.setText("维修申请  ");
-						repair_record.setEnabled(false);
-						sence_check.setEnabled(false);
+						btn_cailu.setEnabled(false);
+						btn_add.setEnabled(false);
 					} else if (tmpTowerInfo.orderState.equals("3")) {
 
-						repair_record.setEnabled(true);
-						sence_check.setEnabled(false);
+						btn_cailu.setEnabled(true);
+						btn_add.setEnabled(false);
 						// holder.orderState.setText("审批通过");
 					}
 					notifyDataSetChanged();// 提醒数据已经变动
@@ -430,7 +392,6 @@ public class Activity_TowerList extends Activity {
 				}
 			});
 			// }
-
 			if (position == 0 && selectItem == -1) {
 				convertView.setBackgroundColor(Color.WHITE);
 			} else if (position == selectItem) {
@@ -438,9 +399,7 @@ public class Activity_TowerList extends Activity {
 			} else {
 				convertView.setBackgroundColor(Color.TRANSPARENT);
 			}
-
 			final ViewHolder holder = new ViewHolder();
-
 			holder.maintainNum = (TextView) convertView
 					.findViewById(R.id.maintainNum);
 			// holder.maintainNum.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);

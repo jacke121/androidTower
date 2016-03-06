@@ -1,7 +1,9 @@
 package ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -62,6 +64,9 @@ public class Activity_AreaList extends Activity implements OnClickListener {
         geiDatas();
         btn_add= (Button) findViewById(R.id.btn_add);
         btn_add.setOnClickListener(this);
+
+		Button btn_child= (Button) findViewById(R.id.btn_child);
+		btn_child.setOnClickListener(this);
 		TextView title_text = (TextView) findViewById(R.id.title_text);
 		title_text.setText("台区列表");
 
@@ -122,6 +127,37 @@ public class Activity_AreaList extends Activity implements OnClickListener {
             case R.id.b_back:
                 finish();
                 break;
+			case R.id.btn_child: {
+				if (selectItem == -1) {
+					new AlertDialog.Builder(Activity_AreaList.this)
+							.setTitle("温馨提示")
+							.setMessage("请选择一行!")
+							.setPositiveButton("确定",
+									new DialogInterface.OnClickListener() {
+
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											return;
+										}
+									}).create().show();
+					return;
+				}
+				if (areaslist.size() > selectItem) {
+					Integer id =areaslist.get(selectItem).id;
+
+					 bundle = new Bundle();
+					bundle.putInt("id",id);
+					intent = new Intent(Activity_AreaList.this,
+							Activity_TowerList.class);
+					/* 把bundle对象assign给Intent */
+					intent.putExtras(bundle);
+					// startActivity(intent);
+					startActivityForResult(intent, 1);
+				}
+			}
+				break;
+
             case R.id.title_btn_sequence:
                 Activity_AreaList.this.finish();
                 break;
@@ -278,7 +314,6 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 	}
 	private class ViewHolder {
 		TextView rownember;
-
 		TextView cityname;
 		TextView areanmae;
 		TextView content;

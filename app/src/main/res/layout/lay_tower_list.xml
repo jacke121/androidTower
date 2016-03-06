@@ -165,7 +165,7 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/sence_check"
+            android:id="@+id/btn_add"
             style="@style/common_button_red"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
@@ -175,14 +175,14 @@
             android:text="增加杆塔" />
 
         <Button
-            android:id="@+id/repair_regis"
+            android:id="@+id/btn_cailu"
             style="@style/common_button_red"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10.0dip"
             android:layout_marginRight="10.0dip"
             android:layout_weight="1"
-            android:text="结束" />
+            android:text="采录" />
     </LinearLayout>
 
 </LinearLayout>
