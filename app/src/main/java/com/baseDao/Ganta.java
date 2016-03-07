@@ -7,15 +7,14 @@ public class Ganta {
 		public String name;
 		public Integer areaid;
 		public String dianya;
-		public Integer caizhi;
-		public Integer xingzhi;
+		public String caizhi;
+		public String xingzhi;
 		public Integer taiquid;
 		public Integer huilu;
-		public Integer dianchi;
-		public Integer yunxing;
+		public String yunxing;
 		public String zuobiao;
 		public Integer level;
-		public String parentid;
+		public Integer parentid;
 		public String picquanmao;
 		public String pictatou;
 		public String picmingpai;
@@ -57,19 +56,19 @@ public class Ganta {
 			this.dianya = dianya;
 		}
 
-		public Integer getCaizhi() {
+		public String getCaizhi() {
 			return this.caizhi;
 		}
 
-		public void setCaizhi(Integer caizhi) {
+		public void setCaizhi(String caizhi) {
 			this.caizhi = caizhi;
 		}
 
-		public Integer getXingzhi() {
+		public String getXingzhi() {
 			return this.xingzhi;
 		}
 
-		public void setXingzhi(Integer xingzhi) {
+		public void setXingzhi(String xingzhi) {
 			this.xingzhi = xingzhi;
 		}
 
@@ -89,19 +88,11 @@ public class Ganta {
 			this.huilu = huilu;
 		}
 
-		public Integer getDianchi() {
-			return this.dianchi;
-		}
-
-		public void setDianchi(Integer dianchi) {
-			this.dianchi = dianchi;
-		}
-
-		public Integer getYunxing() {
+		public String getYunxing() {
 			return this.yunxing;
 		}
 
-		public void setYunxing(Integer yunxing) {
+		public void setYunxing(String yunxing) {
 			this.yunxing = yunxing;
 		}
 
@@ -121,11 +112,11 @@ public class Ganta {
 			this.level = level;
 		}
 
-		public String getParentid() {
+		public Integer getParentid() {
 			return this.parentid;
 		}
 
-		public void setParentid(String parentid) {
+		public void setParentid(Integer parentid) {
 			this.parentid = parentid;
 		}
 

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+    <ScrollView
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+     xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -15,13 +19,13 @@
 
         <ImageView
             android:id="@+id/title_btn_sequence"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentLeft="true"
             android:layout_alignWithParentIfMissing="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="8.0dip"
-            android:background="@drawable/login_back" />
+            android:background="@drawable/btn_back" />
 
         <FrameLayout
             android:id="@+id/title_selector_notes"
@@ -55,7 +59,7 @@
         android:id="@+id/register_linearLayout01"
         android:layout_width="fill_parent"
         android:layout_height="30dp"
-        android:layout_marginTop="20dip"
+        android:layout_marginTop="5dip"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -160,7 +164,7 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/cement"
+                    android:id="@+id/radio_caizhi"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -214,13 +218,13 @@
             android:orientation="horizontal">
 
             <RadioGroup
-                android:id="@+id/gendergroup"
+                android:id="@+id/radio_xingzhi"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/girl"
+                    android:id="@+id/zhixian"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -228,7 +232,7 @@
                     android:text=" 直线" />
 
                 <RadioButton
-                    android:id="@+id/boy"
+                    android:id="@+id/naizhang"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -240,41 +244,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/register_linearLayout05"
-        android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:layout_marginTop="5dip"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="10px"
-            android:layout_weight="0.9"
-            android:gravity="center_vertical"
-            android:text="所属台区:"
-            android:textColor="@color/black"
-            android:textSize="17sp" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/txt_areaname"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:hint=""
-                android:inputType="textPassword"
-                android:textColor="@color/red" />
-        </LinearLayout>
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -302,9 +271,11 @@
             android:orientation="horizontal">
 
             <Spinner
-                android:id="@+id/Spinner01"
+                android:id="@+id/sp_huilu"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"></Spinner>
+                android:layout_height="wrap_content"
+                android:entries="@array/huilus">
+            </Spinner>
         </LinearLayout>
 
         <LinearLayout
@@ -355,7 +326,7 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/voltage22"
+                    android:id="@+id/radio_dianya"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -558,7 +529,6 @@
             android:id="@+id/iv_fullview"
             android:layout_width="100dip"
             android:layout_height="40dp"
-
              />
 
         <ImageView
@@ -611,7 +581,6 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="30dp"
-        android:layout_marginTop="5dip"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
@@ -662,7 +631,7 @@
         android:id="@+id/register_linearLayout11"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dip"
+        android:layout_marginTop="5dip"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -683,3 +652,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</ScrollView>

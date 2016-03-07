@@ -11,20 +11,23 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baseDao.Areas;
+import com.baseDao.AreasDao;
 import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
@@ -35,27 +38,30 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class Activity_Tower extends Activity implements OnClickListener {
-    public static EditText ext_zuobiao, ext_towername, ext_taiqu;
-            RadioGroup radio_dianya;
-    private static final int PHOTO_REQUEST_CAMERA = 1;// 拍照
-    private static final int PHOTO_REQUEST_CUT = 3;// 结果
+    public EditText ext_zuobiao, ext_towername, txtParenttower;
+    RadioGroup radio_dianya, radio_caizhi, radio_xingzhi, use_status;
+    private final int PHOTO_REQUEST_CAMERA = 1;// 拍照
+    private final int PHOTO_REQUEST_CUT = 3;// 结果
+    TextView txt_taiqu;
     /* 头像名称 */
-    private static final String PHOTO_FILE_NAME = "temp_photo.jpg";
+    private final String PHOTO_FILE_NAME = "temp_photo.jpg";
     Button btnCancel;
     Button pic_fullview;
     Button tower_head;
     Button nameplate;
     ImageView ivback;
-    String msg = null;
-    public static Dialog mdlg;
-    public static String name, pwd, rpwd, registerMessage, uuid, uuid_psw, message;
-    public String msg_show;
-    GantaDao  gantaDao;
+    CheckBox is_reply;
+    public Dialog mdlg;
+    public String name, message;
+    GantaDao gantaDao;
+    Spinner sp_huilu;
     SqlHelper helper;
+    ImageView iv_fullview, iv_tower_head, iv_nameplate;
+    File  file_fullview, file_tower_head, file_nameplate;
+    AreasDao areasDao;
+    Areas curentreas;
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,11 +69,18 @@ public class Activity_Tower extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
         setContentView(R.layout.tower_detail);
         //设置初始化视图
-        this.mFace = (ImageView) findViewById(R.id.iv_fullview);
-
+        SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.id+""});//模糊查询
+        if (areas != null) {
+            curentreas = areas.get(0);
+        }
+         iv_fullview = (ImageView) findViewById(R.id.iv_fullview);
+         iv_tower_head= (ImageView) findViewById(R.id.iv_tower_head);
+         iv_nameplate= (ImageView) findViewById(R.id.iv_nameplate);
+        txt_taiqu= (TextView) findViewById(R.id.txt_taiqu);
+        txt_taiqu.setText(curentreas.area+curentreas.gongbian+curentreas.quxian+curentreas.qubian);
         MyApplication myApplication = (MyApplication) getApplication();
-        helper=myApplication.getSqlHelper();
-        gantaDao   = new GantaDao(helper);
+        helper = myApplication.getSqlHelper();
+        gantaDao = new GantaDao(helper);
         pic_fullview = (Button) findViewById(R.id.pic_fullview);
         tower_head = (Button) findViewById(R.id.tower_head);
         nameplate = (Button) findViewById(R.id.nameplate);
@@ -76,18 +89,24 @@ public class Activity_Tower extends Activity implements OnClickListener {
         nameplate.setOnClickListener(this);
         ext_zuobiao = (EditText) findViewById(R.id.ext_zuobiao);
         ext_towername = (EditText) findViewById(R.id.txt_towername);
-        radio_dianya = (RadioGroup) findViewById(R.id.group_material);
-
-
+        txtParenttower = (EditText) findViewById(R.id.txtParenttower);
+        radio_dianya = (RadioGroup) findViewById(R.id.group_voltage);
+        radio_caizhi = (RadioGroup) findViewById(R.id.group_material);
+        radio_xingzhi = (RadioGroup) findViewById(R.id.radio_xingzhi);
+        use_status = (RadioGroup) findViewById(R.id.use_status);
+        sp_huilu = (Spinner) findViewById(R.id.sp_huilu);
         btnCancel = (Button) findViewById(R.id.btnCancel);
+        is_reply = (CheckBox) findViewById(R.id.is_reply);
         Button register_btnCancel = (Button) findViewById(R.id.btnCancel);
         register_btnCancel.setOnClickListener(this);
         Button btn_save = (Button) findViewById(R.id.btn_save);
+        btn_save.setOnClickListener(this);
         register_btnCancel.setOnClickListener(this);
         ivback = (ImageView) findViewById(R.id.title_btn_sequence);
         ivback.setOnClickListener(this);
 
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -109,32 +128,61 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 showMsg("nameplate");
                 break;
             case R.id.btn_save:
-                String qubian = ext_zuobiao.getText().toString();
-                String  quxian = ext_towername.getText().toString();
-                String gongbian = ext_taiqu.getText().toString();
-
-                RadioButton radioButton = (RadioButton)findViewById(radio_dianya.getCheckedRadioButtonId());
-
-                String text = radioButton.getText().toString();
-
-//					registerRemoteService(name,pwd);
-                if (qubian.equals("") || quxian.equals("") || gongbian.equals("")) {
-                    showMsg("信息不能为空!");
-                } else {
-                    Ganta  areas = new Ganta();
-
-                    areas.lifeStatus=1;
-                    areas.upgradeFlag=1;
-                    gantaDao.insert(areas);
-                    Intent resultIntent = new Intent();
-                    Activity_Tower.this.setResult(RESULT_OK, resultIntent);
-                    Activity_Tower.this.finish();
+                Ganta areas = new Ganta();
+                String zuobiao = ext_zuobiao.getText().toString();
+                String towername = ext_towername.getText().toString();
+                String parenttower = txtParenttower.getText().toString();
+                areas.picquanmao= file_fullview.getAbsolutePath();
+                if (is_reply.isChecked()) {
+                    if (parenttower.length() > 0) {
+                        SparseArray<Ganta> parents = gantaDao.queryToList("name like ?", new String[]{"%" + parenttower + "%"});//模糊查询
+                        if (parents != null) {
+                            areas.parentid = parents.get(0).id;
+                        }
+                    } else {
+                        showMsg("上一级杆塔不能为空!");
+                        return;
+                    }
                 }
+
+                RadioButton selectcaizhi = (RadioButton) findViewById(radio_caizhi.getCheckedRadioButtonId());
+                if (selectcaizhi == null) {
+                    showMsg("材质不能为空!");
+                    return;
+                }
+                RadioButton radiodianya = (RadioButton) findViewById(radio_dianya.getCheckedRadioButtonId());
+                if (radiodianya == null) {
+                    showMsg("电压不能为空!");
+                    return;
+                }
+                RadioButton yunxing = (RadioButton) findViewById(use_status.getCheckedRadioButtonId());
+                if (yunxing == null) {
+                    showMsg("运行状态不能为空!");
+                    return;
+                }
+                int strHuilu = (int) sp_huilu.getSelectedItem();
+                if (zuobiao.equals("") || towername.equals("")) {
+                    showMsg("信息不能为空!");
+                    return;
+                }
+                areas.caizhi = selectcaizhi.getText().toString();
+                areas.yunxing = yunxing.getText().toString();
+                areas.dianya = radiodianya.getText().toString();
+                areas.zuobiao = zuobiao;
+                areas.name = towername;
+                areas.lifeStatus = 1;
+                areas.huilu = strHuilu;
+                gantaDao.insert(areas);
+                Intent resultIntent = new Intent();
+                Activity_Tower.this.setResult(RESULT_OK, resultIntent);
+                Activity_Tower.this.finish();
+
                 break;
             default:
                 break;
         }
     }
+
     public void camera() {
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         // 判断存储卡是否可以用，可用进行存储
@@ -145,12 +193,13 @@ public class Activity_Tower extends Activity implements OnClickListener {
         }
         startActivityForResult(intent, PHOTO_REQUEST_CAMERA);
     }
-    File  tempFile;
+
+    File tempFile;
     private Bitmap bitmap;
-    private ImageView mFace;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-       if (requestCode == PHOTO_REQUEST_CAMERA) {
+        if (requestCode == PHOTO_REQUEST_CAMERA) {
             if (hasSdcard()) {
                 tempFile = new File(Environment.getExternalStorageDirectory(),
                         PHOTO_FILE_NAME);
@@ -159,32 +208,29 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 Toast.makeText(Activity_Tower.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT)
                         .show();
             }
-
         } else if (requestCode == PHOTO_REQUEST_CUT) {
             try {
                 bitmap = data.getParcelableExtra("data");
-                this.mFace.setImageBitmap(bitmap);
-
-                File upFile = new File(Environment.getExternalStorageDirectory(),
-                         "aaalbg.jpg");
-                saveMyBitmap( bitmap,upFile);
-                 boolean delete = tempFile.delete();
-                 System.out.println("delete = " + delete);
+//                iv_fullview, iv_tower_head, iv_nameplate;
+//                iv_fullview.setImageBitmap(bitmap);
+//                file_fullview, file_tower_head, file_nameplate;
+                file_fullview = new File(Environment.getExternalStorageDirectory(),
+                        "aaalbg.jpg");
+                saveMyBitmap(bitmap, file_fullview);
+                boolean delete = tempFile.delete();
+                System.out.println("delete = " + delete);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-        }
-        else if (3 == requestCode && data != null) {
+        } else if (3 == requestCode && data != null) {
             Bundle b = data.getExtras(); // data为B中回传的Intent
             String str = b.getString("barcode");// str即为回传的值"Hello, this is B speaking"
-
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
-    public void saveMyBitmap( Bitmap mBitmap,File upFile) {
+
+    public void saveMyBitmap(Bitmap mBitmap, File upFile) {
         // 首先将byte数组转为bitmap
         try {
             FileOutputStream out = new FileOutputStream(upFile);
@@ -200,6 +246,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
             e.printStackTrace();
         }
     }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -209,63 +256,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
             // port do nothing is ok
         }
     }
-    @SuppressLint("HandlerLeak")
-    public Handler mMsgReciver = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    if (mdlg != null) {
-                        mdlg.dismiss();
-                        mdlg = null;
-                        showregisterMessage("注册失败重新注册");
-                    }
-                    break;
-                case 12:
-                    if (mdlg != null) {
-                        mdlg.dismiss();
-                        new Builder(Activity_Tower.this)
-                                .setTitle("温馨提示")
-                                .setMessage("网络超时了!")
-                                .setPositiveButton("确定",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int which) {
-                                                return;
-                                            }
-                                        }).create().show();
-                    }
-                    break;
-                case 13:
-                    if (mdlg != null) {
-                        mdlg.dismiss();
-                        mdlg = null;
 
-                        if (msg_show != null && msg_show.equals("恭喜您注册成功")) {
-                            //用户存储
-
-                            showregisterMessage(msg_show);
-                        } else if (msg_show.equals("用户名已存在")) {
-                            showregisterMessage("用户名已存在,请重新输入！");
-                        } else {
-                            showregisterMessage("注册失败！");
-
-                        }
-
-                    }
-                    break;
-            }
-        }
-    };
-    /**
-     * 剪切图片
-     *
-     * @function:
-     * @author:Jerry
-     * @date:2013-12-30
-     * @param uri
-     */
     private void crop(Uri uri) {
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
@@ -292,6 +283,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
             return false;
         }
     }
+
     public void showregisterMessage(final String msg) {
         // 创建提示框提醒是否登录成功
         Builder builder = new Builder(Activity_Tower.this);
@@ -311,8 +303,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
                             intent.setClass(Activity_Tower.this, Activity_Tower.class);
                             startActivity(intent);
                         }
-
-
                         dialog.dismiss();
                     }
                 }).create().show();
@@ -327,6 +317,4 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     }
                 }).create().show();
     }
-
-
 }

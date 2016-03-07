@@ -238,8 +238,6 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 			}
 			final ViewHolder holder = new ViewHolder();
 			// holder.maintainNum.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-
-
 			holder.rownember = (TextView) convertView
 					.findViewById(R.id.rownember);
 			holder.areanmae = (TextView) convertView
@@ -251,15 +249,10 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 			holder.cityname=(TextView) convertView
 					.findViewById(R.id.cityname);
 			final Areas tmpAreaInto = areaslist.get(position);
-
 			if (tmpAreaInto.areastatus.equals("1")) {
-				holder.orderState.setText("发布");
+				holder.orderState.setText("未完成");
 			} else if (tmpAreaInto.areastatus.equals("2")) {
-				holder.orderState.setText("  ");
-			} else if (tmpAreaInto.areastatus.equals("3")) {
-				holder.orderState.setText("审批通过");
-			} else if (tmpAreaInto.areastatus.equals("4")) {
-				holder.orderState.setText("维修完成");
+				holder.orderState.setText("已完成");
 			}
 			holder.rownember.setText(position+1+"");
 			holder.cityname.setText(tmpAreaInto.quxian);

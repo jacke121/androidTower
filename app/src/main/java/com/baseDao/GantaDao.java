@@ -37,15 +37,14 @@ public class GantaDao{
     entity.name=cursor.isNull(COLUMNINDEXS.name )? "" :cursor.getString(COLUMNINDEXS.name);
     entity.areaid=cursor.isNull(COLUMNINDEXS.areaid )? -1 :cursor.getInt(COLUMNINDEXS.areaid);
     entity.dianya=cursor.isNull(COLUMNINDEXS.dianya )? "" :cursor.getString(COLUMNINDEXS.dianya);
-    entity.caizhi=cursor.isNull(COLUMNINDEXS.caizhi )? -1 :cursor.getInt(COLUMNINDEXS.caizhi);
-    entity.xingzhi=cursor.isNull(COLUMNINDEXS.xingzhi )? -1 :cursor.getInt(COLUMNINDEXS.xingzhi);
+    entity.caizhi=cursor.isNull(COLUMNINDEXS.caizhi )? "" :cursor.getString(COLUMNINDEXS.caizhi);
+    entity.xingzhi=cursor.isNull(COLUMNINDEXS.xingzhi )? "" :cursor.getString(COLUMNINDEXS.xingzhi);
     entity.taiquid=cursor.isNull(COLUMNINDEXS.taiquid )? -1 :cursor.getInt(COLUMNINDEXS.taiquid);
     entity.huilu=cursor.isNull(COLUMNINDEXS.huilu )? -1 :cursor.getInt(COLUMNINDEXS.huilu);
-    entity.dianchi=cursor.isNull(COLUMNINDEXS.dianchi )? -1 :cursor.getInt(COLUMNINDEXS.dianchi);
-    entity.yunxing=cursor.isNull(COLUMNINDEXS.yunxing )? -1 :cursor.getInt(COLUMNINDEXS.yunxing);
+    entity.yunxing=cursor.isNull(COLUMNINDEXS.yunxing )? "" :cursor.getString(COLUMNINDEXS.yunxing);
     entity.zuobiao=cursor.isNull(COLUMNINDEXS.zuobiao )? "" :cursor.getString(COLUMNINDEXS.zuobiao);
     entity.level=cursor.isNull(COLUMNINDEXS.level )? -1 :cursor.getInt(COLUMNINDEXS.level);
-    entity.parentid=cursor.isNull(COLUMNINDEXS.parentid )? "" :cursor.getString(COLUMNINDEXS.parentid);
+    entity.parentid=cursor.isNull(COLUMNINDEXS.parentid )? -1 :cursor.getInt(COLUMNINDEXS.parentid);
     entity.picquanmao=cursor.isNull(COLUMNINDEXS.picquanmao )? "" :cursor.getString(COLUMNINDEXS.picquanmao);
     entity.pictatou=cursor.isNull(COLUMNINDEXS.pictatou )? "" :cursor.getString(COLUMNINDEXS.pictatou);
     entity.picmingpai=cursor.isNull(COLUMNINDEXS.picmingpai )? "" :cursor.getString(COLUMNINDEXS.picmingpai);
@@ -88,7 +87,7 @@ public class GantaDao{
         }
 		public int getUpgrade( SQLiteDatabase db ){
 	    int strid = 0;
-	    Cursor cursor = db.rawQuery("select last_insert_rowid() from ganta", null);
+	    Cursor cursor = db.rawQuery("select last_insert_rowid() from Ganta", null);
 	    if (cursor.moveToFirst())
 	        strid = cursor.getInt(0);
 	    cursor.close();
@@ -103,18 +102,17 @@ public class GantaDao{
     public static final int xingzhi=5;
     public static final int taiquid=6;
     public static final int huilu=7;
-    public static final int dianchi=8;
-    public static final int yunxing=9;
-    public static final int zuobiao=10;
-    public static final int level=11;
-    public static final int parentid=12;
-    public static final int picquanmao=13;
-    public static final int pictatou=14;
-    public static final int picmingpai=15;
-    public static final int createtime=16;
-    public static final int updatetime=17;
-    public static final int lifeStatus=18;
-    public static final int upgradeFlag=19;
+    public static final int yunxing=8;
+    public static final int zuobiao=9;
+    public static final int level=10;
+    public static final int parentid=11;
+    public static final int picquanmao=12;
+    public static final int pictatou=13;
+    public static final int picmingpai=14;
+    public static final int createtime=15;
+    public static final int updatetime=16;
+    public static final int lifeStatus=17;
+    public static final int upgradeFlag=18;
    }
    public static final class COLUMNS{
     public static final String id="[id]";
@@ -125,7 +123,6 @@ public class GantaDao{
     public static final String xingzhi="[xingzhi]";
     public static final String taiquid="[taiquid]";
     public static final String huilu="[huilu]";
-    public static final String dianchi="[dianchi]";
     public static final String yunxing="[yunxing]";
     public static final String zuobiao="[zuobiao]";
     public static final String level="[level]";
@@ -147,7 +144,6 @@ public class GantaDao{
     cv.put(COLUMNS.xingzhi, entity.xingzhi );
     cv.put(COLUMNS.taiquid, entity.taiquid );
     cv.put(COLUMNS.huilu, entity.huilu );
-    cv.put(COLUMNS.dianchi, entity.dianchi );
     cv.put(COLUMNS.yunxing, entity.yunxing );
     cv.put(COLUMNS.zuobiao, entity.zuobiao );
     cv.put(COLUMNS.level, entity.level );
@@ -179,7 +175,6 @@ public class GantaDao{
     cv.put(COLUMNS.xingzhi, entity.xingzhi );
     cv.put(COLUMNS.taiquid, entity.taiquid );
     cv.put(COLUMNS.huilu, entity.huilu );
-    cv.put(COLUMNS.dianchi, entity.dianchi );
     cv.put(COLUMNS.yunxing, entity.yunxing );
     cv.put(COLUMNS.zuobiao, entity.zuobiao );
     cv.put(COLUMNS.level, entity.level );
@@ -206,6 +201,6 @@ public class GantaDao{
      }
      }
       public void createTable(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS [ganta] (  [id] INTEGER PRIMARY KEY AUTOINCREMENT,   [name] NVARCHAR2(50),   [areaid] INTEGER,   [dianya] NVARCHAR2(50),   [caizhi] INT,   [xingzhi] INT,   [taiquid] INT,   [huilu] INT,   [dianchi] INT,   [yunxing] INT,   [zuobiao] NVARCHAR2(50),   [level] INT,   [parentid] CHAR,   [picquanmao] VARCHAR2(100),   [pictatou] NVARCHAR2(100),   [picmingpai] NVARCHAR2(100),   [createtime] DATETIME NOT NULL DEFAULT (datetime('now')),   [updatetime] DATETIME NOT NULL,   [LifeStatus] INTEGER NOT NULL,   [upgradeFlag] BIGINT NOT NULL)"); 
+        db.execSQL("CREATE TABLE IF NOT EXISTS [Ganta] (  [id] INTEGER PRIMARY KEY AUTOINCREMENT,   [name] NVARCHAR2(50),   [areaid] INTEGER,   [dianya] NVARCHAR2(50),   [caizhi] NVARCHAR2(11),   [xingzhi] NVARCHAR2(11),   [taiquid] INT,   [huilu] INT,   [yunxing] NVARCHAR2(11),   [zuobiao] NVARCHAR2(50),   [level] INT,   [parentid] INTEGER,   [picquanmao] VARCHAR2(100),   [pictatou] NVARCHAR2(100),   [picmingpai] NVARCHAR2(100),   [createtime] DATETIME NOT NULL DEFAULT (datetime('now')),   [updatetime] DATETIME NOT NULL,   [LifeStatus] INTEGER NOT NULL,   [upgradeFlag] BIGINT NOT NULL)"); 
      }
      }
