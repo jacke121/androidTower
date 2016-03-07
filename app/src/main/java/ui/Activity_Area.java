@@ -49,9 +49,9 @@ public class Activity_Area extends Activity implements OnClickListener {
         if (bundle != null) {
             type = bundle.getString("type");
             if(type.equals("add")){
-               showMsg("aaa");
+//               showMsg("aaa");
             }else{
-                showMsg("aaa");
+//                showMsg("aaa");
             }
         }
         MyApplication myApplication = (MyApplication) getApplication();
@@ -149,9 +149,7 @@ public class Activity_Area extends Activity implements OnClickListener {
                 String  quxian = txt_quxian.getText().toString();
                 String gongbian = txt_gongbian.getText().toString();
                 String danwei = txt_danwei.getText().toString();
-
-//					registerRemoteService(name,pwd);
-                if (qubian.equals("") || quxian.equals("") || gongbian.equals("")) {
+                if (qubian.equals("") || quxian.equals("") || gongbian.equals("")||danwei.equals("")) {
                     showMsg("信息不能为空!");
                 } else {
                     Areas areas = new Areas();
@@ -160,11 +158,10 @@ public class Activity_Area extends Activity implements OnClickListener {
                     areas.quxian=quxian;
                     areas.danwei=danwei;
                     areas.areastatus=1;
-                    areas.area="asd";
+                    areas.area=qubian+quxian+gongbian;
                     areas.count=1;
-                    areas.okcount=2;
+                    areas.okcount=0;
                     areas.lifeStatus=1;
-                    areas.upgradeFlag=1;
                     areasDao.insert(areas);
                     Intent resultIntent = new Intent();
                     Activity_Area.this.setResult(RESULT_OK, resultIntent);

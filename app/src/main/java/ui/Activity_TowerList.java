@@ -71,7 +71,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         // 设置无标题（尽量在前面设置）
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         Bundle bundle = this.getIntent().getExtras();
         /* 获取Bundle中的数据，注意类型和key */
         if (bundle != null) {
@@ -79,56 +78,30 @@ public class Activity_TowerList extends Activity implements OnClickListener {
             if (id == 0) {
                 finish();
             }
+            areasDao = new AreasDao(((MyApplication) getApplication()).getSqlHelper());
             SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{id+""});//模糊查询
             if (areas != null) {
                 curentreas = areas.get(0);
             }
         }
-
         setContentView(R.layout.lay_tower_list);
-        MyApplication myApplication = (MyApplication) getApplication();
-        helper = myApplication.getSqlHelper();
+        helper = ((MyApplication) getApplication()).getSqlHelper();
         gantaDao = new GantaDao(helper);
          areasDao  = new AreasDao(helper);
         gantaDao.createTable(helper.getWritableDatabase());
+        geiDatas();
         TextView title_text = (TextView) findViewById(R.id.title_text);
-
         title_text.setText("塔杆列表");
-        ImageButton b_back = (ImageButton) findViewById(R.id.b_back);
-        b_back.setOnClickListener(new OnClickListener() {
 
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                finish();
-            }
-        });
         btn_add = (Button) findViewById(R.id.btn_add);
         btn_cailu = (Button) findViewById(R.id.btn_cailu);
-
         btn_add.setOnClickListener(this);
-
         btn_cailu.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                if (selectItem == -1) {
-                    new AlertDialog.Builder(Activity_TowerList.this)
-                            .setTitle("温馨提示")
-                            .setMessage("请选择一行!")
-                            .setPositiveButton("确定",
-                                    new DialogInterface.OnClickListener() {
-
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which) {
-                                            return;
-                                        }
-                                    }).create().show();
-                    return;
-                }
-                Intent intent = null;
+                Intent intent = new Intent(Activity_TowerList.this, Activity_Tower.class);
                 if (areaslist.size() > selectItem) {
                     int id = areaslist.get(selectItem).id;
                     Bundle bundle = new Bundle();
@@ -169,24 +142,13 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         mHScrollViews.add(headerScroll);
         mListView = (ListView) findViewById(R.id.scroll_list);
 
-        geiDatas();
+
         adapter = new DataAdapter();
-
         mListView.setAdapter(adapter);
-//		downData();
         mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-
         // mListView = (ListView) this.findViewById(R.id.repair_listview);
-        b_back = (ImageButton) findViewById(R.id.b_back);
-        b_back.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                // 跳转到主界面
-                finish();
-            }
-        });
+        ImageButton  b_back = (ImageButton) findViewById(R.id.b_back);
+        b_back.setOnClickListener(this);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
@@ -195,37 +157,20 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add:
-                if (selectItem == -1) {
-                    new AlertDialog.Builder(Activity_TowerList.this)
-                            .setTitle("温馨提示")
-                            .setMessage("请选择一行!")
-                            .setPositiveButton("确定",
-                                    new DialogInterface.OnClickListener() {
-
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which) {
-                                            return;
-                                        }
-                                    }).create().show();
-                    return;
-                }
-                if (areaslist.size() > selectItem) {
-                    Integer id = areaslist.get(selectItem).id;
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("id", id);
-                    Intent intent = new Intent(Activity_TowerList.this,
-                            Activity_Tower.class);
+            {
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", id);
+                Intent intent = new Intent(Activity_TowerList.this,
+                        Activity_Tower.class);
 					/* 把bundle对象assign给Intent */
-                    intent.putExtras(bundle);
-                    // startActivity(intent);
-                    startActivityForResult(intent, 1);
-                }
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 1);
+            }
                 break;
             case R.id.b_back:
                 finish();
                 break;
-            case R.id.btn_child: {
+            case R.id.btn_cailu: {
                 if (selectItem == -1) {
                     new AlertDialog.Builder(Activity_TowerList.this)
                             .setTitle("温馨提示")
@@ -241,12 +186,12 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                                     }).create().show();
                     return;
                 }
+                Intent intent = new Intent(Activity_TowerList.this, Activity_Tower.class);
                 if (areaslist.size() > selectItem) {
-                    Integer id = areaslist.get(selectItem).id;
+                    int id = areaslist.get(selectItem).id;
                     Bundle bundle = new Bundle();
+					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
                     bundle.putInt("id", id);
-                    Intent intent = new Intent(Activity_TowerList.this,
-                            Activity_TowerList.class);
 					/* 把bundle对象assign给Intent */
                     intent.putExtras(bundle);
                     // startActivity(intent);
@@ -270,6 +215,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
             areaslist = new SparseArray<Ganta>();
             for (int i = 0; i < 15; i++) {
                 Ganta rows = new Ganta();
+                rows.id=i;
                 rows.caizhi = "caizhi";
                 rows.name = i + "content";
                 rows.pictatou = i + "";
@@ -348,7 +294,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                         // holder.orderState.setText("审批通过");
                     }
                     notifyDataSetChanged();// 提醒数据已经变动
-
                     // mListView.setSelection(scrolledY);
                     // mListView.scrollTo(scrolledX, scrolledY);
                 }

@@ -59,9 +59,10 @@ public class Activity_Tower extends Activity implements OnClickListener {
     Spinner sp_huilu;
     SqlHelper helper;
     ImageView iv_fullview, iv_tower_head, iv_nameplate;
-    File  file_fullview, file_tower_head, file_nameplate;
+    File file_fullview, file_tower_head, file_nameplate;
     AreasDao areasDao;
     Areas curentreas;
+
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,15 +70,16 @@ public class Activity_Tower extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
         setContentView(R.layout.tower_detail);
         //设置初始化视图
-        SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.id+""});//模糊查询
+        areasDao = new AreasDao(((MyApplication) getApplication()).getSqlHelper());
+        SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.id + ""});//模糊查询
         if (areas != null) {
             curentreas = areas.get(0);
         }
-         iv_fullview = (ImageView) findViewById(R.id.iv_fullview);
-         iv_tower_head= (ImageView) findViewById(R.id.iv_tower_head);
-         iv_nameplate= (ImageView) findViewById(R.id.iv_nameplate);
-        txt_taiqu= (TextView) findViewById(R.id.txt_taiqu);
-        txt_taiqu.setText(curentreas.area+curentreas.gongbian+curentreas.quxian+curentreas.qubian);
+        iv_fullview = (ImageView) findViewById(R.id.iv_fullview);
+        iv_tower_head = (ImageView) findViewById(R.id.iv_tower_head);
+        iv_nameplate = (ImageView) findViewById(R.id.iv_nameplate);
+        txt_taiqu = (TextView) findViewById(R.id.txt_taiqu);
+        txt_taiqu.setText(curentreas.area + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
         MyApplication myApplication = (MyApplication) getApplication();
         helper = myApplication.getSqlHelper();
         gantaDao = new GantaDao(helper);
@@ -132,7 +134,11 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 String zuobiao = ext_zuobiao.getText().toString();
                 String towername = ext_towername.getText().toString();
                 String parenttower = txtParenttower.getText().toString();
-                areas.picquanmao= file_fullview.getAbsolutePath();
+                if (file_fullview == null) {
+                    showMsg("全貌图片不能为空!");
+                    return;
+                }
+                areas.picquanmao = file_fullview.getAbsolutePath();
                 if (is_reply.isChecked()) {
                     if (parenttower.length() > 0) {
                         SparseArray<Ganta> parents = gantaDao.queryToList("name like ?", new String[]{"%" + parenttower + "%"});//模糊查询
@@ -144,7 +150,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         return;
                     }
                 }
-
                 RadioButton selectcaizhi = (RadioButton) findViewById(radio_caizhi.getCheckedRadioButtonId());
                 if (selectcaizhi == null) {
                     showMsg("材质不能为空!");
@@ -160,9 +165,9 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     showMsg("运行状态不能为空!");
                     return;
                 }
-                int strHuilu = (int) sp_huilu.getSelectedItem();
+                int strHuilu = Integer.parseInt(sp_huilu.getSelectedItem().toString());
                 if (zuobiao.equals("") || towername.equals("")) {
-                    showMsg("信息不能为空!");
+                    showMsg("坐标点号不能为空!");
                     return;
                 }
                 areas.caizhi = selectcaizhi.getText().toString();
