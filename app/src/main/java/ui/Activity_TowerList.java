@@ -297,6 +297,8 @@ public class Activity_TowerList extends Activity implements OnClickListener {
 
             final Ganta tmpTowerInfo = gantaList.get(position);
             // holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
+            holder.txts[0].setText(position +1+ "");
+            holder.txts[1].setText(tmpTowerInfo.areaname + "");
             holder.txts[2].setText(tmpTowerInfo.name + "");
             holder.txts[3].setText(tmpTowerInfo.caizhi + "");
             holder.txts[4].setText(tmpTowerInfo.xingzhi + "");

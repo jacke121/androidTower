@@ -67,6 +67,9 @@ public class Activity_Tower extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
         setContentView(R.layout.tower_detail);
+        helper = ((MyApplication)getApplication()).getSqlHelper();
+        gantaDao = new GantaDao(helper);
+        areasDao = new AreasDao(helper);
         //设置初始化视图
         Bundle bundle = this.getIntent().getExtras();
         /* 获取Bundle中的数据，注意类型和key */
@@ -81,7 +84,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
             }
             maganta=gantas .get(0);//模糊查询
         }
-        areasDao = new AreasDao(((MyApplication) getApplication()).getSqlHelper());
+
         SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.id + ""});//模糊查询
         if (areas != null) {
             curentreas = areas.get(0);
@@ -91,9 +94,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
         iv_nameplate = (ImageView) findViewById(R.id.iv_nameplate);
         txt_taiqu = (TextView) findViewById(R.id.txt_taiqu);
         txt_taiqu.setText(curentreas.area + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
-        MyApplication myApplication = (MyApplication) getApplication();
-        helper = myApplication.getSqlHelper();
-        gantaDao = new GantaDao(helper);
+
         btn_fullview = (Button) findViewById(R.id.btn_fullview);
         btn_towerhead = (Button) findViewById(R.id.btn_towerhead);
         btn_nameplate = (Button) findViewById(R.id.btn_nameplate);
@@ -101,7 +102,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
         btn_towerhead.setOnClickListener(this);
         btn_nameplate.setOnClickListener(this);
         ext_zuobiao = (EditText) findViewById(R.id.ext_zuobiao);
-        ext_towername = (EditText) findViewById(R.id.txt_towername);
+        ext_towername = (EditText) findViewById(R.id.ext_towername);
         txtParenttower = (EditText) findViewById(R.id.txtParenttower);
         radio_dianya = (RadioGroup) findViewById(R.id.group_voltage);
         radio_caizhi = (RadioGroup) findViewById(R.id.group_material);
@@ -120,6 +121,41 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
         if(maganta!=null){
         //编辑
+            ext_towername.setText(maganta.name);
+            if(maganta.caizhi.equals("水泥杆")){
+                 findViewById(R.id.shuini_pole).setSelected(true);
+
+            }else if(maganta.caizhi.equals("木杆")){
+                ((RadioButton) findViewById(R.id.wooden_pole)).setSelected(true);
+            }else {
+                 findViewById(R.id.steel_pole).setSelected(true);
+            }
+            if(maganta.xingzhi.equals("直线")){
+                findViewById(R.id.zhixian).setSelected(true);
+
+            }else {
+                findViewById(R.id.naizhang).setSelected(true);
+            }
+            if(maganta.dianya.equals("220V")){
+                findViewById(R.id.voltage220).setSelected(true);
+
+            }else {
+                findViewById(R.id.voltage380).setSelected(true);
+            }
+            if(maganta.yunxing.equals("在运")){
+                findViewById(R.id.inuse).setSelected(true);
+
+            }else if(maganta.yunxing.equals("留用")){
+                ((RadioButton) findViewById(R.id.liuyong)).setSelected(true);
+            }else {
+                findViewById(R.id.nouse).setSelected(true);
+            }
+            if(maganta.parentid>0){
+                is_reply.setSelected(true);
+                txtParenttower.setText("符名称");
+            }
+            ext_zuobiao.setText(maganta.zuobiao);
+//            sp_huilu.set
         }
 
     }
@@ -200,6 +236,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     return;
                 }
                 areas.areaid= Activity_TowerList.id;
+                areas.areaname= curentreas.area;
                 areas.caizhi = selectcaizhi.getText().toString();
                 areas.yunxing = yunxing.getText().toString();
                 areas.dianya = radiodianya.getText().toString();

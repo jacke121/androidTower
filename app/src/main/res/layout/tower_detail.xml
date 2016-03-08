@@ -122,7 +122,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/txt_towername"
+                android:id="@+id/ext_towername"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
@@ -164,7 +164,7 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radio_caizhi"
+                    android:id="@+id/shuini_pole"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -326,7 +326,7 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radio_dianya"
+                    android:id="@+id/voltage220"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -334,7 +334,7 @@
                     android:text=" 交流220V" />
 
                 <RadioButton
-                    android:id="@+id/voltage38"
+                    android:id="@+id/voltage380"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -392,7 +392,7 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/normal"
+                    android:id="@+id/inuse"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -400,7 +400,7 @@
                     android:text=" 在运" />
 
                 <RadioButton
-                    android:id="@+id/abnormal"
+                    android:id="@+id/liuyong"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:button="@null"
