@@ -47,7 +47,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
     /* 头像名称 */
     private final String PHOTO_FILE_NAME = "temp_photo.jpg";
     Button btnCancel;
-
     Button btn_fullview, btn_towerhead, btn_nameplate;
     ImageView ivback;
     int picid;
@@ -60,7 +59,8 @@ public class Activity_Tower extends Activity implements OnClickListener {
     File file_fullview, file_tower_head, file_nameplate;
     AreasDao areasDao;
     Areas curentreas;
-
+    int gantaid;
+    Ganta maganta;
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,19 @@ public class Activity_Tower extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
         setContentView(R.layout.tower_detail);
         //设置初始化视图
+        Bundle bundle = this.getIntent().getExtras();
+        /* 获取Bundle中的数据，注意类型和key */
+        if (bundle != null) {
+            gantaid = bundle.getInt("id");
+            if (gantaid == 0) {
+                finish();
+            }
+            SparseArray<Ganta> gantas=gantaDao.queryToList("id =?", new String[]{gantaid + ""});
+            if (gantas == null) {
+                finish();
+            }
+            maganta=gantas .get(0);//模糊查询
+        }
         areasDao = new AreasDao(((MyApplication) getApplication()).getSqlHelper());
         SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.id + ""});//模糊查询
         if (areas != null) {
@@ -104,6 +117,10 @@ public class Activity_Tower extends Activity implements OnClickListener {
         register_btnCancel.setOnClickListener(this);
         ivback = (ImageView) findViewById(R.id.title_btn_sequence);
         ivback.setOnClickListener(this);
+
+        if(maganta!=null){
+        //编辑
+        }
 
     }
 
@@ -182,6 +199,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     showMsg("坐标点号不能为空!");
                     return;
                 }
+                areas.areaid= Activity_TowerList.id;
                 areas.caizhi = selectcaizhi.getText().toString();
                 areas.yunxing = yunxing.getText().toString();
                 areas.dianya = radiodianya.getText().toString();

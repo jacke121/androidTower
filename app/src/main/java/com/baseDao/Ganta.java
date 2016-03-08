@@ -22,6 +22,8 @@ public class Ganta {
 		public Date updatetime;
 		public Integer lifeStatus;
 		public Integer upgradeFlag;
+		public String areaname;
+		public String danwei;
 
 
 		public Integer getId() {
@@ -174,6 +176,22 @@ public class Ganta {
 
 		public void setUpgradeFlag(Integer upgradeFlag) {
 			this.upgradeFlag = upgradeFlag;
+		}
+
+		public String getAreaname() {
+			return this.areaname;
+		}
+
+		public void setAreaname(String areaname) {
+			this.areaname = areaname;
+		}
+
+		public String getDanwei() {
+			return this.danwei;
+		}
+
+		public void setDanwei(String danwei) {
+			this.danwei = danwei;
 		}
 
 }

@@ -110,21 +110,15 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 }
             }
         });
-
-        // item_line.setVisibility(View.GONE);
         // 添加头滑动事件
         mHScrollViews.add(headerScroll);
         mListView = (ListView) findViewById(R.id.scroll_list);
-
-
         adapter = new DataAdapter();
         mListView.setAdapter(adapter);
         mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         // mListView = (ListView) this.findViewById(R.id.repair_listview);
         ImageButton  b_back = (ImageButton) findViewById(R.id.b_back);
         b_back.setOnClickListener(this);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
 
     @Override
