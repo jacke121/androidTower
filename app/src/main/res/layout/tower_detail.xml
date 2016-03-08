@@ -493,20 +493,20 @@
         android:paddingRight="10dp">
 
         <Button
-            android:id="@+id/pic_fullview"
+            android:id="@+id/btn_fullview"
             android:layout_width="100dip"
             android:layout_height="40dp"
             android:background="@drawable/desktop_floatbtn_normal"
             android:text="全貌" />
         <Button
-            android:id="@+id/tower_head"
+            android:id="@+id/btn_towerhead"
             android:layout_width="100dip"
             android:layout_height="40dp"
             android:background="@drawable/desktop_floatbtn_normal"
             android:text="塔头" />
 
         <Button
-            android:id="@+id/nameplate"
+            android:id="@+id/btn_nameplate"
             android:layout_width="100dip"
             android:layout_height="40dp"
             android:background="@drawable/desktop_floatbtn_normal"

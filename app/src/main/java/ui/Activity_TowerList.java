@@ -3,19 +3,13 @@ package ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +30,6 @@ import com.baseDao.AreasDao;
 import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
-import com.google.android.gms.appindexing.Action;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
@@ -63,7 +56,8 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     private ListView mListView;
     public static int id;
     GantaDao gantaDao;
-    SparseArray<Ganta> areaslist;
+    SparseArray<Ganta> gantaList;
+    SparseArray<Areas> areaslist;
     AreasDao areasDao;
     Areas curentreas;
     @Override
@@ -96,31 +90,11 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         btn_add = (Button) findViewById(R.id.btn_add);
         btn_cailu = (Button) findViewById(R.id.btn_cailu);
         btn_add.setOnClickListener(this);
-        btn_cailu.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                Intent intent = new Intent(Activity_TowerList.this, Activity_Tower.class);
-                if (areaslist.size() > selectItem) {
-                    int id = areaslist.get(selectItem).id;
-                    Bundle bundle = new Bundle();
-					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-                    bundle.putInt("id", id);
-					/* 把bundle对象assign给Intent */
-                    intent.putExtras(bundle);
-                    // startActivity(intent);
-                    startActivityForResult(intent, 1);
-                }
-
-            }
-        });
-
+        btn_cailu.setOnClickListener(this);
         for (int i = 0; i < headers.length; i++) {
             TextView tmpView = ((TextView) findViewById(headIds[i]));
             tmpView.setText(headers[i]);
         }
-
         repairhead = (LinearLayout) findViewById(R.id.line_head);
         CHScrollView headerScroll = (CHScrollView) findViewById(R.id.repairheader);
 
@@ -187,8 +161,8 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                     return;
                 }
                 Intent intent = new Intent(Activity_TowerList.this, Activity_Tower.class);
-                if (areaslist.size() > selectItem) {
-                    int id = areaslist.get(selectItem).id;
+                if (gantaList.size() > selectItem) {
+                    int id = gantaList.get(selectItem).id;
                     Bundle bundle = new Bundle();
 					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
                     bundle.putInt("id", id);
@@ -209,18 +183,32 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     }
 
     public void geiDatas() {
-        areaslist = gantaDao.queryToList("", null);
-        if (areaslist == null) {
+
+//        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on a.id=g.areaid where a.id=", new String[]{id + ""});
+        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on 1=1", null);
+        if (gantaList == null) {
             // mListView.setVisibility(View.GONE);
-            areaslist = new SparseArray<Ganta>();
-            for (int i = 0; i < 15; i++) {
+            gantaList = new SparseArray<Ganta>();
+            for (int i = 0; i < 0; i++) {
                 Ganta rows = new Ganta();
                 rows.id=i;
                 rows.caizhi = "caizhi";
                 rows.name = i + "content";
                 rows.pictatou = i + "";
-                areaslist.put(areaslist.size(), rows);
+                gantaList.put(gantaList.size(), rows);
             }
+        }else{
+            areaslist = areasDao.queryToList("", null);
+            for (int i = 0; i < gantaList.size(); i++) {
+                System.out.println("value-->" + gantaList.get(i));
+                for (int j = 0; j < areaslist.size(); j++) {
+                    if(gantaList.get(i).taiquid== areaslist.get(j).id){
+                       break;
+                    }
+
+                }
+            }
+
         }
     }
 
@@ -259,7 +247,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     private class DataAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return areaslist.size();
+            return gantaList.size();
         }
 
         public void setSelectItem(int tselectItem) {
@@ -277,7 +265,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 public void onClick(View arg0) {
                     // TODO Auto-generated method stub
                     setSelectItem(position); // 自定义的变量，以便让adapter知道要选中哪一项
-                    Ganta tmpTowerInfo = areaslist.get(position);
+                    Ganta tmpTowerInfo = gantaList.get(position);
                     if (tmpTowerInfo.caizhi.equals("1")) {
                         // holder.orderState.setText("发布");
                         btn_cailu.setEnabled(false);
@@ -313,14 +301,9 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                         .findViewById(headIds[i]);
             }
 
-            final Ganta tmpTowerInfo = areaslist.get(position);
-
-            if (tmpTowerInfo.caizhi.equals("1")) {
-                holder.txts[2].setText("发布");
-            } else if (tmpTowerInfo.caizhi.equals("2")) {
-                holder.txts[2].setText("发布");
-            }
+            final Ganta tmpTowerInfo = gantaList.get(position);
             // holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
+            holder.txts[2].setText(tmpTowerInfo.name + "");
             holder.txts[3].setText(tmpTowerInfo.caizhi + "");
             holder.txts[4].setText(tmpTowerInfo.xingzhi + "");
             holder.txts[5].setText(tmpTowerInfo.taiquid + "");

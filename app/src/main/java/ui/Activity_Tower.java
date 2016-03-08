@@ -3,7 +3,6 @@ package ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -48,12 +47,11 @@ public class Activity_Tower extends Activity implements OnClickListener {
     /* 头像名称 */
     private final String PHOTO_FILE_NAME = "temp_photo.jpg";
     Button btnCancel;
-    Button pic_fullview;
-    Button tower_head;
-    Button nameplate;
+
+    Button btn_fullview, btn_towerhead, btn_nameplate;
     ImageView ivback;
+    int picid;
     CheckBox is_reply;
-    public Dialog mdlg;
     public String name, message;
     GantaDao gantaDao;
     Spinner sp_huilu;
@@ -83,12 +81,12 @@ public class Activity_Tower extends Activity implements OnClickListener {
         MyApplication myApplication = (MyApplication) getApplication();
         helper = myApplication.getSqlHelper();
         gantaDao = new GantaDao(helper);
-        pic_fullview = (Button) findViewById(R.id.pic_fullview);
-        tower_head = (Button) findViewById(R.id.tower_head);
-        nameplate = (Button) findViewById(R.id.nameplate);
-        pic_fullview.setOnClickListener(this);
-        tower_head.setOnClickListener(this);
-        nameplate.setOnClickListener(this);
+        btn_fullview = (Button) findViewById(R.id.btn_fullview);
+        btn_towerhead = (Button) findViewById(R.id.btn_towerhead);
+        btn_nameplate = (Button) findViewById(R.id.btn_nameplate);
+        btn_fullview.setOnClickListener(this);
+        btn_towerhead.setOnClickListener(this);
+        btn_nameplate.setOnClickListener(this);
         ext_zuobiao = (EditText) findViewById(R.id.ext_zuobiao);
         ext_towername = (EditText) findViewById(R.id.txt_towername);
         txtParenttower = (EditText) findViewById(R.id.txtParenttower);
@@ -112,11 +110,17 @@ public class Activity_Tower extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.pic_fullview:
+            case R.id.btn_fullview:
+                picid = R.id.btn_fullview;
                 camera();
                 break;
-            case R.id.tower_head:
-                showMsg("tower_head");
+            case R.id.btn_towerhead:
+                picid = R.id.btn_towerhead;
+                camera();
+                break;
+            case R.id.btn_nameplate:
+                picid = R.id.btn_nameplate;
+                camera();
                 break;
             case R.id.btnCancel:
                 Intent intent = new Intent(Activity_Tower.this, IndexActivity.class);
@@ -125,9 +129,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 break;
             case R.id.title_btn_sequence:
                 Activity_Tower.this.finish();
-                break;
-            case R.id.nameplate:
-                showMsg("nameplate");
                 break;
             case R.id.btn_save:
                 Ganta areas = new Ganta();
@@ -138,7 +139,18 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     showMsg("全貌图片不能为空!");
                     return;
                 }
+                if (file_tower_head == null) {
+                    showMsg("塔头图片不能为空!");
+                    return;
+                }
+                if (file_nameplate == null) {
+                    showMsg("铭牌图片不能为空!");
+                    return;
+                }
+
                 areas.picquanmao = file_fullview.getAbsolutePath();
+                areas.pictatou = file_tower_head.getAbsolutePath();
+                areas.picmingpai = file_nameplate.getAbsolutePath();
                 if (is_reply.isChecked()) {
                     if (parenttower.length() > 0) {
                         SparseArray<Ganta> parents = gantaDao.queryToList("name like ?", new String[]{"%" + parenttower + "%"});//模糊查询
@@ -216,12 +228,33 @@ public class Activity_Tower extends Activity implements OnClickListener {
         } else if (requestCode == PHOTO_REQUEST_CUT) {
             try {
                 bitmap = data.getParcelableExtra("data");
-//                iv_fullview, iv_tower_head, iv_nameplate;
-//                iv_fullview.setImageBitmap(bitmap);
-//                file_fullview, file_tower_head, file_nameplate;
-                file_fullview = new File(Environment.getExternalStorageDirectory(),
-                        "aaalbg.jpg");
-                saveMyBitmap(bitmap, file_fullview);
+                switch (picid) {
+                    case R.id.btn_fullview:
+                        iv_fullview.setImageBitmap(bitmap);
+                        file_fullview = new File(Environment.getExternalStorageDirectory(),
+                                "aaalbg.jpg");
+                        saveMyBitmap(bitmap, file_fullview);
+                        btn_fullview.setText("全貌已拍");
+                        break;
+                    case R.id.btn_towerhead:
+                        iv_tower_head.setImageBitmap(bitmap);
+                        file_tower_head = new File(Environment.getExternalStorageDirectory(),
+                                "aaalbg.jpg");
+                        saveMyBitmap(bitmap, file_tower_head);
+                        btn_towerhead.setText("塔头已拍");
+                        break;
+                    case R.id.btn_nameplate:
+                        iv_nameplate.setImageBitmap(bitmap);
+                        file_nameplate = new File(Environment.getExternalStorageDirectory(),
+                                "aaalbg.jpg");
+                        saveMyBitmap(bitmap, file_nameplate);
+                        btn_nameplate.setText("铭牌已拍");
+                        break;
+                    default:
+                        break;
+                }
+
+
                 boolean delete = tempFile.delete();
                 System.out.println("delete = " + delete);
 

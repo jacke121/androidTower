@@ -104,7 +104,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
         if (areaslist == null) {
             // mListView.setVisibility(View.GONE);
             areaslist = new SparseArray<Areas>();
-            for (int i = 0; i < 15; i++) {
+            for (int i = 0; i < 0; i++) {
                 Areas rows = new Areas();
                 rows.gongbian="gongbian";
                 rows.area = i + "content";
