@@ -1,6 +1,5 @@
 package ui;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
@@ -60,8 +59,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
     AreasDao areasDao;
     Areas curentreas;
     int gantaid;
-    Ganta maganta;
-    @SuppressLint("NewApi")
+    Ganta mganta;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,10 +80,10 @@ public class Activity_Tower extends Activity implements OnClickListener {
             if (gantas == null) {
                 finish();
             }
-            maganta=gantas .get(0);//模糊查询
+            mganta =gantas .get(0);//模糊查询
         }
 
-        SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.id + ""});//模糊查询
+        SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.areaid + ""});//模糊查询
         if (areas != null) {
             curentreas = areas.get(0);
         }
@@ -119,42 +117,42 @@ public class Activity_Tower extends Activity implements OnClickListener {
         ivback = (ImageView) findViewById(R.id.title_btn_sequence);
         ivback.setOnClickListener(this);
 
-        if(maganta!=null){
+        if(mganta !=null){
         //编辑
-            ext_towername.setText(maganta.name);
-            if(maganta.caizhi.equals("水泥杆")){
-                 findViewById(R.id.shuini_pole).setSelected(true);
+            ext_towername.setText(mganta.name);
+            if(mganta.caizhi.equals("水泥杆")){
+                ((RadioButton)findViewById(R.id.shuini_pole)).setChecked(true);
 
-            }else if(maganta.caizhi.equals("木杆")){
-                ((RadioButton) findViewById(R.id.wooden_pole)).setSelected(true);
+            }else if(mganta.caizhi.equals("木杆")){
+                ((RadioButton) findViewById(R.id.wooden_pole)).setChecked(true);
             }else {
-                 findViewById(R.id.steel_pole).setSelected(true);
+                ((RadioButton) findViewById(R.id.steel_pole)).setChecked(true);
             }
-            if(maganta.xingzhi.equals("直线")){
-                findViewById(R.id.zhixian).setSelected(true);
-
-            }else {
-                findViewById(R.id.naizhang).setSelected(true);
-            }
-            if(maganta.dianya.equals("220V")){
-                findViewById(R.id.voltage220).setSelected(true);
+            if(mganta.xingzhi.equals("直线")){
+                ((RadioButton)findViewById(R.id.zhixian)).setChecked(true);
 
             }else {
-                findViewById(R.id.voltage380).setSelected(true);
+                ((RadioButton) findViewById(R.id.naizhang)).setChecked(true);
             }
-            if(maganta.yunxing.equals("在运")){
-                findViewById(R.id.inuse).setSelected(true);
+            if(mganta.dianya.equals("220V")){
+                ((RadioButton) findViewById(R.id.voltage220)).setChecked(true);
 
-            }else if(maganta.yunxing.equals("留用")){
-                ((RadioButton) findViewById(R.id.liuyong)).setSelected(true);
             }else {
-                findViewById(R.id.nouse).setSelected(true);
+                ((RadioButton)findViewById(R.id.voltage380)).setChecked(true);
             }
-            if(maganta.parentid>0){
-                is_reply.setSelected(true);
+            if(mganta.yunxing.equals("在运")){
+                ((RadioButton) findViewById(R.id.inuse)).setChecked(true);
+
+            }else if(mganta.yunxing.equals("留用")){
+                ((RadioButton) findViewById(R.id.liuyong)).setChecked(true);
+            }else {
+                ((RadioButton)findViewById(R.id.nouse)).setChecked(true);
+            }
+            if(mganta.parentid>0){
+                is_reply.setChecked(true);
                 txtParenttower.setText("符名称");
             }
-            ext_zuobiao.setText(maganta.zuobiao);
+            ext_zuobiao.setText(mganta.zuobiao);
 //            sp_huilu.set
         }
 
@@ -235,7 +233,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     showMsg("坐标点号不能为空!");
                     return;
                 }
-                areas.areaid= Activity_TowerList.id;
+                areas.areaid= Activity_TowerList.areaid;
                 areas.areaname= curentreas.area;
                 areas.caizhi = selectcaizhi.getText().toString();
                 areas.yunxing = yunxing.getText().toString();
@@ -403,7 +401,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
     public void showMsg(String msg) {
         new Builder(Activity_Tower.this).setTitle("温馨提示")
-                .setMessage(msg + "!")
+                .setMessage(msg)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         return;

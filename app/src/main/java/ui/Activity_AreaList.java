@@ -61,7 +61,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 		 areasDao = new AreasDao(helper);
 		areasDao.createTable(helper.getWritableDatabase());
 		// 查询数据库
-        geiDatas();
+        getData();
         btn_add= (Button) findViewById(R.id.btn_add);
         btn_add.setOnClickListener(this);
 
@@ -99,7 +99,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 		b_back.setOnClickListener(this);
 
 	}
-    public void geiDatas(){
+    public void getData(){
         areaslist = areasDao.queryToList("", null);
         if (areaslist == null) {
             // mListView.setVisibility(View.GONE);
@@ -145,7 +145,6 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 				}
 				if (areaslist.size() > selectItem) {
 					Integer id =areaslist.get(selectItem).id;
-
 					 bundle = new Bundle();
 					bundle.putInt("id",id);
 					intent = new Intent(Activity_AreaList.this,
@@ -214,18 +213,13 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 				ViewGroup parent) {
 			// if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.lay_area_row, null);
+			final Areas tmpAreaInto = areaslist.get(position);
 			convertView.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					setSelectItem(position); // 自定义的变量，以便让adapter知道要选中哪一项
-					Areas tmpRepairOrder =areaslist.get(position);
-					if (tmpRepairOrder.areastatus.equals("1")) {
-						// holder.orderState.setText("发布");
-					} else if (tmpRepairOrder.areastatus.equals("2")	) {
-						// holder.orderState.setText("维修申请  ");
-					}
 					notifyDataSetChanged();// 提醒数据已经变动
 				}
 			});
@@ -238,6 +232,17 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 			}
 			final ViewHolder holder = new ViewHolder();
 			// holder.maintainNum.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+			holder.area_del=(Button) convertView
+					.findViewById(R.id.area_del);
+			holder.area_del.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					areasDao.delete(tmpAreaInto);
+					getData();
+					notifyDataSetChanged();// 提醒数据已经变动
+				}
+			});
+
 			holder.rownember = (TextView) convertView
 					.findViewById(R.id.rownember);
 			holder.areanmae = (TextView) convertView
@@ -248,7 +253,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 					.findViewById(R.id.orderState);
 			holder.cityname=(TextView) convertView
 					.findViewById(R.id.cityname);
-			final Areas tmpAreaInto = areaslist.get(position);
+
 			if (tmpAreaInto.areastatus.equals("1")) {
 				holder.orderState.setText("未完成");
 			} else if (tmpAreaInto.areastatus.equals("2")) {
@@ -291,7 +296,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
         // 可以根据多个请求代码来作相应的操作
         if (1 == requestCode) {
             // 刷新界面
-            geiDatas();
+            getData();
             adapter.notifyDataSetInvalidated();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -311,5 +316,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 		TextView areanmae;
 		TextView content;
 		TextView orderState;
+		Button area_del;
+
 	}
 }

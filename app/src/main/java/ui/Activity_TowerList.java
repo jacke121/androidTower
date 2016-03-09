@@ -37,13 +37,12 @@ import com.listview.CHScrollView;
 public class Activity_TowerList extends Activity implements OnClickListener {
 
     private int selectItem = -1;
-    int[] headIds = new int[]{R.id.txt_1101, R.id.txt_1102, R.id.txt_1103,
+    int[] headIds = new int[]{R.id.txt_1100,R.id.txt_1101, R.id.txt_1102, R.id.txt_1103,
             R.id.txt_1104, R.id.txt_1105, R.id.txt_1106, R.id.txt_1107,
             R.id.txt_1108, R.id.txt_1109, R.id.txt_1110, R.id.txt_1111,
-            R.id.txt_1112, R.id.txt_1113, R.id.txt_1114};
+            R.id.txt_1112};
     String[] headers = new String[]{"序号", "杆塔名称", "材质", "性质", "台区",
-            "回路数", "电压", "运行状态", "坐标点", "上级塔杆", "发布日期", "发布人", "维修人员",
-            "计划维修日期"};
+            "回路数", "电压", "运行状态", "坐标点", "上级塔杆", "发布日期", "发布人", "维修人员"};
     // 方便测试，直接写的public
     Button btn_add, btn_cailu;
     DataAdapter adapter;
@@ -54,12 +53,13 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     SqlHelper helper;
     LinearLayout repairhead;
     private ListView mListView;
-    public static int id;
+    public static int areaid;
     GantaDao gantaDao;
     SparseArray<Ganta> gantaList;
     SparseArray<Areas> areaslist;
     AreasDao areasDao;
     Areas curentreas;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,12 +68,12 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         Bundle bundle = this.getIntent().getExtras();
         /* 获取Bundle中的数据，注意类型和key */
         if (bundle != null) {
-            id = bundle.getInt("id");
-            if (id == 0) {
+            areaid = bundle.getInt("id");
+            if (areaid == 0) {
                 finish();
             }
             areasDao = new AreasDao(((MyApplication) getApplication()).getSqlHelper());
-            SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{id+""});//模糊查询
+            SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{areaid + ""});//模糊查询
             if (areas != null) {
                 curentreas = areas.get(0);
             }
@@ -81,7 +81,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         setContentView(R.layout.lay_tower_list);
         helper = ((MyApplication) getApplication()).getSqlHelper();
         gantaDao = new GantaDao(helper);
-         areasDao  = new AreasDao(helper);
+        areasDao = new AreasDao(helper);
         gantaDao.createTable(helper.getWritableDatabase());
         geiDatas();
         TextView title_text = (TextView) findViewById(R.id.title_text);
@@ -89,8 +89,10 @@ public class Activity_TowerList extends Activity implements OnClickListener {
 
         btn_add = (Button) findViewById(R.id.btn_add);
         btn_cailu = (Button) findViewById(R.id.btn_cailu);
+        Button btn_delgan = (Button) findViewById(R.id.btn_delgan);
         btn_add.setOnClickListener(this);
         btn_cailu.setOnClickListener(this);
+        btn_delgan.setOnClickListener(this);
         for (int i = 0; i < headers.length; i++) {
             TextView tmpView = ((TextView) findViewById(headIds[i]));
             tmpView.setText(headers[i]);
@@ -117,27 +119,45 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         mListView.setAdapter(adapter);
         mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         // mListView = (ListView) this.findViewById(R.id.repair_listview);
-        ImageButton  b_back = (ImageButton) findViewById(R.id.b_back);
+        ImageButton b_back = (ImageButton) findViewById(R.id.b_back);
         b_back.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_add:
-            {
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", id);
+            case R.id.btn_add: {
                 Intent intent = new Intent(Activity_TowerList.this,
                         Activity_Tower.class);
-					/* 把bundle对象assign给Intent */
-                intent.putExtras(bundle);
+                    /* 把bundle对象assign给Intent */
                 startActivityForResult(intent, 1);
             }
-                break;
+            break;
             case R.id.b_back:
                 finish();
                 break;
+            case R.id.btn_delgan:
+                if (selectItem == -1) {
+                    new AlertDialog.Builder(Activity_TowerList.this)
+                            .setTitle("温馨提示")
+                            .setMessage("请选择一行!")
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which) {
+                                            return;
+                                        }
+                                    }).create().show();
+                    return;
+                }
+                Ganta tmpGanta = gantaList.get(selectItem);
+                gantaDao.delete(tmpGanta);
+                geiDatas();
+                adapter.notifyDataSetChanged();// 提醒数据已经变动
+                break;
+
             case R.id.btn_cailu: {
                 if (selectItem == -1) {
                     new AlertDialog.Builder(Activity_TowerList.this)
@@ -179,25 +199,26 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     public void geiDatas() {
 
 //        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on a.id=g.areaid where a.id=", new String[]{id + ""});
-        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on 1=1", null);
+        gantaList = gantaDao.queryBySql("select g.id,g.name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.areaname" +
+                ",g.danwei from Ganta g join Areas a on a.id=g.areaid where a.id=?", new String[]{areaid + ""});
         if (gantaList == null) {
             // mListView.setVisibility(View.GONE);
             gantaList = new SparseArray<Ganta>();
             for (int i = 0; i < 0; i++) {
                 Ganta rows = new Ganta();
-                rows.id=i;
+                rows.id = i;
                 rows.caizhi = "caizhi";
                 rows.name = i + "content";
                 rows.pictatou = i + "";
                 gantaList.put(gantaList.size(), rows);
             }
-        }else{
+        } else {
             areaslist = areasDao.queryToList("", null);
             for (int i = 0; i < gantaList.size(); i++) {
                 System.out.println("value-->" + gantaList.get(i));
                 for (int j = 0; j < areaslist.size(); j++) {
-                    if(gantaList.get(i).taiquid== areaslist.get(j).id){
-                       break;
+                    if (gantaList.get(i).taiquid == areaslist.get(j).id) {
+                        break;
                     }
 
                 }
@@ -297,7 +318,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
 
             final Ganta tmpTowerInfo = gantaList.get(position);
             // holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
-            holder.txts[0].setText(position +1+ "");
+            holder.txts[0].setText(position + 1 + "");
             holder.txts[1].setText(tmpTowerInfo.areaname + "");
             holder.txts[2].setText(tmpTowerInfo.name + "");
             holder.txts[3].setText(tmpTowerInfo.caizhi + "");
