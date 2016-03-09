@@ -163,14 +163,26 @@ public class Activity_Tower extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_fullview:
+                if(ext_towername.getText().length()==0){
+                    showMsg("名称不能为空!");
+                    return;
+                }
                 picid = R.id.btn_fullview;
                 camera();
                 break;
             case R.id.btn_towerhead:
+                if(ext_towername.getText().length()==0){
+                    showMsg("名称不能为空!");
+                    return;
+                }
                 picid = R.id.btn_towerhead;
                 camera();
                 break;
             case R.id.btn_nameplate:
+                if(ext_towername.getText().length()==0){
+                    showMsg("名称不能为空!");
+                    return;
+                }
                 picid = R.id.btn_nameplate;
                 camera();
                 break;
@@ -278,7 +290,17 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 switch (picid) {
                     case R.id.btn_fullview:
                         str_fullview =new FileUtil().getSDDir("tower")+"/"+ext_towername.getText().toString()+"全貌.jpg";
-                        new FileUtil().writeStreamToSDCard(this, tempFile, str_fullview);
+                        Runnable sendable = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    new FileUtil().writeStreamToSDCard(Activity_Tower.this, tempFile, str_fullview);
+                                } catch (Exception e) {
+                                }
+                            }
+                        };
+                        new Thread(sendable).start();
+
                         iv_fullview.setImageBitmap(bitmap);
 
                         showMsg("路径："+ str_fullview);
