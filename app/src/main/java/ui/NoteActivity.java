@@ -281,7 +281,7 @@ public class NoteActivity extends Activity implements OnClickListener {
 								public void onClick(DialogInterface dialog,
 										int which) {
 									try {
-									String userName= IndexActivity.sharedPreferences_userInfo.getString("userName", "");
+//									String userName= IndexActivity.sharedPreferences_userInfo.getString("userName", "");
 
 								} catch (Exception e) {
 									// TODO Auto-generated catch block

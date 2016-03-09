@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -30,16 +31,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this,
-						Activity_TowerList
-								.class);
-				Bundle bundle = new Bundle();
-				/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-				bundle.putInt("index", -1);
-				bundle.putString("class", "record");
-				bundle.putString("type", "add");
-
-				/* 把bundle对象assign给Intent */
-				intent.putExtras(bundle);
+						Activity_AreaList.class);
 				startActivityForResult(intent, 1);
 //				initData();
 			}
@@ -71,10 +63,10 @@ public static final String[] FIELD_ARR1 = { "序号", "Guid","Isupload", "Line",
 	public void initData(){
 		file = new File(getSDPath()+"/Test");
 		makeDir(file);
-		JXLUtil.initExcel(file.toString() + "/text.xls", FIELD_ARR1, COLWIDTH_ARR);
+		new JXLUtil().initExcel(file.toString() + "/text.xls", FIELD_ARR1, COLWIDTH_ARR);
 
-		
-		List<KeypointAcquisitionBean> list = new ArrayList<KeypointAcquisitionBean>();
+
+		SparseArray<KeypointAcquisitionBean> list = new SparseArray<>();
 		for(int i=0;i<25;i++){
 			KeypointAcquisitionBean bean = new KeypointAcquisitionBean();
 			bean.setGuid(i+"");
@@ -90,9 +82,9 @@ public static final String[] FIELD_ARR1 = { "序号", "Guid","Isupload", "Line",
 			bean.setVoltage("1111"+i);
 			bean.setWeather("晴天");
 			bean.setYear("2014");
-			list.add(bean);
+			list.put(i,bean);
 		}
-		JXLUtil.writeObjListToExcel(list, getSDPath()+"/Test/text.xls", FIELD_ARR, this);
+		new JXLUtil().writeObjListToExcel(list, getSDPath() + "/Test/text.xls", FIELD_ARR, this);
 	}
 	public String getSDPath(){ 
 		File sdDir = null; 

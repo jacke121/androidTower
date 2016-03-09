@@ -72,19 +72,19 @@ public class SettingActivity extends Activity {
 		int Id = -1;
 		String strSql;
 		try {
-			String userName = IndexActivity.sharedPreferences_userInfo.getString("userName", "");
-			strSql = "select max(upgradeflag) as maxID from note where username='" + userName + "'";
-
-			MyApplication myApplication = (MyApplication) getApplication();
-			helper=myApplication.getSqlHelper();
-			cursor = helper.getReadableDatabase().rawQuery(strSql, null);
-			if (cursor != null) {
-				cursor.moveToFirst();
-				Id = cursor.getInt(cursor.getColumnIndex("maxID"));
-				cursor.close();
-			} else {
-				return 0;
-			}
+//			String userName = IndexActivity.sharedPreferences_userInfo.getString("userName", "");
+//			strSql = "select max(upgradeflag) as maxID from note where username='" + userName + "'";
+//
+//			MyApplication myApplication = (MyApplication) getApplication();
+//			helper=myApplication.getSqlHelper();
+//			cursor = helper.getReadableDatabase().rawQuery(strSql, null);
+//			if (cursor != null) {
+//				cursor.moveToFirst();
+//				Id = cursor.getInt(cursor.getColumnIndex("maxID"));
+//				cursor.close();
+//			} else {
+//				return 0;
+//			}
 		} catch (Exception e) {
 			if (cursor != null) {
 				cursor.close();

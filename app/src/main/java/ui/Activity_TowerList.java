@@ -138,18 +138,8 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 break;
             case R.id.btn_delgan:
                 if (selectItem == -1) {
-                    new AlertDialog.Builder(Activity_TowerList.this)
-                            .setTitle("温馨提示")
-                            .setMessage("请选择一行!")
-                            .setPositiveButton("确定",
-                                    new DialogInterface.OnClickListener() {
+                    showMsg("请选择一行!");
 
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which) {
-                                            return;
-                                        }
-                                    }).create().show();
                     return;
                 }
                 Ganta tmpGanta = gantaList.get(selectItem);
@@ -160,18 +150,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
 
             case R.id.btn_cailu: {
                 if (selectItem == -1) {
-                    new AlertDialog.Builder(Activity_TowerList.this)
-                            .setTitle("温馨提示")
-                            .setMessage("请选择一行!")
-                            .setPositiveButton("确定",
-                                    new DialogInterface.OnClickListener() {
-
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which) {
-                                            return;
-                                        }
-                                    }).create().show();
+                    showMsg("请选择一行!");
                     return;
                 }
                 Intent intent = new Intent(Activity_TowerList.this, Activity_Tower.class);
@@ -195,12 +174,20 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 break;
         }
     }
-
+    public void showMsg(String msg) {
+        new AlertDialog.Builder(Activity_TowerList.this).setTitle("温馨提示")
+                .setMessage(msg)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                }).create().show();
+    }
     public void geiDatas() {
 
 //        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on a.id=g.areaid where a.id=", new String[]{id + ""});
-        gantaList = gantaDao.queryBySql("select g.id,g.name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.areaname" +
-                ",g.danwei from Ganta g join Areas a on a.id=g.areaid where a.id=?", new String[]{areaid + ""});
+        gantaList = gantaDao.queryBySql("select g.id,g.name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,a.area as areaname" +
+                ",a.danwei from Ganta g join Areas a on a.id=g.areaid where a.id=?", new String[]{areaid + ""});
         if (gantaList == null) {
             // mListView.setVisibility(View.GONE);
             gantaList = new SparseArray<Ganta>();

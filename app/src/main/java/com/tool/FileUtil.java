@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,8 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -102,7 +105,6 @@ public class FileUtil {
 			else{
 				return;
 			}
-
 			InputStream input = context.getResources().getAssets()
 					.open(filename);
 
@@ -128,30 +130,21 @@ public class FileUtil {
 	/*
 	 * 将一个InputStream中的数据写入至SD卡中
 	 */
-	public void writeStreamToSDCard(Context context, String dirpath,
-			String filename,String targetFile) {
+	public void writeStreamToSDCard(Context context,
+			File mfile,String targetFile) {
 		File file = null;
 		OutputStream output = null;
 		try {
-			// 创建目录；
-			File path1 = new File(dirpath);
-			if (!path1.exists()) {
-				// 若不存在，创建目录，可以在应用启动的时候创建
-				path1.mkdirs();
-			}
-
 			// 在创建 的目录上创建文件；
-			file = new File(dirpath + "/" + targetFile);
-
+			file = new File( targetFile);
 			if (!file.exists()) {
 				file.createNewFile();
 			} else {
 				return;
 			}
-
-			InputStream input = context.getResources().getAssets()
-					.open(filename);
-
+			InputStream input = new FileInputStream(file);
+//			InputStream input = context.getResources().getAssets()
+//					.open(filename);
 			output = new FileOutputStream(file);
 			byte[] bt = new byte[input.available()];
 			while (input.read(bt) != -1) {
@@ -170,29 +163,7 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 	}
-	
 
-	
-	// public String inputStream2String(InputStream is) {
-	// BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-	// StringBuilder sb = new StringBuilder();
-	// String line = null;
-	// try {
-	// while ((line = reader.readLine()) != null) {
-	// sb.append(line + "/n");
-	// }
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// is.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// return sb.toString();
-	// }
 	public String inputStream2String(InputStream is) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		int i = -1;
@@ -202,9 +173,50 @@ public class FileUtil {
 		return baos.toString();
 	}
 
+
+	public Bitmap getThumbnail(Context context, File file) {
+
+		Bitmap tmpBmp=null;
+		// 获取资源图片
+		try {
+			InputStream in = new FileInputStream(file);
+			//通过一个InputStream创建一个BitmapDrawable对象
+			BitmapDrawable drawable = new BitmapDrawable(in);
+			//通过BitmapDrawable对象获得Bitmap对象
+			Bitmap bitmap = drawable.getBitmap();
+			//利用Bitmap对象创建缩略图
+			tmpBmp = ThumbnailUtils.extractThumbnail(bitmap, 51, 108);
+
+			in.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return tmpBmp;
+	}
+	public Bitmap loadImagebyfile(Context context, File file) {
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		opt.inPreferredConfig = Bitmap.Config.RGB_565;
+		opt.inPurgeable = true;
+		opt.inInputShareable = true;
+		Bitmap tmpBmp=null;
+		// 获取资源图片
+		try {
+			InputStream in = new FileInputStream(file);
+			 tmpBmp = BitmapFactory.decodeStream(in, null, opt);
+			in.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return tmpBmp;
+	}
 	/**
 	 * 以最省内存的方式读取本地资源的图片
-	 * 
 	 * @param resId
 	 * @return
 	 */

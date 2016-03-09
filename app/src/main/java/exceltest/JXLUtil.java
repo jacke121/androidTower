@@ -10,6 +10,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.Toast;
 
 
@@ -40,10 +41,8 @@ public class JXLUtil {
 	public static int index = 1;// 写入序号
 	public static int row = 2;// 具体字段写入从第二行开始
 
-	/**
-	 * 格式定义
-	 */
-	public static void format() {
+	//格式定义
+	public void format() {
 		try {
 			arial14font = new WritableFont(WritableFont.ARIAL, 14,
 					WritableFont.BOLD);
@@ -70,7 +69,7 @@ public class JXLUtil {
 		}
 	}
 	
-	public static void initExcel(String fileName, String[] colName,
+	public  void initExcel(String fileName, String[] colName,
 			int[] widthArr) {
 		JXLUtil.index = 0;// 设置为初始值。不然static的index会一直递增
 		JXLUtil.row = 2;
@@ -93,9 +92,9 @@ public class JXLUtil {
 			sheet.mergeCells(0, 0, colName.length - 1, 0);
 			sheet.addCell((WritableCell) new Label(0, 0, fileName,
 					arial14format));// 表头设置完成
-//			for (int i = 0; i < widthArr.length; i++) {
-//				sheet.setColumnView(i, widthArr[i]);// 设置col 宽度
-//			}
+			for (int i = 0; i < widthArr.length; i++) {
+				sheet.setColumnView(i, widthArr[i]);// 设置col 宽度
+			}
 
 			int row = 1;
 			int col = 0;
@@ -131,7 +130,6 @@ public class JXLUtil {
 
 	/**
 	 * 将 数据写入到excel中
-	 * 
 	 * @param os
 	 *            创建Excel的输出流
 	 * @param objList
@@ -145,7 +143,7 @@ public class JXLUtil {
 	 * @param widthArr
 	 *            excel单元格宽度
 	 */
-	public static <T> void dataToExcel(ByteArrayOutputStream os,
+	public <T> void dataToExcel(ByteArrayOutputStream os,
 			List<T> objList, String[] fieldArr, String fileName,
 			String[] colName, int[] widthArr) {
 		format();// 先设置格式
@@ -227,7 +225,7 @@ public class JXLUtil {
 		}
 	}
 
-	public static <T> void writeObjListToExcel(List<T> objList,
+	public <T> void writeObjListToExcel(SparseArray<T> objList,
 			String fileName, String[] fieldArr, Context c) {
 		if (objList != null && objList.size() > 0) {
 			WritableWorkbook writebook = null;
@@ -249,7 +247,9 @@ public class JXLUtil {
 				 */
 				// {"序号","体验卡号","手机号码","用户iTV帐号","地区","使用时间","体验到期时间","体验期是否订购"};
 
-				for (Object tmp : objList) {
+				for(int j = 0; j < objList.size(); j++) {
+					Object tmp = objList.get(j);
+
 					Class classType = tmp.getClass();
 					int col = 0;
 					index++;
@@ -276,7 +276,7 @@ public class JXLUtil {
 					row++;
 				}
 				writebook.write();
-				Toast.makeText(c, "导出成功", 1000).show();
+				Toast.makeText(c, "导出成功", Toast.LENGTH_SHORT).show();
 			} catch (BiffException e) {
 				e.printStackTrace();
 			} catch (WriteException e) {

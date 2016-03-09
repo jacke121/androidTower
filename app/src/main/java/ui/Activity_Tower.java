@@ -31,6 +31,7 @@ import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
+import com.tool.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,7 +56,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
     Spinner sp_huilu;
     SqlHelper helper;
     ImageView iv_fullview, iv_tower_head, iv_nameplate;
-    File file_fullview, file_tower_head, file_nameplate;
+    String str_fullview, str_tower_head, str_nameplate;
     AreasDao areasDao;
     Areas curentreas;
     int gantaid;
@@ -186,22 +187,22 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 String zuobiao = ext_zuobiao.getText().toString();
                 String towername = ext_towername.getText().toString();
                 String parenttower = txtParenttower.getText().toString();
-                if (file_fullview == null) {
+                if (str_fullview == null) {
                     showMsg("全貌图片不能为空!");
                     return;
                 }
-                if (file_tower_head == null) {
+                if (str_tower_head == null) {
                     showMsg("塔头图片不能为空!");
                     return;
                 }
-                if (file_nameplate == null) {
+                if (str_nameplate == null) {
                     showMsg("铭牌图片不能为空!");
                     return;
                 }
 
-                areas.picquanmao = file_fullview.getAbsolutePath();
-                areas.pictatou = file_tower_head.getAbsolutePath();
-                areas.picmingpai = file_nameplate.getAbsolutePath();
+                areas.picquanmao = str_fullview;
+                areas.pictatou = str_tower_head;
+                areas.picmingpai = str_nameplate;
                 if (is_reply.isChecked()) {
                     if (parenttower.length() > 0) {
                         SparseArray<Ganta> parents = gantaDao.queryToList("name like ?", new String[]{"%" + parenttower + "%"});//模糊查询
@@ -271,9 +272,35 @@ public class Activity_Tower extends Activity implements OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PHOTO_REQUEST_CAMERA) {
             if (hasSdcard()) {
-                tempFile = new File(Environment.getExternalStorageDirectory(),
+                  tempFile = new File(Environment.getExternalStorageDirectory(),
                         PHOTO_FILE_NAME);
-                crop(Uri.fromFile(tempFile));
+                bitmap= new FileUtil().getThumbnail(this,tempFile);
+                switch (picid) {
+                    case R.id.btn_fullview:
+                        str_fullview =new FileUtil().getSDDir("tower")+"/"+ext_towername.getText().toString()+"全貌.jpg";
+                        new FileUtil().writeStreamToSDCard(this, tempFile, str_fullview);
+                        iv_fullview.setImageBitmap(bitmap);
+
+                        showMsg("路径："+ str_fullview);
+
+                        break;
+                    case R.id.btn_towerhead:
+                        str_tower_head =new FileUtil().getSDDir("tower") + "/" + ext_towername.getText().toString() + "塔头.jpg";
+                        new FileUtil().writeStreamToSDCard(this, tempFile, str_tower_head);
+                        iv_tower_head.setImageBitmap(bitmap);
+                        showMsg("路径：" + str_tower_head);
+                        break;
+                    case R.id.btn_nameplate:
+                       str_nameplate = new FileUtil().getSDDir("tower") + "/" + ext_towername.getText().toString()+"铭牌.jpg";
+                        new FileUtil().writeStreamToSDCard(this, tempFile, str_nameplate);
+                        iv_nameplate.setImageBitmap(bitmap);
+                        showMsg("路径：" + str_nameplate);
+                        break;
+                    default:
+                        break;
+                }
+                boolean delete = tempFile.delete();
+//                crop(Uri.fromFile(tempFile));
             } else {
                 Toast.makeText(Activity_Tower.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT)
                         .show();
@@ -281,36 +308,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
         } else if (requestCode == PHOTO_REQUEST_CUT) {
             try {
                 bitmap = data.getParcelableExtra("data");
-                switch (picid) {
-                    case R.id.btn_fullview:
-                        iv_fullview.setImageBitmap(bitmap);
-                        file_fullview = new File(Environment.getExternalStorageDirectory(),
-                                "aaalbg.jpg");
-                        saveMyBitmap(bitmap, file_fullview);
-                        btn_fullview.setText("全貌已拍");
-                        break;
-                    case R.id.btn_towerhead:
-                        iv_tower_head.setImageBitmap(bitmap);
-                        file_tower_head = new File(Environment.getExternalStorageDirectory(),
-                                "aaalbg.jpg");
-                        saveMyBitmap(bitmap, file_tower_head);
-                        btn_towerhead.setText("塔头已拍");
-                        break;
-                    case R.id.btn_nameplate:
-                        iv_nameplate.setImageBitmap(bitmap);
-                        file_nameplate = new File(Environment.getExternalStorageDirectory(),
-                                "aaalbg.jpg");
-                        saveMyBitmap(bitmap, file_nameplate);
-                        btn_nameplate.setText("铭牌已拍");
-                        break;
-                    default:
-                        break;
-                }
-
-
-                boolean delete = tempFile.delete();
-                System.out.println("delete = " + delete);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
