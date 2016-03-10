@@ -294,13 +294,12 @@ public class Activity_Tower extends Activity implements OnClickListener {
                             @Override
                             public void run() {
                                 try {
-                                    new FileUtil().writeStreamToSDCard(Activity_Tower.this, tempFile, str_fullview);
+                                    new FileUtil().writeStreamToSDCard( tempFile, str_fullview);
                                 } catch (Exception e) {
                                 }
                             }
                         };
                         new Thread(sendable).start();
-
                         iv_fullview.setImageBitmap(bitmap);
 
                         showMsg("路径："+ str_fullview);
@@ -308,13 +307,31 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         break;
                     case R.id.btn_towerhead:
                         str_tower_head =new FileUtil().getSDDir("tower") + "/" + ext_towername.getText().toString() + "塔头.jpg";
-                        new FileUtil().writeStreamToSDCard(this, tempFile, str_tower_head);
+                         sendable = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    new FileUtil().writeStreamToSDCard(tempFile, str_tower_head);
+                                } catch (Exception e) {
+                                }
+                            }
+                        };
+                        new Thread(sendable).start();
                         iv_tower_head.setImageBitmap(bitmap);
                         showMsg("路径：" + str_tower_head);
                         break;
                     case R.id.btn_nameplate:
                        str_nameplate = new FileUtil().getSDDir("tower") + "/" + ext_towername.getText().toString()+"铭牌.jpg";
-                        new FileUtil().writeStreamToSDCard(this, tempFile, str_nameplate);
+                        sendable = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    new FileUtil().writeStreamToSDCard( tempFile, str_nameplate);
+                                } catch (Exception e) {
+                                }
+                            }
+                        };
+                        new Thread(sendable).start();
                         iv_nameplate.setImageBitmap(bitmap);
                         showMsg("路径：" + str_nameplate);
                         break;

@@ -130,19 +130,18 @@ public class FileUtil {
 	/*
 	 * 将一个InputStream中的数据写入至SD卡中
 	 */
-	public void writeStreamToSDCard(Context context,
-			File mfile,String targetFile) {
+	public void writeStreamToSDCard(File mfile,String targetFile) {
 		File file = null;
 		OutputStream output = null;
 		try {
 			// 在创建 的目录上创建文件；
-			file = new File( targetFile);
+			file = new File(targetFile);
 			if (!file.exists()) {
 				file.createNewFile();
 			} else {
 				return;
 			}
-			InputStream input = new FileInputStream(file);
+			InputStream input = new FileInputStream(mfile);
 //			InputStream input = context.getResources().getAssets()
 //					.open(filename);
 			output = new FileOutputStream(file);
