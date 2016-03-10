@@ -42,7 +42,7 @@ import exceltest.JXLUtil;
 
 public class Activity_AreaList extends Activity implements OnClickListener {
     private int selectItem = -1;
-    int[] COLWIDTH_ARR = {5, 40, 15, 30, 30, 30, 30, 30, 30, 30, 30, 10};//单元格宽度
+    int[] COLWIDTH_ARR = {5, 40, 15, 30, 30, 30, 30, 30, 30, 30, 30, 10,30,30,30};//单元格宽度
     int[] headIds = new int[]{R.id.txt_1201, R.id.txt_1202, R.id.txt_1203,
             R.id.txt_1204, R.id.txt_1205};
     String[] headers = new String[]{"序号", "城市", "台区名称", "状态", "操作"};
@@ -145,8 +145,8 @@ public class Activity_AreaList extends Activity implements OnClickListener {
                 String datestr = sdf.format(now);
                 String filename = new FileUtil().getSDDir("tower") + "/坐标点批量导入" + datestr + ".xlsx";
 
-                String[] excelheaders = new String[]{"序号", "台区", "杆塔名称", "单位", "材质", "性质", "回路数", "电压", "运行状态", "坐标点", "发布日期"};
-                SparseArray<Ganta> gantaList = gantaDao.queryBySql("select g.id,a.area as areaname,g.name,a.danwei,g.caizhi,g.xingzhi,g.huilu,g.dianya,g.yunxing,g.zuobiao,g.updatetime" +
+                String[] excelheaders = new String[]{"序号", "台区", "杆塔名称", "单位", "材质", "性质", "回路数", "电压", "运行状态", "坐标点", "发布日期","全貌","塔头","铭牌"};
+                SparseArray<Ganta> gantaList = gantaDao.queryBySql("select g.id,a.area as areaname,g.name,a.danwei,g.caizhi,g.xingzhi,g.huilu,g.dianya,g.yunxing,g.zuobiao,g.updatetime,g.picquanmao,g.pictatou,g.picmingpai" +
                         " from Ganta g join Areas a on a.id=g.areaid", null);
 
                 jXLUtil.initExcel(filename, excelheaders, COLWIDTH_ARR);

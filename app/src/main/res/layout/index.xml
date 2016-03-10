@@ -80,7 +80,7 @@
             android:orientation="horizontal" >
 
             <EditText
-                android:id="@+id/main_eTxtUser"
+                android:id="@+id/ext_ip"
                 android:layout_width="250dip"
                 android:layout_height="wrap_content"
                 android:hint=""
