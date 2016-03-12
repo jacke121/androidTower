@@ -1,5 +1,6 @@
 package exceltest;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -12,10 +13,10 @@ public class GetValueByRef {
 	 * @param fieldName 字段名称
 	 * @return
 	 */
-	
-	public static Object getValueByRef(Object srcObj, String fieldName){
+	public static Object getMethodValue(Object srcObj, String fieldName){
 		Object value = null;
 		Class objClass = srcObj.getClass();
+
 		fieldName =fieldName.replaceFirst(fieldName.substring(0, 1), fieldName.substring(0, 1).toUpperCase()); 
 		String getMethodName = "get"+fieldName;
 		try {
@@ -30,6 +31,19 @@ public class GetValueByRef {
 		}catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+		return value;
+	}
+	public static Object getFiledValue(Object srcObj, String fieldName){
+		Object value = null;
+		Class<?> cla = srcObj.getClass();
+		Field field;
+		try {
+			field = cla.getField(fieldName);
+			value=field.get(srcObj);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return value;

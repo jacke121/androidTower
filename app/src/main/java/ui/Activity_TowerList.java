@@ -2,7 +2,6 @@ package ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,8 +22,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
-
 import com.baseDao.Areas;
 import com.baseDao.AreasDao;
 import com.baseDao.Ganta;
@@ -39,10 +36,8 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     private int selectItem = -1;
     int[] headIds = new int[]{R.id.txt_1100,R.id.txt_1101, R.id.txt_1102, R.id.txt_1103,
             R.id.txt_1104, R.id.txt_1105, R.id.txt_1106, R.id.txt_1107,
-            R.id.txt_1108, R.id.txt_1109, R.id.txt_1110, R.id.txt_1111,
-            R.id.txt_1112};
-    String[] headers = new String[]{"序号", "杆塔名称", "材质", "性质", "台区",
-            "回路数", "电压", "运行状态", "坐标点", "上级塔杆", "发布日期", "发布人", "维修人员"};
+            R.id.txt_1108, R.id.txt_1109, R.id.txt_1110, R.id.txt_1111};
+    String[] headers = new String[]{"序号", "台区名","杆塔名称", "材质", "性质","回路数", "电压", "运行状态", "坐标点", "发布日期", "发布人", "维修人员"};
     // 方便测试，直接写的public
     Button btn_add, btn_cailu;
     DataAdapter adapter;
@@ -56,7 +51,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     public static int areaid;
     GantaDao gantaDao;
     SparseArray<Ganta> gantaList;
-    SparseArray<Areas> areaslist;
     AreasDao areasDao;
     Areas curentreas;
 
@@ -139,7 +133,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
             case R.id.btn_delgan:
                 if (selectItem == -1) {
                     showMsg("请选择一行!");
-
                     return;
                 }
                 Ganta tmpGanta = gantaList.get(selectItem);
@@ -147,7 +140,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 geiDatas();
                 adapter.notifyDataSetChanged();// 提醒数据已经变动
                 break;
-
             case R.id.btn_cailu: {
                 if (selectItem == -1) {
                     showMsg("请选择一行!");
@@ -166,7 +158,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 }
             }
             break;
-
             case R.id.title_btn_sequence:
                 Activity_TowerList.this.finish();
                 break;
@@ -184,12 +175,10 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 }).create().show();
     }
     public void geiDatas() {
-
 //        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on a.id=g.areaid where a.id=", new String[]{id + ""});
-        gantaList = gantaDao.queryBySql("select g.id,g.name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,a.area as areaname" +
-                ",a.danwei from Ganta g join Areas a on a.id=g.areaid where a.id=?", new String[]{areaid + ""});
+        gantaList = gantaDao.queryBySql("select g.id,g.name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.lifeStatus,g.upgradeFlag," +
+                "a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid where a.id=?", new String[]{areaid + ""});
         if (gantaList == null) {
-            // mListView.setVisibility(View.GONE);
             gantaList = new SparseArray<Ganta>();
             for (int i = 0; i < 0; i++) {
                 Ganta rows = new Ganta();
@@ -199,18 +188,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 rows.pictatou = i + "";
                 gantaList.put(gantaList.size(), rows);
             }
-        } else {
-            areaslist = areasDao.queryToList("", null);
-            for (int i = 0; i < gantaList.size(); i++) {
-                System.out.println("value-->" + gantaList.get(i));
-                for (int j = 0; j < areaslist.size(); j++) {
-                    if (gantaList.get(i).taiquid == areaslist.get(j).id) {
-                        break;
-                    }
-
-                }
-            }
-
         }
     }
 
@@ -322,7 +299,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
             holder.txts[9].setText(tmpTowerInfo.yunxing + "");
             holder.txts[10].setText(tmpTowerInfo.zuobiao + "");
             holder.txts[11].setText(tmpTowerInfo.level + "");
-            holder.txts[12].setText(tmpTowerInfo.parentid + "");
 
             convertView.setTag(holder);
 
@@ -376,6 +352,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     }
 
     private class ViewHolder {
-        TextView[] txts = new TextView[14];
+        TextView[] txts = new TextView[13];
     }
 }

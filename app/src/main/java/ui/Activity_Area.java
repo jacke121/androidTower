@@ -12,10 +12,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StrictMode;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,10 +25,8 @@ import com.baseDao.SqlHelper;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 
-import webClient.DialogFactory;
-
 public class Activity_Area extends Activity implements OnClickListener {
-    public static EditText txt_qubian, txt_quxian, txt_gongbian, txt_danwei;
+    public static EditText txt_name,txt_danwei;// txt_quxian, txt_gongbian, ;
     Button btn_save;
     ImageView title_btn_sequence;
     String msg = null;
@@ -111,9 +107,9 @@ public class Activity_Area extends Activity implements OnClickListener {
      * 创建初始化视图的方法
      */
     private void initView() {
-        txt_qubian = (EditText) findViewById(R.id.txt_qubian);
-        txt_quxian = (EditText) findViewById(R.id.txt_quxian);
-        txt_gongbian = (EditText) findViewById(R.id.txt_gongbian);
+        txt_name = (EditText) findViewById(R.id.ext_name);
+//        txt_quxian = (EditText) findViewById(R.id.txt_quxian);
+//        txt_gongbian = (EditText) findViewById(R.id.txt_gongbian);
         txt_danwei = (EditText) findViewById(R.id.txt_danwei);
         btn_save = (Button) findViewById(R.id.btn_save);
         btn_save.setOnClickListener(this);
@@ -133,32 +129,19 @@ public class Activity_Area extends Activity implements OnClickListener {
                 }).create().show();
     }
 
-    public String registerRemoteService(String userName, String password, String repassword) {
-        Map<String, String> params = new LinkedHashMap<String, String>();
-        params.put("userName", txt_qubian.getText().toString());
-        params.put("password", txt_quxian.getText().toString());
-        params.put("repassword", txt_gongbian.getText().toString());
-        return msg;
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
-               String qubian = txt_qubian.getText().toString();
-                String  quxian = txt_quxian.getText().toString();
-                String gongbian = txt_gongbian.getText().toString();
+               String name = txt_name.getText().toString();
                 String danwei = txt_danwei.getText().toString();
-                if (qubian.equals("") || quxian.equals("") || gongbian.equals("")||danwei.equals("")) {
+                if (name.equals("") || danwei.equals("")) {
                     showMsg("信息不能为空!");
                 } else {
                     Areas areas = new Areas();
-                    areas.gongbian = gongbian;
-                    areas.qubian=qubian;
-                    areas.quxian=quxian;
                     areas.danwei=danwei;
                     areas.areastatus=1;
-                    areas.area=qubian+quxian+gongbian;
+                    areas.area=name;
                     areas.count=1;
                     areas.okcount=0;
                     areas.lifeStatus=1;

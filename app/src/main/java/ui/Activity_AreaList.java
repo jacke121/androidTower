@@ -3,7 +3,6 @@ package ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -39,13 +38,12 @@ import java.util.Date;
 import java.util.List;
 
 import exceltest.JXLUtil;
-
 public class Activity_AreaList extends Activity implements OnClickListener {
     private int selectItem = -1;
     int[] COLWIDTH_ARR = {5, 40, 15, 30, 30, 30, 30, 30, 30, 30, 30, 10,30,30,30};//单元格宽度
     int[] headIds = new int[]{R.id.txt_1201, R.id.txt_1202, R.id.txt_1203,
             R.id.txt_1204, R.id.txt_1205};
-    String[] headers = new String[]{"序号", "城市", "台区名称", "状态", "操作"};
+    String[] headers = new String[]{"序号", "台区名", "运行单位", "状态", "操作"};
     // 方便测试，直接写的public
     DataAdapter adapter;
     public HorizontalScrollView mTouchView;
@@ -104,8 +102,6 @@ public class Activity_AreaList extends Activity implements OnClickListener {
         adapter = new DataAdapter();
         mListView.setAdapter(adapter);
         mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-
-
     }
 
     public void getData() {
@@ -143,14 +139,15 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                 String datestr = sdf.format(now);
-                String filename = new FileUtil().getSDDir("tower") + "/坐标点批量导入" + datestr + ".xlsx";
+                String filename = new FileUtil().getSDDir("1tower") + "/坐标点批量导入" + datestr + ".xls";
 
                 String[] excelheaders = new String[]{"序号", "台区", "杆塔名称", "单位", "材质", "性质", "回路数", "电压", "运行状态", "坐标点", "发布日期","全貌","塔头","铭牌"};
-                SparseArray<Ganta> gantaList = gantaDao.queryBySql("select g.id,a.area as areaname,g.name,a.danwei,g.caizhi,g.xingzhi,g.huilu,g.dianya,g.yunxing,g.zuobiao,g.updatetime,g.picquanmao,g.pictatou,g.picmingpai" +
-                        " from Ganta g join Areas a on a.id=g.areaid", null);
-
                 jXLUtil.initExcel(filename, excelheaders, COLWIDTH_ARR);
-                jXLUtil.writeObjListToExcel(gantaList, filename, excelheaders, this);
+                SparseArray<Ganta> gantaList = gantaDao.queryBySql("select g.id,a.area || g.name as name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.lifeStatus,g.upgradeFlag," +
+                        "a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid", null);
+                String[] excelfiles = new String[]{ "areaname", "name", "danwei", "caizhi", "xingzhi", "huilu", "dianya", "yunxing", "zuobiao", "createtime","picquanmao","pictatou","picmingpai"};
+
+                jXLUtil.writeObjListToExcel(gantaList, filename, excelfiles, this);
                 showMsg(filename);
                 break;
 
@@ -268,27 +265,21 @@ public class Activity_AreaList extends Activity implements OnClickListener {
                     notifyDataSetChanged();// 提醒数据已经变动
                 }
             });
-
-            holder.rownember = (TextView) convertView
-                    .findViewById(R.id.rownember);
-            holder.areanmae = (TextView) convertView
-                    .findViewById(R.id.areaname);
-
-            holder.content = (TextView) convertView.findViewById(R.id.content);
-            holder.orderState = (TextView) convertView
-                    .findViewById(R.id.orderState);
-            holder.cityname = (TextView) convertView
-                    .findViewById(R.id.cityname);
+            for (int i = 0; i < headers.length; i++) {
+                holder.txts[i] = (TextView) convertView
+                        .findViewById(headIds[i]);
+            }
 
             if (tmpAreaInto.areastatus.equals("1")) {
-                holder.orderState.setText("未完成");
+                holder.txts[3].setText("未完成");
             } else if (tmpAreaInto.areastatus.equals("2")) {
-                holder.orderState.setText("已完成");
+                holder.txts[3].setText("已完成");
             }
-            holder.rownember.setText(position + 1 + "");
-            holder.cityname.setText(tmpAreaInto.quxian);
+            holder.txts[0].setText(position + 1 + "");
+            holder.txts[1].setText(tmpAreaInto.area);
+            holder.txts[2].setText(tmpAreaInto.danwei);
             // holder.maintainNum.setText(Html.fromHtml("<u>"+tmpRepairOrder.maintainNum+"</u>"));
-            holder.areanmae.setText(tmpAreaInto.area);
+
             convertView.setTag(holder);
             CHScrollView ascrollView = (CHScrollView) convertView
                     .findViewById(R.id.item_scroll);
@@ -350,11 +341,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
     }
 
     private class ViewHolder {
-        TextView rownember;
-        TextView cityname;
-        TextView areanmae;
-        TextView content;
-        TextView orderState;
+        TextView[] txts = new TextView[5];
         Button area_del;
 
     }

@@ -97,10 +97,9 @@ public class JXLUtil {
 			}
 
 			int row = 1;
-			int col = 0;
-			for (col = 0; col < colName.length; col++) {
+
+			for (int col = 0; col < colName.length; col++) {
 				sheet.addCell(new Label(col, row, colName[col], arial10format));// 写入
-																				// col名称
 			}
 			workbook.write();// 写入数据
 		} catch (RowsExceededException e) {
@@ -128,6 +127,79 @@ public class JXLUtil {
 
 	}
 
+
+
+	public <T> void writeObjListToExcel(SparseArray<T> objList,
+			String fileName, String[] fieldArr, Context c) {
+		if (objList != null && objList.size() > 0) {
+			WritableWorkbook writebook = null;
+			InputStream in = null;
+			try {
+				/**
+				 * 读取原来写入的文件
+				 */
+				// WorkbookSettings setEncode = new WorkbookSettings();
+				//设置读文件编码
+				// setEncode.setEncoding(UTF8_ENCODING);
+				in = new FileInputStream(new File(fileName));
+				Workbook workbook = Workbook.getWorkbook(in);
+				writebook = Workbook.createWorkbook(new File(fileName),
+						workbook);
+				WritableSheet sheet = writebook.getSheet(0);
+
+				for(int j = 0; j < objList.size(); j++) {
+					Object tmp = objList.get(j);
+					Class classType = tmp.getClass();
+					int col = 0;
+					index++;
+					String serialNumberStr = String.valueOf(index);
+					sheet.addCell(new Label(col, row, serialNumberStr,
+							arial12format));// 第一列用来写序号
+					col++;
+					// 通过反射取值，并且写入到excel中
+					for (int i = 0; i < fieldArr.length; i++) {
+//						Class<?> cls=Class.forName(className);////////////////////////通过类的名称反射类
+						String fieldName = fieldArr[i];
+						Object value = GetValueByRef.getFiledValue(tmp,
+								fieldName);
+						String str = null;
+						if (value == null) {
+							str = "";
+						} else {
+							str = String.valueOf(value);
+						}
+						sheet.addCell(new Label(col, row, str, arial12format));
+						col++;
+					}
+					row++;
+				}
+				writebook.write();
+				Toast.makeText(c, "导出成功", Toast.LENGTH_SHORT).show();
+			} catch (BiffException e) {
+				e.printStackTrace();
+			} catch (WriteException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+			} finally {
+				if (writebook != null) {
+					try {
+						writebook.close();
+					} catch (WriteException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}if(in != null){
+					try {
+						in.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}
+	}
 	/**
 	 * 将 数据写入到excel中
 	 * @param os
@@ -144,8 +216,8 @@ public class JXLUtil {
 	 *            excel单元格宽度
 	 */
 	public <T> void dataToExcel(ByteArrayOutputStream os,
-			List<T> objList, String[] fieldArr, String fileName,
-			String[] colName, int[] widthArr) {
+								List<T> objList, String[] fieldArr, String fileName,
+								String[] colName, int[] widthArr) {
 		format();// 先设置格式
 		WritableWorkbook workbook = null;
 		try {
@@ -165,12 +237,12 @@ public class JXLUtil {
 			int col = 0;
 			for (col = 0; col < colName.length; col++) {// 写入列明
 				sheet.addCell(new Label(col, row, colName[col], arial10format));// 写入
-																				// col名称
+				// col名称
 			}
 
 			for (Object tmp : objList) {// 写入数据
 				row++;
-				col = 0;
+				col = 1;
 				index++;
 				String serialNumberStr = String.valueOf(index);
 				sheet.addCell(new Label(col, row, serialNumberStr,
@@ -181,7 +253,7 @@ public class JXLUtil {
 				 */
 				for (int i = 0; i < fieldArr.length; i++) {
 					String fieldName = fieldArr[i];
-					Object value = GetValueByRef.getValueByRef(tmp, fieldName);
+					Object value = GetValueByRef.getFiledValue(tmp, fieldName);
 					String str = null;
 					if (value == null) {
 						str = "";
@@ -224,83 +296,4 @@ public class JXLUtil {
 			}
 		}
 	}
-
-	public <T> void writeObjListToExcel(SparseArray<T> objList,
-			String fileName, String[] fieldArr, Context c) {
-		if (objList != null && objList.size() > 0) {
-			WritableWorkbook writebook = null;
-			InputStream in = null;
-			try {
-				/**
-				 * 读取原来写入的文件
-				 */
-				// WorkbookSettings setEncode = new WorkbookSettings();
-				// //设置读文件编码
-				// setEncode.setEncoding(UTF8_ENCODING);
-				in = new FileInputStream(new File(fileName));
-				Workbook workbook = Workbook.getWorkbook(in);
-				writebook = Workbook.createWorkbook(new File(fileName),
-						workbook);
-				WritableSheet sheet = writebook.getSheet(0);
-				/**
-				 * 写入数据
-				 */
-				// {"序号","体验卡号","手机号码","用户iTV帐号","地区","使用时间","体验到期时间","体验期是否订购"};
-
-				for(int j = 0; j < objList.size(); j++) {
-					Object tmp = objList.get(j);
-
-					Class classType = tmp.getClass();
-					int col = 0;
-					index++;
-					String serialNumberStr = String.valueOf(index);
-					sheet.addCell(new Label(col, row, serialNumberStr,
-							arial12format));// 第一列用来写序号
-					col++;
-					/**
-					 * 通过反射取值，并且写入到excel中
-					 */
-					for (int i = 0; i < fieldArr.length; i++) {
-						String fieldName = fieldArr[i];
-						Object value = GetValueByRef.getValueByRef(tmp,
-								fieldName);
-						String str = null;
-						if (value == null) {
-							str = "";
-						} else {
-							str = String.valueOf(value);
-						}
-						sheet.addCell(new Label(col, row, str, arial12format));
-						col++;
-					}
-					row++;
-				}
-				writebook.write();
-				Toast.makeText(c, "导出成功", Toast.LENGTH_SHORT).show();
-			} catch (BiffException e) {
-				e.printStackTrace();
-			} catch (WriteException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-			} finally {
-				if (writebook != null) {
-					try {
-						writebook.close();
-					} catch (WriteException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}if(in != null){
-					try {
-						in.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
-		}
-	}
-
 }

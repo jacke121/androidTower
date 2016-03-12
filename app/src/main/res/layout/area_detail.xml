@@ -59,6 +59,7 @@
         android:layout_marginTop="20dip"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
+        android:visibility="invisible"
         android:paddingRight="10dp">
 
         <TextView
@@ -120,7 +121,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="台区线："
+            android:text="台区名："
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -132,7 +133,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/txt_quxian"
+                android:id="@+id/ext_name"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:hint=""
@@ -162,6 +163,7 @@
         android:layout_marginTop="5dip"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
+        android:visibility="gone"
         android:paddingRight="10dp">
 
         <TextView

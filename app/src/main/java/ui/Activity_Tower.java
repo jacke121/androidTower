@@ -39,7 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class Activity_Tower extends Activity implements OnClickListener {
-    public EditText ext_zuobiao, ext_towername, txtParenttower;
+    public EditText ext_zuobiao, ext_towername;
     RadioGroup radio_dianya, radio_caizhi, radio_xingzhi, use_status;
     private final int PHOTO_REQUEST_CAMERA = 1;// 拍照
     private final int PHOTO_REQUEST_CUT = 3;// 结果
@@ -50,7 +50,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
     Button btn_fullview, btn_towerhead, btn_nameplate;
     ImageView ivback;
     int picid;
-    CheckBox is_reply;
     public String name, message;
     GantaDao gantaDao;
     Spinner sp_huilu;
@@ -102,14 +101,12 @@ public class Activity_Tower extends Activity implements OnClickListener {
         btn_nameplate.setOnClickListener(this);
         ext_zuobiao = (EditText) findViewById(R.id.ext_zuobiao);
         ext_towername = (EditText) findViewById(R.id.ext_towername);
-        txtParenttower = (EditText) findViewById(R.id.txtParenttower);
         radio_dianya = (RadioGroup) findViewById(R.id.group_voltage);
         radio_caizhi = (RadioGroup) findViewById(R.id.group_material);
         radio_xingzhi = (RadioGroup) findViewById(R.id.radio_xingzhi);
         use_status = (RadioGroup) findViewById(R.id.use_status);
         sp_huilu = (Spinner) findViewById(R.id.sp_huilu);
         btnCancel = (Button) findViewById(R.id.btnCancel);
-        is_reply = (CheckBox) findViewById(R.id.is_reply);
         Button register_btnCancel = (Button) findViewById(R.id.btnCancel);
         register_btnCancel.setOnClickListener(this);
         Button btn_save = (Button) findViewById(R.id.btn_save);
@@ -120,39 +117,48 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
         if(mganta !=null){
         //编辑
+            File file=new File(mganta.picquanmao);
+            bitmap= new FileUtil().getThumbnail(this,file);
+            iv_fullview.setImageBitmap(bitmap);
+             file=new File(mganta.pictatou);
+            bitmap= new FileUtil().getThumbnail(this,file);
+            iv_tower_head.setImageBitmap(bitmap);
+             file=new File(mganta.picmingpai);
+            bitmap= new FileUtil().getThumbnail(this,file);
+            iv_nameplate.setImageBitmap(bitmap);
             ext_towername.setText(mganta.name);
-            if(mganta.caizhi.equals("水泥杆")){
+            str_fullview=mganta.picquanmao;
+            str_tower_head=mganta.pictatou;
+            str_nameplate=mganta.picmingpai;
+            if(mganta.caizhi.equals(" 水泥杆")){
                 ((RadioButton)findViewById(R.id.shuini_pole)).setChecked(true);
 
-            }else if(mganta.caizhi.equals("木杆")){
+            }else if(mganta.caizhi.equals(" 木杆")){
                 ((RadioButton) findViewById(R.id.wooden_pole)).setChecked(true);
             }else {
                 ((RadioButton) findViewById(R.id.steel_pole)).setChecked(true);
             }
-            if(mganta.xingzhi.equals("直线")){
+            if(mganta.xingzhi.equals(" 直线")){
                 ((RadioButton)findViewById(R.id.zhixian)).setChecked(true);
 
             }else {
                 ((RadioButton) findViewById(R.id.naizhang)).setChecked(true);
             }
-            if(mganta.dianya.equals("220V")){
+            if(mganta.dianya.equals(" 交流220V")){
                 ((RadioButton) findViewById(R.id.voltage220)).setChecked(true);
 
             }else {
                 ((RadioButton)findViewById(R.id.voltage380)).setChecked(true);
             }
-            if(mganta.yunxing.equals("在运")){
+            if(mganta.yunxing.equals(" 在运")){
                 ((RadioButton) findViewById(R.id.inuse)).setChecked(true);
 
-            }else if(mganta.yunxing.equals("留用")){
+            }else if(mganta.yunxing.equals(" 留用")){
                 ((RadioButton) findViewById(R.id.liuyong)).setChecked(true);
             }else {
                 ((RadioButton)findViewById(R.id.nouse)).setChecked(true);
             }
-            if(mganta.parentid>0){
-                is_reply.setChecked(true);
-                txtParenttower.setText("符名称");
-            }
+
             ext_zuobiao.setText(mganta.zuobiao);
 //            sp_huilu.set
         }
@@ -195,10 +201,11 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 Activity_Tower.this.finish();
                 break;
             case R.id.btn_save:
+
+
                 Ganta areas = new Ganta();
                 String zuobiao = ext_zuobiao.getText().toString();
                 String towername = ext_towername.getText().toString();
-                String parenttower = txtParenttower.getText().toString();
                 if (str_fullview == null) {
                     showMsg("全貌图片不能为空!");
                     return;
@@ -215,22 +222,18 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 areas.picquanmao = str_fullview;
                 areas.pictatou = str_tower_head;
                 areas.picmingpai = str_nameplate;
-                if (is_reply.isChecked()) {
-                    if (parenttower.length() > 0) {
-                        SparseArray<Ganta> parents = gantaDao.queryToList("name like ?", new String[]{"%" + parenttower + "%"});//模糊查询
-                        if (parents != null) {
-                            areas.parentid = parents.get(0).id;
-                        }
-                    } else {
-                        showMsg("上一级杆塔不能为空!");
-                        return;
-                    }
-                }
+
                 RadioButton selectcaizhi = (RadioButton) findViewById(radio_caizhi.getCheckedRadioButtonId());
                 if (selectcaizhi == null) {
                     showMsg("材质不能为空!");
                     return;
                 }
+                RadioButton selectxingzhi = (RadioButton) findViewById(radio_xingzhi.getCheckedRadioButtonId());
+                if (selectxingzhi == null) {
+                    showMsg("性质不能为空!");
+                    return;
+                }
+
                 RadioButton radiodianya = (RadioButton) findViewById(radio_dianya.getCheckedRadioButtonId());
                 if (radiodianya == null) {
                     showMsg("电压不能为空!");
@@ -248,6 +251,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 }
                 areas.areaid= Activity_TowerList.areaid;
                 areas.areaname= curentreas.area;
+                areas.xingzhi=selectxingzhi.getText().toString();
                 areas.caizhi = selectcaizhi.getText().toString();
                 areas.yunxing = yunxing.getText().toString();
                 areas.dianya = radiodianya.getText().toString();
@@ -255,7 +259,13 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 areas.name = towername;
                 areas.lifeStatus = 1;
                 areas.huilu = strHuilu;
-                gantaDao.insert(areas);
+                if(mganta!=null){
+                    areas.id=mganta.id;
+                    gantaDao.update(areas);
+                }else{
+                    gantaDao.insert(areas);
+                }
+
                 Intent resultIntent = new Intent();
                 Activity_Tower.this.setResult(RESULT_OK, resultIntent);
                 Activity_Tower.this.finish();
@@ -289,7 +299,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 bitmap= new FileUtil().getThumbnail(this,tempFile);
                 switch (picid) {
                     case R.id.btn_fullview:
-                        str_fullview =new FileUtil().getSDDir("tower")+"/"+ext_towername.getText().toString()+"全貌.jpg";
+                        str_fullview =new FileUtil().getSDDir("1tower")+"/"+curentreas.area+ext_towername.getText().toString()+"全貌.jpg";
                         Runnable sendable = new Runnable() {
                             @Override
                             public void run() {
@@ -306,7 +316,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
                         break;
                     case R.id.btn_towerhead:
-                        str_tower_head =new FileUtil().getSDDir("tower") + "/" + ext_towername.getText().toString() + "塔头.jpg";
+                        str_tower_head =new FileUtil().getSDDir("1tower") + "/" +curentreas.area+ ext_towername.getText().toString() + "塔头.jpg";
                          sendable = new Runnable() {
                             @Override
                             public void run() {
@@ -321,7 +331,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         showMsg("路径：" + str_tower_head);
                         break;
                     case R.id.btn_nameplate:
-                       str_nameplate = new FileUtil().getSDDir("tower") + "/" + ext_towername.getText().toString()+"铭牌.jpg";
+                       str_nameplate = new FileUtil().getSDDir("1tower") + "/" +curentreas.area+ ext_towername.getText().toString()+"铭牌.jpg";
                         sendable = new Runnable() {
                             @Override
                             public void run() {
