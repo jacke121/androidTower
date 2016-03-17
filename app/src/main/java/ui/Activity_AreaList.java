@@ -260,9 +260,21 @@ public class Activity_AreaList extends Activity implements OnClickListener {
                         showMsg("台区还有杆塔，不能删除!");
                         return;
                     }
-                    areasDao.delete(tmpAreaInto);
-                    getData();
-                    notifyDataSetChanged();// 提醒数据已经变动
+                    new AlertDialog.Builder(Activity_AreaList.this)
+                            .setTitle("温馨提示")
+                            .setMessage("您确定要删除台区吗？")
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which) {
+                                            areasDao.delete(tmpAreaInto);
+                                            getData();
+                                            notifyDataSetChanged();// 提醒数据已经变动
+                                        }
+                                    }).setNegativeButton("取消", null).create()
+                            .show();
+
                 }
             });
             for (int i = 0; i < headers.length; i++) {

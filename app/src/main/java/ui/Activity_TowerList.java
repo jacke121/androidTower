@@ -249,16 +249,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                         // holder.orderState.setText("发布");
                         btn_cailu.setEnabled(false);
                         btn_add.setEnabled(true);
-                    } else if (tmpTowerInfo.caizhi.equals("2")
-                            || tmpTowerInfo.caizhi.equals("4")) {
-                        // holder.orderState.setText("维修申请  ");
-                        btn_cailu.setEnabled(false);
-                        btn_add.setEnabled(false);
-                    } else if (tmpTowerInfo.caizhi.equals("3")) {
-
-                        btn_cailu.setEnabled(true);
-                        btn_add.setEnabled(false);
-                        // holder.orderState.setText("审批通过");
                     }
                     notifyDataSetChanged();// 提醒数据已经变动
                     // mListView.setSelection(scrolledY);
