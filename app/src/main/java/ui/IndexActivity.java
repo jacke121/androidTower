@@ -4,30 +4,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -37,6 +26,16 @@ import android.widget.EditText;
 import com.lbg.yan01.R;
 
 import android.provider.Settings.Secure;
+
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import webClient.TimeClientHandler;
 
 public class IndexActivity extends Activity implements OnClickListener {
     public static String serverIp = "192.168.1.1";
@@ -50,6 +49,7 @@ public class IndexActivity extends Activity implements OnClickListener {
     private int isFirst;//0第一次
     Socket client;
     String android_id;
+    final int serverport = 2001;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +95,30 @@ public class IndexActivity extends Activity implements OnClickListener {
             case R.id.btnAuthorize:
                 android_id  = Secure.getString(getApplication().getContentResolver(), Secure.ANDROID_ID);
                 serverIp=ext_ip.getText().toString();
+
+                EventLoopGroup workerGroup = new NioEventLoopGroup();
+                try {
+                    Bootstrap bootstrap = new Bootstrap();
+                    bootstrap.group(workerGroup);
+                    bootstrap.channel(NioSocketChannel.class);
+                    bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+                    bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast(new TimeClientHandler());
+
+                        }
+                    });
+                    // 发起异步连接操作
+                    ChannelFuture future = bootstrap.connect(serverIp, serverport).sync();
+
+                    future.channel().closeFuture().sync();
+                } catch (Exception e) {
+                    workerGroup.shutdownGracefully();
+                }
                 Thread desktopServerThread = new Thread(new TCPDesktopServer());
-                desktopServerThread.start();
+//                desktopServerThread.start();
 //                showDialog(android_id);
                 break;
         }
@@ -149,23 +171,20 @@ public class IndexActivity extends Activity implements OnClickListener {
     }
 
     public class TCPDesktopServer implements Runnable {
-        final int SERVERPORT = 2001;
+
         public void run() {
             try {
                 InetAddress serverAddr = InetAddress.getByName(serverIp);//TCPServer.SERVERIP
 
                 Log.d("TCP", "C: Connecting...");
 
-                client = new Socket(serverAddr, SERVERPORT);
-//                SocketAddress socketAddress = new InetSocketAddress(serverIp,
-//                        SERVERPORT);
+                client = new Socket(serverAddr, serverport);
 //                client.connect(socketAddress,10);
                 if(client.isConnected()){
                     Message msg = new Message();
                     msg.what = 1;
                     handler.sendMessage(msg);
                 }
-//				ServerSocket serverSocket = new ServerSocket(SERVERPORT);
                 while (true) {
                     try {
                         BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
