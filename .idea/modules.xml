@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/androidTower.iml" filepath="$PROJECT_DIR$/androidTower.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/yan01.iml" filepath="$PROJECT_DIR$/yan01.iml" />
     </modules>
   </component>
 </project>

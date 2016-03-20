@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/app/libs/jxl.jar" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/takephoto/MainActivity.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/exceltest" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/exceltest/FileUtil.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/exceltest/GetValueByRef.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/exceltest/JXLUtil.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/ui/MainActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/baseDao/Areas.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/baseDao/AreasDao.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/baseDao/Ganta.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/baseDao/GantaDao.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/baseDao/SqlHelper.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lbg/yan01/MyApplication.java" charset="GB2312" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
