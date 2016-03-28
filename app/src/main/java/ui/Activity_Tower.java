@@ -32,6 +32,8 @@ import com.baseDao.SqlHelper;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.tool.FileUtil;
+import com.tool.Pinyin;
+import com.tool.PinyinTool;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,7 +93,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
         iv_tower_head = (ImageView) findViewById(R.id.iv_tower_head);
         iv_nameplate = (ImageView) findViewById(R.id.iv_nameplate);
         txt_taiqu = (TextView) findViewById(R.id.txt_taiqu);
-        txt_taiqu.setText(curentreas.area + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
+        txt_taiqu.setText(curentreas.area);// + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
 
         btn_fullview = (Button) findViewById(R.id.btn_fullview);
         btn_towerhead = (Button) findViewById(R.id.btn_towerhead);
@@ -297,9 +299,12 @@ public class Activity_Tower extends Activity implements OnClickListener {
                   tempFile = new File(Environment.getExternalStorageDirectory(),
                         PHOTO_FILE_NAME);
                 bitmap= new FileUtil().getThumbnail(this,tempFile);
+                String areaname=new PinyinTool().toPinYin(curentreas.area);//.makeStringByStringSet(Pinyin.getPinyin(curentreas.area));
+                String baseString=new FileUtil().getSDDir("1tower/"+areaname)+"/";
                 switch (picid) {
                     case R.id.btn_fullview:
-                        str_fullview =new FileUtil().getSDDir("1tower")+"/"+curentreas.area+ext_towername.getText().toString()+"全貌.jpg";
+
+                        str_fullview =baseString+ext_towername.getText().toString()+"全貌.jpg";
                         Runnable sendable = new Runnable() {
                             @Override
                             public void run() {
@@ -316,7 +321,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
                         break;
                     case R.id.btn_towerhead:
-                        str_tower_head =new FileUtil().getSDDir("1tower") + "/" +curentreas.area+ ext_towername.getText().toString() + "塔头.jpg";
+                        str_tower_head =baseString+ ext_towername.getText().toString() + "塔头.jpg";
                          sendable = new Runnable() {
                             @Override
                             public void run() {
@@ -331,7 +336,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         showMsg("路径：" + str_tower_head);
                         break;
                     case R.id.btn_nameplate:
-                       str_nameplate = new FileUtil().getSDDir("1tower") + "/" +curentreas.area+ ext_towername.getText().toString()+"铭牌.jpg";
+                       str_nameplate = baseString +curentreas.area+ ext_towername.getText().toString()+"铭牌.jpg";
                         sendable = new Runnable() {
                             @Override
                             public void run() {
