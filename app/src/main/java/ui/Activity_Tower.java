@@ -29,6 +29,9 @@ import com.baseDao.AreasDao;
 import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.tool.FileUtil;
@@ -59,15 +62,20 @@ public class Activity_Tower extends Activity implements OnClickListener {
     ImageView iv_fullview, iv_tower_head, iv_nameplate;
     String str_fullview, str_tower_head, str_nameplate;
     AreasDao areasDao;
-    Areas curentreas;
+    static Areas curentreas;
     int gantaid;
     Ganta mganta;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
         setContentView(R.layout.tower_detail);
-        helper = ((MyApplication)getApplication()).getSqlHelper();
+        helper = ((MyApplication) getApplication()).getSqlHelper();
         gantaDao = new GantaDao(helper);
         areasDao = new AreasDao(helper);
         //设置初始化视图
@@ -78,11 +86,11 @@ public class Activity_Tower extends Activity implements OnClickListener {
             if (gantaid == 0) {
                 finish();
             }
-            SparseArray<Ganta> gantas=gantaDao.queryToList("id =?", new String[]{gantaid + ""});
+            SparseArray<Ganta> gantas = gantaDao.queryToList("id =?", new String[]{gantaid + ""});
             if (gantas == null) {
                 finish();
             }
-            mganta =gantas .get(0);//模糊查询
+            mganta = gantas.get(0);//模糊查询
         }
 
         SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.areaid + ""});//模糊查询
@@ -93,7 +101,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
         iv_tower_head = (ImageView) findViewById(R.id.iv_tower_head);
         iv_nameplate = (ImageView) findViewById(R.id.iv_nameplate);
         txt_taiqu = (TextView) findViewById(R.id.txt_taiqu);
-        txt_taiqu.setText(curentreas.area);// + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
+
 
         btn_fullview = (Button) findViewById(R.id.btn_fullview);
         btn_towerhead = (Button) findViewById(R.id.btn_towerhead);
@@ -110,68 +118,93 @@ public class Activity_Tower extends Activity implements OnClickListener {
         sp_huilu = (Spinner) findViewById(R.id.sp_huilu);
         btnCancel = (Button) findViewById(R.id.btnCancel);
         Button register_btnCancel = (Button) findViewById(R.id.btnCancel);
-        register_btnCancel.setOnClickListener(this);
         Button btn_save = (Button) findViewById(R.id.btn_save);
-        btn_save.setOnClickListener(this);
-        register_btnCancel.setOnClickListener(this);
-        ivback = (ImageView) findViewById(R.id.title_btn_sequence);
-        ivback.setOnClickListener(this);
 
-        if(mganta !=null){
-        //编辑
-            File file=new File(mganta.picquanmao);
-            bitmap= new FileUtil().getThumbnail(this,file);
+        ivback = (ImageView) findViewById(R.id.title_btn_sequence);
+        if (mganta != null) {
+            //编辑
+            File file = new File(mganta.picquanmao);
+            bitmap = new FileUtil().getThumbnail(this, file);
             iv_fullview.setImageBitmap(bitmap);
-             file=new File(mganta.pictatou);
-            bitmap= new FileUtil().getThumbnail(this,file);
+            file = new File(mganta.pictatou);
+            bitmap = new FileUtil().getThumbnail(this, file);
             iv_tower_head.setImageBitmap(bitmap);
-             file=new File(mganta.picmingpai);
-            bitmap= new FileUtil().getThumbnail(this,file);
+            file = new File(mganta.picmingpai);
+            bitmap = new FileUtil().getThumbnail(this, file);
             iv_nameplate.setImageBitmap(bitmap);
             ext_towername.setText(mganta.name);
-            str_fullview=mganta.picquanmao;
-            str_tower_head=mganta.pictatou;
-            str_nameplate=mganta.picmingpai;
-            if(mganta.caizhi.equals(" 水泥杆")){
-                ((RadioButton)findViewById(R.id.shuini_pole)).setChecked(true);
+            str_fullview = mganta.picquanmao;
+            str_tower_head = mganta.pictatou;
+            str_nameplate = mganta.picmingpai;
+            if (mganta.caizhi.equals(" 水泥杆")) {
+                ((RadioButton) findViewById(R.id.shuini_pole)).setChecked(true);
 
-            }else if(mganta.caizhi.equals(" 木杆")){
+            } else if (mganta.caizhi.equals(" 木杆")) {
                 ((RadioButton) findViewById(R.id.wooden_pole)).setChecked(true);
-            }else {
+            } else {
                 ((RadioButton) findViewById(R.id.steel_pole)).setChecked(true);
             }
-            if(mganta.xingzhi.equals(" 直线")){
-                ((RadioButton)findViewById(R.id.zhixian)).setChecked(true);
+            if (mganta.xingzhi.equals(" 直线")) {
+                ((RadioButton) findViewById(R.id.zhixian)).setChecked(true);
 
-            }else {
+            } else {
                 ((RadioButton) findViewById(R.id.naizhang)).setChecked(true);
             }
-            if(mganta.dianya.equals(" 交流220V")){
+            if (mganta.dianya.equals(" 交流220V")) {
                 ((RadioButton) findViewById(R.id.voltage220)).setChecked(true);
 
-            }else {
-                ((RadioButton)findViewById(R.id.voltage380)).setChecked(true);
+            } else {
+                ((RadioButton) findViewById(R.id.voltage380)).setChecked(true);
             }
-            if(mganta.yunxing.equals(" 在运")){
+            if (mganta.yunxing.equals(" 在运")) {
                 ((RadioButton) findViewById(R.id.inuse)).setChecked(true);
 
-            }else if(mganta.yunxing.equals(" 留用")){
+            } else if (mganta.yunxing.equals(" 留用")) {
                 ((RadioButton) findViewById(R.id.liuyong)).setChecked(true);
-            }else {
-                ((RadioButton)findViewById(R.id.nouse)).setChecked(true);
+            } else {
+                ((RadioButton) findViewById(R.id.nouse)).setChecked(true);
             }
 
             ext_zuobiao.setText(mganta.zuobiao);
 //            sp_huilu.set
         }
+        if (txt_taiqu != null) {
+//            txt_taiqu.setText(curentreas.area);// + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
+            register_btnCancel.setOnClickListener(this);
+            btn_save.setOnClickListener(this);
+            register_btnCancel.setOnClickListener(this);
+            ivback.setOnClickListener(this);
+        }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+    }
 
+    //onSaveInstanceState
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+//        其实这里什么都不要做
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_fullview:
-                if(ext_towername.getText().length()==0){
+                if (ext_towername.getText().length() == 0) {
                     showMsg("名称不能为空!");
                     return;
                 }
@@ -179,7 +212,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 camera();
                 break;
             case R.id.btn_towerhead:
-                if(ext_towername.getText().length()==0){
+                if (ext_towername.getText().length() == 0) {
                     showMsg("名称不能为空!");
                     return;
                 }
@@ -187,7 +220,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 camera();
                 break;
             case R.id.btn_nameplate:
-                if(ext_towername.getText().length()==0){
+                if (ext_towername.getText().length() == 0) {
                     showMsg("名称不能为空!");
                     return;
                 }
@@ -203,8 +236,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 Activity_Tower.this.finish();
                 break;
             case R.id.btn_save:
-
-
                 Ganta areas = new Ganta();
                 String zuobiao = ext_zuobiao.getText().toString();
                 String towername = ext_towername.getText().toString();
@@ -251,9 +282,9 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     showMsg("坐标点号不能为空!");
                     return;
                 }
-                areas.areaid= Activity_TowerList.areaid;
-                areas.areaname= curentreas.area;
-                areas.xingzhi=selectxingzhi.getText().toString();
+                areas.areaid = Activity_TowerList.areaid;
+                areas.areaname = curentreas.area;
+                areas.xingzhi = selectxingzhi.getText().toString();
                 areas.caizhi = selectcaizhi.getText().toString();
                 areas.yunxing = yunxing.getText().toString();
                 areas.dianya = radiodianya.getText().toString();
@@ -261,10 +292,10 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 areas.name = towername;
                 areas.lifeStatus = 1;
                 areas.huilu = strHuilu;
-                if(mganta!=null){
-                    areas.id=mganta.id;
+                if (mganta != null) {
+                    areas.id = mganta.id;
                     gantaDao.update(areas);
-                }else{
+                } else {
                     gantaDao.insert(areas);
                 }
 
@@ -289,27 +320,28 @@ public class Activity_Tower extends Activity implements OnClickListener {
         startActivityForResult(intent, PHOTO_REQUEST_CAMERA);
     }
 
-    File tempFile;
+    //    File tempFile;
     private Bitmap bitmap;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PHOTO_REQUEST_CAMERA) {
             if (hasSdcard()) {
-                  tempFile = new File(Environment.getExternalStorageDirectory(),
-                        PHOTO_FILE_NAME);
-                bitmap= new FileUtil().getThumbnail(this,tempFile);
-                String areaname=new PinyinTool().toPinYin(curentreas.area);//.makeStringByStringSet(Pinyin.getPinyin(curentreas.area));
-                String baseString=new FileUtil().getSDDir("1tower/"+areaname)+"/";
+                bitmap = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + PHOTO_FILE_NAME);
+//                  tempFile = new File(Environment.getExternalStorageDirectory(),PHOTO_FILE_NAME);
+//                bitmap= new FileUtil().getThumbnail(this,tempFile);
+                String areaname = new PinyinTool().toPinYin(curentreas.area);//.makeStringByStringSet(Pinyin.getPinyin(curentreas.area));
+                String baseString = new FileUtil().getSDDir("1tower/" + areaname) + "/";
                 switch (picid) {
                     case R.id.btn_fullview:
 
-                        str_fullview =baseString+ext_towername.getText().toString()+"全貌.jpg";
+                        str_fullview = baseString + ext_towername.getText().toString() + "全貌.jpg";
                         Runnable sendable = new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    new FileUtil().writeStreamToSDCard( tempFile, str_fullview);
+                                    new FileUtil().saveMyBitmap(bitmap, str_fullview);
+//                                    new FileUtil().writeStreamToSDCard( tempFile, str_fullview);
                                 } catch (Exception e) {
                                 }
                             }
@@ -317,16 +349,17 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         new Thread(sendable).start();
                         iv_fullview.setImageBitmap(bitmap);
 
-                        showMsg("路径："+ str_fullview);
+                        showMsg("路径：" + str_fullview);
 
                         break;
                     case R.id.btn_towerhead:
-                        str_tower_head =baseString+ ext_towername.getText().toString() + "塔头.jpg";
-                         sendable = new Runnable() {
+                        str_tower_head = baseString + ext_towername.getText().toString() + "塔头.jpg";
+                        sendable = new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    new FileUtil().writeStreamToSDCard(tempFile, str_tower_head);
+                                    new FileUtil().saveMyBitmap(bitmap, str_fullview);
+//                                    new FileUtil().writeStreamToSDCard(tempFile, str_tower_head);
                                 } catch (Exception e) {
                                 }
                             }
@@ -336,12 +369,13 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         showMsg("路径：" + str_tower_head);
                         break;
                     case R.id.btn_nameplate:
-                       str_nameplate = baseString +curentreas.area+ ext_towername.getText().toString()+"铭牌.jpg";
+                        str_nameplate = baseString + curentreas.area + ext_towername.getText().toString() + "铭牌.jpg";
                         sendable = new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    new FileUtil().writeStreamToSDCard( tempFile, str_nameplate);
+                                    new FileUtil().saveMyBitmap(bitmap, str_fullview);
+//                                    new FileUtil().writeStreamToSDCard( tempFile, str_nameplate);
                                 } catch (Exception e) {
                                 }
                             }
@@ -353,7 +387,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     default:
                         break;
                 }
-                boolean delete = tempFile.delete();
+//                boolean delete = tempFile.delete();
 //                crop(Uri.fromFile(tempFile));
             } else {
                 Toast.makeText(Activity_Tower.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT)
@@ -389,15 +423,15 @@ public class Activity_Tower extends Activity implements OnClickListener {
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // land do nothing is ok
-        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // port do nothing is ok
-        }
-    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            // land do nothing is ok
+//        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            // port do nothing is ok
+//        }
+//    }
 
     private void crop(Uri uri) {
         // 裁剪图片意图
@@ -458,5 +492,41 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         return;
                     }
                 }).create().show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Activity_Tower Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://ui/http/host/path")
+        );
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Activity_Tower Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://ui/http/host/path")
+        );
     }
 }

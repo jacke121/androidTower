@@ -164,8 +164,9 @@ public class Activity_AreaList extends Activity implements OnClickListener {
                             Activity_TowerList.class);
                     /* 把bundle对象assign给Intent */
                     intent.putExtras(bundle);
-                    // startActivity(intent);
-                    startActivityForResult(intent, 1);
+                     startActivity(intent);
+                    Activity_AreaList.this.finish();
+//                    startActivityForResult(intent, 1);
                 }
             }
             break;

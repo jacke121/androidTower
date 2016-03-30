@@ -65,8 +65,8 @@ public class IndexActivity extends Activity implements OnClickListener {
         sharedPreferences_userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
         ext_ip = (EditText) findViewById(R.id.ext_ip);
         ext_ip.setText(serverIp);
-        Button main_btnLogin = (Button) findViewById(R.id.main_btnLogin);
-        main_btnLogin.setOnClickListener(this);
+        Button main_raoguo = (Button) findViewById(R.id.main_raoguo);
+        main_raoguo.setOnClickListener(this);
         // 转到注册页面
 
         Button btnAuthorize = (Button) findViewById(R.id.btnAuthorize);
@@ -75,7 +75,7 @@ public class IndexActivity extends Activity implements OnClickListener {
         //非首次登陆直接进入笔记页面
         remMsg = sharedPreferences_userInfo.getString("userName", "");
         if (remMsg != null && !remMsg.equals("")) {
-            Intent intent = new Intent(IndexActivity.this, MainActivity.class);
+            Intent intent = new Intent(IndexActivity.this, Activity_AreaList.class);
             startActivity(intent);
             IndexActivity.this.finish();
         }
@@ -85,9 +85,9 @@ public class IndexActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.main_btnLogin: {
+            case R.id.main_raoguo: {
                 Intent intent = new Intent(IndexActivity.this,
-                        MainActivity.class);
+                        Activity_AreaList.class);
                     /* 把bundle对象assign给Intent */
                 startActivityForResult(intent, 1);
             }
