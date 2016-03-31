@@ -328,7 +328,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
         if (1 == requestCode) {
             // 刷新界面
             getData();
-            adapter.notifyDataSetInvalidated();
+            adapter.notifyDataSetChanged();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -356,6 +356,5 @@ public class Activity_AreaList extends Activity implements OnClickListener {
     private class ViewHolder {
         TextView[] txts = new TextView[5];
         Button area_del;
-
     }
 }

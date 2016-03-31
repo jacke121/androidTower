@@ -93,7 +93,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         }
         repairhead = (LinearLayout) findViewById(R.id.line_head);
         CHScrollView headerScroll = (CHScrollView) findViewById(R.id.repairheader);
-
         headerScroll.registerScrollChange(new CHScrollView.ScrollChange() {
 
             @Override
@@ -269,7 +268,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 holder.txts[i] = (TextView) convertView
                         .findViewById(headIds[i]);
             }
-
             final Ganta tmpTowerInfo = gantaList.get(position);
             // holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
             holder.txts[0].setText(position + 1 + "");
@@ -326,7 +324,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         // 可以根据多个请求代码来作相应的操作
         if (1 == requestCode) {
             geiDatas();
-            adapter.notifyDataSetInvalidated();
+            adapter.notifyDataSetChanged();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
