@@ -50,9 +50,12 @@ public class Activity_Tower extends Activity implements OnClickListener {
     private final int PHOTO_REQUEST_CUT = 3;// 结果
     TextView txt_taiqu;
     /* 头像名称 */
-    private final String PHOTO_FILE_NAME = "temp_photo.jpg";
+    private String PHOTO_FILE_NAME = "temp_photo.jpg";
     Button btnCancel;
     Button btn_fullview, btn_towerhead, btn_nameplate;
+    Bitmap bm_fullview, bm_towerhead, bm_nameplate;
+    File file_fullview, file_towerhead, file_nameplate;
+    File tempFile;
     ImageView ivback;
     int picid;
     public String name, message;
@@ -61,6 +64,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
     SqlHelper helper;
     ImageView iv_fullview, iv_tower_head, iv_nameplate;
     String str_fullview, str_tower_head, str_nameplate;
+
     AreasDao areasDao;
     static Areas curentreas;
     int gantaid;
@@ -69,7 +73,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-
+    String areaname,baseString;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +101,9 @@ public class Activity_Tower extends Activity implements OnClickListener {
         if (areas != null) {
             curentreas = areas.get(0);
         }
+
+        areaname = new PinyinTool().toPinYin(curentreas.area);//.makeStringByStringSet(Pinyin.getPinyin(curentreas.area));
+        baseString = new FileUtil().getSDDir("1tower/" + areaname) + "/";
         iv_fullview = (ImageView) findViewById(R.id.iv_fullview);
         iv_tower_head = (ImageView) findViewById(R.id.iv_tower_head);
         iv_nameplate = (ImageView) findViewById(R.id.iv_nameplate);
@@ -169,7 +176,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
 //            sp_huilu.set
         }
         if (txt_taiqu != null) {
-//            txt_taiqu.setText(curentreas.area);// + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
+            txt_taiqu.setText(curentreas.area);// + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
             register_btnCancel.setOnClickListener(this);
             btn_save.setOnClickListener(this);
             register_btnCancel.setOnClickListener(this);
@@ -209,6 +216,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     return;
                 }
                 picid = R.id.btn_fullview;
+                PHOTO_FILE_NAME = ext_towername.getText().toString() + "全貌.jpg";
                 camera();
                 break;
             case R.id.btn_towerhead:
@@ -217,6 +225,8 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     return;
                 }
                 picid = R.id.btn_towerhead;
+
+                PHOTO_FILE_NAME = ext_towername.getText().toString() + "塔头.jpg";
                 camera();
                 break;
             case R.id.btn_nameplate:
@@ -225,6 +235,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     return;
                 }
                 picid = R.id.btn_nameplate;
+                PHOTO_FILE_NAME = ext_towername.getText().toString() + "铭牌.jpg";
                 camera();
                 break;
             case R.id.btnCancel:
@@ -255,7 +266,30 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 areas.picquanmao = str_fullview;
                 areas.pictatou = str_tower_head;
                 areas.picmingpai = str_nameplate;
+                bm_fullview = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "全貌.jpg");
 
+                new FileUtil().saveMyBitmap(bm_fullview, str_fullview);
+
+                File aaa=new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "全貌.jpg");
+                if(aaa.exists()){
+                    aaa.delete();
+                }
+                bm_towerhead = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "塔头.jpg");
+
+                new FileUtil().saveMyBitmap(bm_towerhead, str_tower_head);
+
+                 aaa=new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "塔头.jpg");
+                if(aaa.exists()){
+                    aaa.delete();
+                }
+                bm_nameplate = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "铭牌.jpg");
+
+                new FileUtil().saveMyBitmap(bm_nameplate, str_nameplate);
+
+                 aaa=new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "铭牌.jpg");
+                if(aaa.exists()){
+                    aaa.delete();
+                }
                 RadioButton selectcaizhi = (RadioButton) findViewById(radio_caizhi.getCheckedRadioButtonId());
                 if (selectcaizhi == null) {
                     showMsg("材质不能为空!");
@@ -320,18 +354,17 @@ public class Activity_Tower extends Activity implements OnClickListener {
         startActivityForResult(intent, PHOTO_REQUEST_CAMERA);
     }
 
-    //    File tempFile;
+
     private Bitmap bitmap;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PHOTO_REQUEST_CAMERA) {
             if (hasSdcard()) {
-                bitmap = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + PHOTO_FILE_NAME);
-//                  tempFile = new File(Environment.getExternalStorageDirectory(),PHOTO_FILE_NAME);
-//                bitmap= new FileUtil().getThumbnail(this,tempFile);
-                String areaname = new PinyinTool().toPinYin(curentreas.area);//.makeStringByStringSet(Pinyin.getPinyin(curentreas.area));
-                String baseString = new FileUtil().getSDDir("1tower/" + areaname) + "/";
+
+                  tempFile = new File(Environment.getExternalStorageDirectory(),PHOTO_FILE_NAME);
+                bitmap= new FileUtil().getThumbnail(this,tempFile);
+
                 switch (picid) {
                     case R.id.btn_fullview:
 
@@ -340,7 +373,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                             @Override
                             public void run() {
                                 try {
-                                    new FileUtil().saveMyBitmap(bitmap, str_fullview);
+
 //                                    new FileUtil().writeStreamToSDCard( tempFile, str_fullview);
                                 } catch (Exception e) {
                                 }
@@ -353,12 +386,14 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
                         break;
                     case R.id.btn_towerhead:
+                        bm_towerhead = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + PHOTO_FILE_NAME);
+
                         str_tower_head = baseString + ext_towername.getText().toString() + "塔头.jpg";
                         sendable = new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    new FileUtil().saveMyBitmap(bitmap, str_fullview);
+//                                    new FileUtil().saveMyBitmap(bitmap, str_fullview);
 //                                    new FileUtil().writeStreamToSDCard(tempFile, str_tower_head);
                                 } catch (Exception e) {
                                 }
@@ -369,12 +404,13 @@ public class Activity_Tower extends Activity implements OnClickListener {
                         showMsg("路径：" + str_tower_head);
                         break;
                     case R.id.btn_nameplate:
+                        bm_nameplate = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + PHOTO_FILE_NAME);
                         str_nameplate = baseString + curentreas.area + ext_towername.getText().toString() + "铭牌.jpg";
                         sendable = new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    new FileUtil().saveMyBitmap(bitmap, str_fullview);
+//                                    new FileUtil().saveMyBitmap(bitmap, str_fullview);
 //                                    new FileUtil().writeStreamToSDCard( tempFile, str_nameplate);
                                 } catch (Exception e) {
                                 }
