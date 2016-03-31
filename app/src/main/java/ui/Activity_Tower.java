@@ -35,8 +35,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.tool.FileUtil;
-import com.tool.Pinyin;
-import com.tool.PinyinTool;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -102,7 +100,9 @@ public class Activity_Tower extends Activity implements OnClickListener {
             curentreas = areas.get(0);
         }
 
-        areaname = new PinyinTool().toPinYin(curentreas.area);//.makeStringByStringSet(Pinyin.getPinyin(curentreas.area));
+        char[] srcChar;
+        areaname=  curentreas.area;
+//        areaname = new PinyinTool().toPinYin(curentreas.area);//.makeStringByStringSet(Pinyin.getPinyin(curentreas.area));
         baseString = new FileUtil().getSDDir("1tower/" + areaname) + "/";
         iv_fullview = (ImageView) findViewById(R.id.iv_fullview);
         iv_tower_head = (ImageView) findViewById(R.id.iv_tower_head);
