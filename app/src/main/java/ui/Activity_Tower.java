@@ -368,7 +368,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 switch (picid) {
                     case R.id.btn_fullview:
 
-                        str_fullview = baseString + ext_towername.getText().toString() + "全貌.jpg";
+                        str_fullview = baseString +curentreas.area + ext_towername.getText().toString() + "全貌.jpg";
                         Runnable sendable = new Runnable() {
                             @Override
                             public void run() {
@@ -388,7 +388,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     case R.id.btn_towerhead:
                         bm_towerhead = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + PHOTO_FILE_NAME);
 
-                        str_tower_head = baseString + ext_towername.getText().toString() + "塔头.jpg";
+                        str_tower_head = baseString +curentreas.area + ext_towername.getText().toString() + "塔头.jpg";
                         sendable = new Runnable() {
                             @Override
                             public void run() {

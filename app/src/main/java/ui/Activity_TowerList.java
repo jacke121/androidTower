@@ -77,7 +77,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         gantaDao = new GantaDao(helper);
         areasDao = new AreasDao(helper);
         gantaDao.createTable(helper.getWritableDatabase());
-        geiDatas();
+        getDatas();
         TextView title_text = (TextView) findViewById(R.id.title_text);
         title_text.setText("塔杆列表");
 
@@ -136,7 +136,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 }
                 Ganta tmpGanta = gantaList.get(selectItem);
                 gantaDao.delete(tmpGanta);
-                geiDatas();
+                getDatas();
                 adapter.notifyDataSetChanged();// 提醒数据已经变动
                 break;
             case R.id.btn_cailu: {
@@ -173,7 +173,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                     }
                 }).create().show();
     }
-    public void geiDatas() {
+    public void getDatas() {
 //        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on a.id=g.areaid where a.id=", new String[]{id + ""});
         gantaList = gantaDao.queryBySql("select g.id,g.name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.lifeStatus,g.upgradeFlag," +
                 "a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid where a.id=?", new String[]{areaid + ""});
@@ -323,7 +323,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // 可以根据多个请求代码来作相应的操作
         if (1 == requestCode) {
-            geiDatas();
+            getDatas();
             adapter.notifyDataSetChanged();
         }
         super.onActivityResult(requestCode, resultCode, data);
