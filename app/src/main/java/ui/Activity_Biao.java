@@ -16,17 +16,18 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.baseDao.Biao;
 import com.baseDao.BiaoDao;
-import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 
 public class Activity_Biao extends Activity implements OnClickListener {
-    public static EditText txt_name,txt_danwei;
+    public static EditText txt_name,ext_zuobiao;
+    TextView ext_code;
     Button btn_save;
     ImageView title_btn_sequence;
     String msg = null;
@@ -50,7 +51,8 @@ public class Activity_Biao extends Activity implements OnClickListener {
         biaoDao  = new BiaoDao(helper);
         //设置初始化视图
         Intent intent = getIntent();
-        Biao cc =(Biao)intent.getSerializableExtra("biao");
+        curentreas =(Biao)intent.getSerializableExtra("biao");
+
         setContentView(R.layout.lay_biao_detail);
 
 //        Bundle bundle = this.getIntent().getExtras();
@@ -74,10 +76,14 @@ public class Activity_Biao extends Activity implements OnClickListener {
 //        if (areas != null) {
 //            curentreas  = areas.get(0);
 //        }
-
-
-        //设置初始化视图
         initView();
+        if(curentreas.id==null){
+
+        }else{
+
+        }
+        //设置初始化视图
+
     }
 
     @SuppressLint("HandlerLeak")
@@ -128,9 +134,9 @@ public class Activity_Biao extends Activity implements OnClickListener {
      */
     private void initView() {
         txt_name = (EditText) findViewById(R.id.ext_name);
-//        txt_quxian = (EditText) findViewById(R.id.txt_quxian);
+        ext_zuobiao = (EditText) findViewById(R.id.ext_zuobiao);
 //        txt_gongbian = (EditText) findViewById(R.id.txt_gongbian);
-        txt_danwei = (EditText) findViewById(R.id.txt_danwei);
+        ext_code = (TextView) findViewById(R.id.txt_biaocode);
         btn_save = (Button) findViewById(R.id.btn_save);
         btn_save.setOnClickListener(this);
         Button register_btnCancel = (Button) findViewById(R.id.btnCancel);
@@ -154,20 +160,27 @@ public class Activity_Biao extends Activity implements OnClickListener {
         switch (v.getId()) {
             case R.id.btn_save:
                String name = txt_name.getText().toString();
-                String danwei = txt_danwei.getText().toString();
-                if (name.equals("") || danwei.equals("")) {
+                String code = ext_code.getText().toString();
+                String zuobiao = ext_zuobiao.getText().toString();
+
+                if (name.equals("") || code.equals("")) {
                     showMsg("信息不能为空!");
                 } else {
-                    final Biao areas = new Biao();
-                    areas.danwei=danwei;
-                    areas.name=name;
-                    areas.upgradeFlag=1l;
-                    areas.lifeStatus=1;
-                    biaoDao.insertList(new SparseArray<Biao>() {
-                        {
-                            put(0, areas);
-                        }
-                    });
+                    curentreas.code=code;
+                    curentreas.name=name;
+                    curentreas.zuobiao=zuobiao;
+                    curentreas.upgradeFlag=1l;
+                    curentreas.lifeStatus=1;
+                    if(curentreas.id==null){
+                        biaoDao.insertList(new SparseArray<Biao>() {
+                            {
+                                put(0, curentreas);
+                            }
+                        });
+                    }else{
+                        biaoDao.update(curentreas);
+                    }
+
                     Intent resultIntent = new Intent();
                     Activity_Biao.this.setResult(RESULT_OK, resultIntent);
                     Activity_Biao.this.finish();

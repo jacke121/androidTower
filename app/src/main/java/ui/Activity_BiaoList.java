@@ -213,8 +213,8 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
     }
     public void getDatas() {
 //        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on a.id=g.areaid where a.id=", new String[]{id + ""});
-        gantaList = gantaDao.queryBySql("select g.id,g.name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.lifeStatus,g.upgradeFlag," +
-                "a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid where a.id=?", new String[]{gantaid + ""});
+        gantaList = gantaDao.queryBySql("select b.id,b.name,b.yunxing,g.zuobiao,b.createtime,b.updatetime,b.lifeStatus,b.upgradeFlag," +
+                " from Biao b ", null);
         if (gantaList == null) {
             gantaList = new SparseArray<Biao>();
             for (int i = 0; i < 0; i++) {
