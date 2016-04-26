@@ -163,17 +163,9 @@
             android:layout_marginLeft="10.0dip"
             android:layout_marginRight="10.0dip"
             android:layout_weight="1"
-            android:text="增加杆塔" />
+            android:text="增加电表箱" />
 
-        <Button
-            android:id="@+id/btn_cailu"
-            style="@style/common_button_red"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:layout_weight="1"
-            android:text="采录" />
+
         <Button
             android:id="@+id/btn_delgan"
             style="@style/common_button_red"
@@ -182,7 +174,7 @@
             android:layout_marginLeft="10.0dip"
             android:layout_marginRight="10.0dip"
             android:layout_weight="1"
-            android:text="电表箱" />
+            android:text="返回" />
     </LinearLayout>
 
 </LinearLayout>

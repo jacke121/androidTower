@@ -67,6 +67,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
     static Areas curentreas;
     int gantaid;
     Ganta mganta;
+     Ganta areas;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -247,7 +248,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 Activity_Tower.this.finish();
                 break;
             case R.id.btn_save:
-                Ganta areas = new Ganta();
+                areas   = new Ganta();
                 String zuobiao = ext_zuobiao.getText().toString();
                 String towername = ext_towername.getText().toString();
                 if (str_fullview == null) {
@@ -330,7 +331,11 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     areas.id = mganta.id;
                     gantaDao.update(areas);
                 } else {
-                    gantaDao.insert(areas);
+                    gantaDao.insertList(new SparseArray<Ganta>() {
+                        {
+                            put(0, areas);
+                        }
+                    });
                 }
 
                 Intent resultIntent = new Intent();

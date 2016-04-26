@@ -1,23 +1,17 @@
 package com.baseDao;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Ganta {
+public class Biao implements Serializable {
 
 		public Integer id;
 		public String name;
-		public Integer areaid;
-		public String dianya;
-		public String caizhi;
-		public String xingzhi;
+		public String code;
+		public Integer gantaid;
 		public Integer taiquid;
-		public Integer huilu;
 		public String yunxing;
 		public String zuobiao;
 		public Integer level;
-		public Integer parentid;
-		public String picquanmao;
-		public String pictatou;
-		public String picmingpai;
 		public Date createtime;
 		public Date updatetime;
 		public Integer lifeStatus;
@@ -42,36 +36,20 @@ public class Ganta {
 			this.name = name;
 		}
 
-		public Integer getAreaid() {
-			return this.areaid;
+		public String getCode() {
+			return this.code;
 		}
 
-		public void setAreaid(Integer areaid) {
-			this.areaid = areaid;
+		public void setCode(String code) {
+			this.code = code;
 		}
 
-		public String getDianya() {
-			return this.dianya;
+		public Integer getGantaid() {
+			return this.gantaid;
 		}
 
-		public void setDianya(String dianya) {
-			this.dianya = dianya;
-		}
-
-		public String getCaizhi() {
-			return this.caizhi;
-		}
-
-		public void setCaizhi(String caizhi) {
-			this.caizhi = caizhi;
-		}
-
-		public String getXingzhi() {
-			return this.xingzhi;
-		}
-
-		public void setXingzhi(String xingzhi) {
-			this.xingzhi = xingzhi;
+		public void setGantaid(Integer gantaid) {
+			this.gantaid = gantaid;
 		}
 
 		public Integer getTaiquid() {
@@ -80,14 +58,6 @@ public class Ganta {
 
 		public void setTaiquid(Integer taiquid) {
 			this.taiquid = taiquid;
-		}
-
-		public Integer getHuilu() {
-			return this.huilu;
-		}
-
-		public void setHuilu(Integer huilu) {
-			this.huilu = huilu;
 		}
 
 		public String getYunxing() {
@@ -112,38 +82,6 @@ public class Ganta {
 
 		public void setLevel(Integer level) {
 			this.level = level;
-		}
-
-		public Integer getParentid() {
-			return this.parentid;
-		}
-
-		public void setParentid(Integer parentid) {
-			this.parentid = parentid;
-		}
-
-		public String getPicquanmao() {
-			return this.picquanmao;
-		}
-
-		public void setPicquanmao(String picquanmao) {
-			this.picquanmao = picquanmao;
-		}
-
-		public String getPictatou() {
-			return this.pictatou;
-		}
-
-		public void setPictatou(String pictatou) {
-			this.pictatou = pictatou;
-		}
-
-		public String getPicmingpai() {
-			return this.picmingpai;
-		}
-
-		public void setPicmingpai(String picmingpai) {
-			this.picmingpai = picmingpai;
 		}
 
 		public Date getCreatetime() {

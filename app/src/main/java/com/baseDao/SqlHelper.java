@@ -38,18 +38,18 @@ public class SqlHelper extends SQLiteOpenHelper {
 	
 	/** 
 	 * SQLiteOpenHelper是一个辅助类，用来管理数据库的创建和版本他，它提供两个方面的功能 
-	 * 第一，getReadableDatabase()、getWritableDatabase()可以获得SQLiteDatabase对象，???过该对象可以对数据库进行操?? 
-	 * 第二，提供了onCreate()、onUpgrade()两个回调函数，允许我们再创建和升级数据库时，进行自己的操?? 
+	 * 第一，getReadableDatabase()、getWritableDatabase()可以获得SQLiteDatabase对象，通过该对象可以对数据库进行操作 
+	 * 第二，提供了onCreate()、onUpgrade()两个回调函数，允许我们再创建和升级数据库时，进行自己的操作 
 	 */
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		//Toast.makeText(con, "创建数据??", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(con, "创建数据库", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		//Toast.makeText(con, "更新数据??", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(con, "更新数据库", Toast.LENGTH_SHORT).show();
 	}
 
 	public long insert(String table, String nullColumnHack, ContentValues values) {
@@ -81,7 +81,7 @@ public class SqlHelper extends SQLiteOpenHelper {
 	/*public Cursor queryContacts(String str) {
 
 		HashMap<String, String> mColumnMap = buildColumnMap();
-		// 为自己的列名定义别名,具体查询SearchMangger??
+		// 为自己的列名定义别名,具体查询SearchMangger类
 		SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 		builder.setTables(MovieDao.TABLENAME);
 		builder.setProjectionMap(mColumnMap);

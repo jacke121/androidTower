@@ -9,9 +9,11 @@ import android.app.Dialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -22,11 +24,14 @@ import android.widget.ImageView;
 import com.baseDao.Areas;
 import com.baseDao.AreasDao;
 import com.baseDao.SqlHelper;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 
 public class Activity_Area extends Activity implements OnClickListener {
-    public static EditText txt_name,txt_danwei;// txt_quxian, txt_gongbian, ;
+    public static EditText txt_name, txt_danwei;// txt_quxian, txt_gongbian, ;
     Button btn_save;
     ImageView title_btn_sequence;
     String msg = null;
@@ -35,6 +40,12 @@ public class Activity_Area extends Activity implements OnClickListener {
     SqlHelper helper;
     AreasDao areasDao;
     String type;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,9 +55,9 @@ public class Activity_Area extends Activity implements OnClickListener {
         /* 获取Bundle中的数据，注意类型和key */
         if (bundle != null) {
             type = bundle.getString("type");
-            if(type.equals("add")){
+            if (type.equals("add")) {
 //               showMsg("aaa");
-            }else{
+            } else {
 //                showMsg("aaa");
             }
         }
@@ -58,6 +69,9 @@ public class Activity_Area extends Activity implements OnClickListener {
         setContentView(R.layout.area_detail);
         //设置初始化视图
         initView();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @SuppressLint("HandlerLeak")
@@ -73,7 +87,7 @@ public class Activity_Area extends Activity implements OnClickListener {
                     }
                     break;
                 case 12:
-              break;
+                    break;
 
             }
         }
@@ -133,19 +147,20 @@ public class Activity_Area extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
-               String name = txt_name.getText().toString();
+                String name = txt_name.getText().toString();
                 String danwei = txt_danwei.getText().toString();
                 if (name.equals("") || danwei.equals("")) {
                     showMsg("信息不能为空!");
                 } else {
-                    Areas areas = new Areas();
-                    areas.danwei=danwei;
-                    areas.areastatus=1;
-                    areas.area=name;
-                    areas.count=1;
-                    areas.okcount=0;
-                    areas.lifeStatus=1;
-                    areasDao.insert(areas);
+                    final Areas areas = new Areas();
+                    areas.danwei = danwei;
+                    areas.areastatus = 1;
+                    areas.area = name;
+                    areas.count = 1;
+                    areas.okcount = 0;
+                    areas.lifeStatus = 1;
+
+                 areasDao.insertList(new SparseArray<Areas>() { {put(0, areas);} });
                     Intent resultIntent = new Intent();
                     Activity_Area.this.setResult(RESULT_OK, resultIntent);
                     Activity_Area.this.finish();
@@ -162,5 +177,45 @@ public class Activity_Area extends Activity implements OnClickListener {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Activity_Area Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://ui/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Activity_Area Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://ui/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }

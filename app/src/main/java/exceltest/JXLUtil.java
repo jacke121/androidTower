@@ -146,6 +146,7 @@ public class JXLUtil {
 				writebook = Workbook.createWorkbook(new File(fileName),
 						workbook);
 				WritableSheet sheet = writebook.getSheet(0);
+				sheet.setName("低压杆塔");
 
 				for(int j = 0; j < objList.size(); j++) {
 					Object tmp = objList.get(j);

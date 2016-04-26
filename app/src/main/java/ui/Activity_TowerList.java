@@ -21,7 +21,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.baseDao.Areas;
 import com.baseDao.AreasDao;
 import com.baseDao.Ganta;
@@ -30,6 +33,8 @@ import com.baseDao.SqlHelper;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
+import com.popujar.PopuItem;
+import com.popujar.PopuJar;
 
 public class Activity_TowerList extends Activity implements OnClickListener {
 
@@ -53,7 +58,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     SparseArray<Ganta> gantaList;
     AreasDao areasDao;
     Areas curentreas;
-
+    PopuJar mPopuJar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +81,45 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         helper = ((MyApplication) getApplication()).getSqlHelper();
         gantaDao = new GantaDao(helper);
         areasDao = new AreasDao(helper);
-        gantaDao.createTable(helper.getWritableDatabase());
         getDatas();
         TextView title_text = (TextView) findViewById(R.id.title_text);
         title_text.setText("塔杆列表");
 
+        PopuItem addItem = new PopuItem(1, "删除");
+        PopuItem acceptItem = new PopuItem(2, "取消");
+
+        mPopuJar = new PopuJar(Activity_TowerList.this, PopuJar.HORIZONTAL);
+
+        mPopuJar.addPopuItem(addItem);
+        mPopuJar.addPopuItem(acceptItem);
+
+        //setup the action item click listener
+        mPopuJar.setOnPopuItemClickListener(new PopuJar.OnPopuItemClickListener() {
+            @Override
+            public void onItemClick(PopuJar PopuJar, int position, int actionId) {
+                PopuItem PopuItem = PopuJar.getPopuItem(position);
+                if (actionId == 1) { //Add item selected
+                    if (selectItem == -1) {
+                        showMsg("请选择一行!");
+                        return;
+                    }
+                    Ganta tmpGanta = gantaList.get(selectItem);
+                    gantaDao.delete(tmpGanta);
+                    getDatas();
+                    adapter.notifyDataSetChanged();// 提醒数据已经变动
+                } else if (actionId == 2) {
+                } else if (actionId == 3) {
+                }
+            }
+        });
+
+        //setup on dismiss listener, set the icon back to normal
+        mPopuJar.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+//                mMoreIv.setImageResource(R.drawable.ic_list_more);
+            }
+        });
         btn_add = (Button) findViewById(R.id.btn_add);
         btn_cailu = (Button) findViewById(R.id.btn_cailu);
         Button btn_delgan = (Button) findViewById(R.id.btn_delgan);
@@ -134,10 +173,16 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                     showMsg("请选择一行!");
                     return;
                 }
-                Ganta tmpGanta = gantaList.get(selectItem);
-                gantaDao.delete(tmpGanta);
-                getDatas();
-                adapter.notifyDataSetChanged();// 提醒数据已经变动
+                if (gantaList.size() > selectItem) {
+                    Integer id = gantaList.get(selectItem).id;
+                    Bundle   bundle = new Bundle();
+                    bundle.putInt("id", id);
+                    Intent  intent = new Intent(Activity_TowerList.this,
+                            Activity_BiaoList.class);
+                    /* 把bundle对象assign给Intent */
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, 1);
+                }
                 break;
             case R.id.btn_cailu: {
                 if (selectItem == -1) {
@@ -268,6 +313,17 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 holder.txts[i] = (TextView) convertView
                         .findViewById(headIds[i]);
             }
+            final View finalConvertView = convertView;
+            LinearLayout item_Linear = (LinearLayout) convertView.findViewById(R.id.item_Linear);
+
+            item_Linear.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    selectItem = position;
+                    mPopuJar.show(finalConvertView);
+                    return true;
+                }
+            });
             final Ganta tmpTowerInfo = gantaList.get(position);
             // holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
             holder.txts[0].setText(position + 1 + "");
