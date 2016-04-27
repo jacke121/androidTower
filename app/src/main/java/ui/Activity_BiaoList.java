@@ -42,9 +42,8 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
 
     private int selectItem = -1;
     int[] headIds = new int[]{R.id.txt_1100,R.id.txt_1101, R.id.txt_1102, R.id.txt_1103,
-            R.id.txt_1104, R.id.txt_1105, R.id.txt_1106, R.id.txt_1107,
-            R.id.txt_1108, R.id.txt_1109, R.id.txt_1110, R.id.txt_1111};
-    String[] headers = new String[]{"序号", "台区名","杆塔名称", "材质", "性质","回路数", "电压", "运行状态", "坐标点", "发布日期", "发布人", "维修人员"};
+            R.id.txt_1104, R.id.txt_1105, R.id.txt_1106};
+    String[] headers = new String[]{"序号", "关联ID","设备名称", "坐标点",  "设备状态", "发布人", "发布日期"};
     // 方便测试，直接写的public
     Button btn_add;
     DataAdapter adapter;
@@ -61,20 +60,20 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
     AreasDao areasDao;
     Areas curentreas;
     PopuJar mPopuJar;
+    Ganta   curentGanta;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 设置无标题（尽量在前面设置）
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Intent intent = getIntent();
+        curentGanta =(Ganta)intent.getSerializableExtra("ganta");
         Bundle bundle = this.getIntent().getExtras();
         /* 获取Bundle中的数据，注意类型和key */
-        if (bundle != null) {
-            gantaid = bundle.getInt("id");
-            if (gantaid == 0) {
+        if (curentGanta.id==null) {
                 finish();
-            }
             areasDao = new AreasDao(((MyApplication) getApplication()).getSqlHelper());
-            SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{gantaid + ""});//模糊查询
+            SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{curentGanta.id + ""});//模糊查询
             if (areas != null) {
                 curentreas = areas.get(0);
             }
@@ -85,7 +84,7 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
         areasDao = new AreasDao(helper);
         getDatas();
         TextView title_text = (TextView) findViewById(R.id.title_text);
-        title_text.setText("塔杆列表");
+        title_text.setText("电表箱列表");
 
         PopuItem addItem = new PopuItem(1, "删除");
         PopuItem acceptItem = new PopuItem(2, "取消");
@@ -143,7 +142,7 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
         mListView.setAdapter(adapter);
         mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         // mListView = (ListView) this.findViewById(R.id.repair_listview);
-        ImageButton b_back = (ImageButton) findViewById(R.id.b_back);
+        Button b_back = (Button) findViewById(R.id.btn_back);
         b_back.setOnClickListener(this);
     }
 
@@ -155,16 +154,15 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
                 Intent intent = new Intent(Activity_BiaoList.this,
                         Activity_Biao.class);
                 Biao tmpGanta=new Biao();
-                if(selectItem>-1) {
-                     tmpGanta = gantaList.get(selectItem);
 
-                }
+                tmpGanta.gantaid= curentGanta.id;
+                tmpGanta.code="JR"+ String.format("%02d",gantaList.size()+1);
                 intent.putExtra("biao", tmpGanta);
                     /* 把bundle对象assign给Intent */
                 startActivityForResult(intent, 1);
             }
             break;
-            case R.id.b_back:
+            case R.id.btn_back:
                 finish();
                 break;
             case R.id.btn_delgan:
@@ -213,8 +211,8 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
     }
     public void getDatas() {
 //        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on a.id=g.areaid where a.id=", new String[]{id + ""});
-        gantaList = gantaDao.queryBySql("select b.id,b.name,b.yunxing,g.zuobiao,b.createtime,b.updatetime,b.lifeStatus,b.upgradeFlag," +
-                " from Biao b ", null);
+        gantaList = gantaDao.queryBySql("select b.*" +
+                " from Biao b where b.gantaid="+curentGanta.id, null);
         if (gantaList == null) {
             gantaList = new SparseArray<Biao>();
             for (int i = 0; i < 0; i++) {
@@ -272,7 +270,7 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
         public View getView(final int position, View convertView,
                             ViewGroup parent) {
             // if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.lay_tower_row, null);
+            convertView = mInflater.inflate(R.layout.lay_biao_row, null);
             convertView.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -302,7 +300,21 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
             }
             final View finalConvertView = convertView;
             LinearLayout item_Linear = (LinearLayout) convertView.findViewById(R.id.item_Linear);
-
+            item_Linear.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectItem = position;
+                    Intent intent = new Intent(Activity_BiaoList.this,
+                            Activity_Biao.class);
+                    Biao tmpGanta=new Biao();
+                    if(selectItem>-1) {
+                        tmpGanta = gantaList.get(selectItem);
+                    }
+                    intent.putExtra("biao", tmpGanta);
+                    /* 把bundle对象assign给Intent */
+                    startActivityForResult(intent, 1);
+                }
+            });
             item_Linear.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -314,14 +326,14 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
             final Biao tmpTowerInfo = gantaList.get(position);
             // holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
             holder.txts[0].setText(position + 1 + "");
-            holder.txts[1].setText(tmpTowerInfo.areaname + "");
+            holder.txts[1].setText(tmpTowerInfo.code + "");
             holder.txts[2].setText(tmpTowerInfo.name + "");
 
-            holder.txts[5].setText(tmpTowerInfo.taiquid + "");
+            holder.txts[3].setText(tmpTowerInfo.zuobiao + "");
 
-            holder.txts[9].setText(tmpTowerInfo.yunxing + "");
-            holder.txts[10].setText(tmpTowerInfo.zuobiao + "");
-            holder.txts[11].setText(tmpTowerInfo.level + "");
+            holder.txts[4].setText(tmpTowerInfo.yunxing + "");
+            holder.txts[5].setText(tmpTowerInfo.zuobiao + "");
+            holder.txts[6].setText(tmpTowerInfo.level + "");
 
             convertView.setTag(holder);
 
@@ -375,6 +387,6 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
     }
 
     private class ViewHolder {
-        TextView[] txts = new TextView[13];
+        TextView[] txts = new TextView[7];
     }
 }

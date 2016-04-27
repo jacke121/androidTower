@@ -1,7 +1,8 @@
 package com.baseDao;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Areas {
+public class Areas implements Serializable {
 
 		public Integer id;
 		public String area;

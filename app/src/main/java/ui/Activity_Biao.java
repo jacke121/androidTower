@@ -55,35 +55,14 @@ public class Activity_Biao extends Activity implements OnClickListener {
 
         setContentView(R.layout.lay_biao_detail);
 
-//        Bundle bundle = this.getIntent().getExtras();
-//        /* 获取Bundle中的数据，注意类型和key */
-//        if (bundle != null) {
-//            biaoid = bundle.getInt("id");
-//            if (biaoid == 0) {
-//                finish();
-//            }
-//            SparseArray<Biao> gantas = biaoDao.queryToList("id =?", new String[]{biaoid + ""});
-//            if (gantas == null) {
-//                finish();
-//            }
-//            mganta = gantas.get(0);//模糊查询
-//        }
-//        SparseArray<Ganta> gantas = gantaDao.queryToList("id =?", new String[]{biaoid + ""});
-//        if (gantas == null) {
-//            finish();
-//        }
-//        SparseArray<Biao> areas = biaoDao.queryToList("id =?", new String[]{Activity_BiaoList.gantaid + ""});//模糊查询
-//        if (areas != null) {
-//            curentreas  = areas.get(0);
-//        }
         initView();
-        if(curentreas.id==null){
-
-        }else{
+        if(curentreas.id!=null){
+            txt_name.setText(curentreas.name);
+            ext_zuobiao.setText(curentreas.zuobiao);
+//        txt_gongbian = (EditText) findViewById(R.id.txt_gongbian);
 
         }
-        //设置初始化视图
-
+            ext_code.setText(curentreas.code);
     }
 
     @SuppressLint("HandlerLeak")

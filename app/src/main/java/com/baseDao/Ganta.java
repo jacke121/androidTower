@@ -1,7 +1,8 @@
 package com.baseDao;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Ganta {
+public class Ganta implements Serializable {
 
 		public Integer id;
 		public String name;

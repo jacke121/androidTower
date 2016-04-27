@@ -174,13 +174,9 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                     return;
                 }
                 if (gantaList.size() > selectItem) {
-                    Integer id = gantaList.get(selectItem).id;
-                    Bundle   bundle = new Bundle();
-                    bundle.putInt("id", id);
                     Intent  intent = new Intent(Activity_TowerList.this,
                             Activity_BiaoList.class);
-                    /* 把bundle对象assign给Intent */
-                    intent.putExtras(bundle);
+                    intent.putExtra("ganta", gantaList.get(selectItem));
                     startActivityForResult(intent, 1);
                 }
                 break;
