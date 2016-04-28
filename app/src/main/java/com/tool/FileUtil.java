@@ -155,6 +155,27 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 	}
+	public void insToFile(InputStream is,String targetFile)  {
+		File	file = new File(targetFile);
+
+		OutputStream os = null;
+		try {
+			os = new FileOutputStream(file);
+
+		int bytesRead = 0;
+		byte[] buffer = new byte[8192];
+		while ((bytesRead = is.read(buffer, 0, 8192)) != -1) {
+			os.write(buffer, 0, bytesRead);
+		}
+		os.close();
+//		is.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 	/*
 	 * 将一个InputStream中的数据写入至SD卡中
 	 */

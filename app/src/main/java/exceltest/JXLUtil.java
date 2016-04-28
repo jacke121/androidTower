@@ -14,6 +14,9 @@ import android.util.SparseArray;
 import android.widget.Toast;
 
 
+import com.baseDao.Biao;
+import com.baseDao.Ganta;
+
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
@@ -38,7 +41,6 @@ public class JXLUtil {
 	public final static String UTF8_ENCODING = "UTF-8";
 	public final static String GBK_ENCODING = "GBK";
 
-	public static int index = 1;// 写入序号
 	public static int row = 2;// 具体字段写入从第二行开始
 
 	//格式定义
@@ -71,7 +73,6 @@ public class JXLUtil {
 	
 	public  void initExcel(String fileName, String[] colName,
 			int[] widthArr) {
-		JXLUtil.index = 0;// 设置为初始值。不然static的index会一直递增
 		JXLUtil.row = 2;
 		format();// 先设置格式
 		WritableWorkbook workbook = null;
@@ -127,6 +128,70 @@ public class JXLUtil {
 
 	}
 
+	public void writeObjInToExcel( SparseArray<Ganta> objList,SparseArray<Biao> biaoList,
+										String fileName, String[] fieldArr, Context c) {
+		if (objList != null && objList.size() > 0) {
+			format();
+			row=2;
+			WritableWorkbook writebook = null;
+			try {
+				//设置读文件编码
+				// setEncode.setEncoding(UTF8_ENCODING);
+				Workbook workbook = Workbook.getWorkbook(new File(fileName));
+				writebook = Workbook.createWorkbook(new File(fileName),
+						workbook);
+				WritableSheet sheet = writebook.getSheet(0);
+
+				for(int j = 0; j < objList.size(); j++) {
+					Object tmp = objList.get(j);
+					Class classType = tmp.getClass();
+					sheet.addCell(new Label(0, row, (j+1)+"",arial12format));// 第一列用来写序号
+					sheet.addCell(new Label(1, row, objList.get(j).areaname, arial12format));
+					sheet.addCell(new Label(2, row, objList.get(j).name, arial12format));
+					sheet.addCell(new Label(3, row, objList.get(j).caizhi, arial12format));
+					sheet.addCell(new Label(4, row, objList.get(j).danwei, arial12format));
+					sheet.addCell(new Label(5, row, objList.get(j).dianya, arial12format));
+					sheet.addCell(new Label(6, row, objList.get(j).yunxing, arial12format));
+					row++;
+				}
+				//----------------
+				 sheet = writebook.getSheet(2);
+				row=2;
+				for(int j = 0; j < biaoList.size(); j++) {
+					Biao tmp = biaoList.get(j);
+					int col =0;
+					sheet.addCell(new Label(0, row, (j+1)+"",	arial12format));// 第一列用来写序号
+					sheet.addCell(new Label(1, row, tmp.areaname, arial12format));
+					sheet.addCell(new Label(2, row, tmp.code, arial12format));
+					sheet.addCell(new Label(3, row, tmp.name, arial12format));
+					sheet.addCell(new Label(4, row, tmp.zuobiao, arial12format));
+					}
+					row++;
+
+				writebook.write();
+				Toast.makeText(c, "导出成功", Toast.LENGTH_SHORT).show();
+			} catch (BiffException e) {
+				e.printStackTrace();
+			} catch (WriteException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}  finally {
+				if (writebook != null) {
+					try {
+						writebook.close();
+					} catch (WriteException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}
+	}
 
 
 	public <T> void writeObjListToExcel(SparseArray<T> objList,
@@ -135,10 +200,6 @@ public class JXLUtil {
 			WritableWorkbook writebook = null;
 			InputStream in = null;
 			try {
-				/**
-				 * 读取原来写入的文件
-				 */
-				// WorkbookSettings setEncode = new WorkbookSettings();
 				//设置读文件编码
 				// setEncode.setEncoding(UTF8_ENCODING);
 				in = new FileInputStream(new File(fileName));
@@ -146,17 +207,12 @@ public class JXLUtil {
 				writebook = Workbook.createWorkbook(new File(fileName),
 						workbook);
 				WritableSheet sheet = writebook.getSheet(0);
-				sheet.setName("低压杆塔");
-
 				for(int j = 0; j < objList.size(); j++) {
 					Object tmp = objList.get(j);
 					Class classType = tmp.getClass();
-					int col = 0;
-					index++;
-					String serialNumberStr = String.valueOf(index);
-					sheet.addCell(new Label(col, row, serialNumberStr,
+					int col = 1;
+					sheet.addCell(new Label(col, row, (j+1)+"",
 							arial12format));// 第一列用来写序号
-					col++;
 					// 通过反射取值，并且写入到excel中
 					for (int i = 0; i < fieldArr.length; i++) {
 //						Class<?> cls=Class.forName(className);////////////////////////通过类的名称反射类
@@ -203,18 +259,12 @@ public class JXLUtil {
 	}
 	/**
 	 * 将 数据写入到excel中
-	 * @param os
-	 *            创建Excel的输出流
-	 * @param objList
-	 *            要插入的数据
-	 * @param fieldArr
-	 *            字段名称
-	 * @param fileName
-	 *            excel表头名称
-	 * @param colName
-	 *            excel列明
-	 * @param widthArr
-	 *            excel单元格宽度
+	 * @param os  创建Excel的输出流
+	 * @param objList     要插入的数据
+	 * @param fieldArr   字段名称
+	 * @param fileName   excel表头名称
+	 * @param colName     excel列明
+	 * @param widthArr    excel单元格宽度
 	 */
 	public <T> void dataToExcel(ByteArrayOutputStream os,
 								List<T> objList, String[] fieldArr, String fileName,
@@ -240,7 +290,7 @@ public class JXLUtil {
 				sheet.addCell(new Label(col, row, colName[col], arial10format));// 写入
 				// col名称
 			}
-
+int index=0;
 			for (Object tmp : objList) {// 写入数据
 				row++;
 				col = 1;

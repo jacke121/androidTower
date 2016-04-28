@@ -24,6 +24,8 @@ import android.widget.TextView;
 
 import com.baseDao.Areas;
 import com.baseDao.AreasDao;
+import com.baseDao.Biao;
+import com.baseDao.BiaoDao;
 import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
@@ -31,16 +33,20 @@ import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
 import com.tool.FileUtil;
+import com.tool.InputStreamCacher;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import exceltest.JXLUtil;
+
 public class Activity_AreaList extends Activity implements OnClickListener {
     private int selectItem = -1;
-    int[] COLWIDTH_ARR = {5, 40, 15, 30, 30, 30, 30, 30, 30, 30, 30, 10,30,30,30};//单元格宽度
+    int[] COLWIDTH_ARR = {5, 40, 15, 30, 30, 30, 30, 30, 30, 30, 30, 10, 30, 30, 30};//单元格宽度
     int[] headIds = new int[]{R.id.txt_1201, R.id.txt_1202, R.id.txt_1203,
             R.id.txt_1204, R.id.txt_1205};
     String[] headers = new String[]{"序号", "台区名", "运行单位", "状态", "操作"};
@@ -54,6 +60,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
     LinearLayout repairhead;
     private ListView mListView;
     GantaDao gantaDao;
+    BiaoDao biaoDao;
     SqlHelper helper;
     AreasDao areasDao;
 
@@ -67,6 +74,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
         helper = myApplication.getSqlHelper();
         areasDao = new AreasDao(helper);
         gantaDao = new GantaDao(helper);
+        biaoDao = new BiaoDao(helper);
         // 查询数据库
         getData();
         ((Button) findViewById(R.id.btn_add)).setOnClickListener(this);
@@ -138,16 +146,24 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                 String datestr = sdf.format(now);
-                String filename = new FileUtil().getSDDir("1tower") + "/坐标点批量导入" + datestr + ".xls";
+                InputStream is = getResources().openRawResource(R.raw.model);
 
-                String[] excelheaders = new String[]{"序号", "台区", "杆塔名称", "单位", "材质", "性质", "回路数", "电压", "运行状态", "坐标点", "发布日期","全貌","塔头","铭牌"};
-                jXLUtil.initExcel(filename, excelheaders, COLWIDTH_ARR);
-                SparseArray<Ganta> gantaList = gantaDao.queryBySql("select g.id,a.area || g.name as name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.lifeStatus,g.upgradeFlag," +
-                        "a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid", null);
-                String[] excelfiles = new String[]{ "areaname", "name", "danwei", "caizhi", "xingzhi", "huilu", "dianya", "yunxing", "zuobiao", "createtime","picquanmao","pictatou","picmingpai"};
+                InputStreamCacher inputStreamCacher = new InputStreamCacher(is);
+                for (int i = 0; i < areaslist.size(); i++) {
+                    String area = areaslist.get(i).area;
+                    String filename = new FileUtil().getSDDir("1tower") + "/坐标点批量导入" + datestr + area + ".xls";
+                    new FileUtil().insToFile(inputStreamCacher.getInputStream(), filename);
+//                    String[] excelheaders = new String[]{"序号", "台区", "杆塔名称", "单位", "材质", "性质", "回路数", "电压", "运行状态", "坐标点", "发布日期","全貌","塔头","铭牌"};
+//                    jXLUtil.initExcel(filename, excelheaders, COLWIDTH_ARR);
+                    SparseArray<Ganta> gantaList = gantaDao.queryBySql("select g.id,a.area || g.name as name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.lifeStatus,g.upgradeFlag," +
+                            "a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid where a.id=" + areaslist.get(i).id, null);
+                    String[] excelfiles = new String[]{"areaname", "name", "danwei", "caizhi", "xingzhi", "huilu", "dianya", "yunxing", "zuobiao", "createtime", "picquanmao", "pictatou", "picmingpai"};
 
-                jXLUtil.writeObjListToExcel(gantaList, filename, excelfiles, this);
-                showMsg(filename);
+                    SparseArray<Biao> biaoList = biaoDao.queryBySql("select b.* from Biao b join Ganta g on g.id=b.gantaid where g.areaid=" + areaslist.get(i).id, null);
+
+                    jXLUtil.writeObjInToExcel(gantaList, biaoList, filename, excelfiles, this);
+                }
+                showMsg("导出目录：" + new FileUtil().getSDDir("1tower"));
                 break;
 
             case R.id.btn_child: {
@@ -163,7 +179,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
                             Activity_TowerList.class);
                     /* 把bundle对象assign给Intent */
                     intent.putExtras(bundle);
-                     startActivity(intent);
+                    startActivity(intent);
                     Activity_AreaList.this.finish();
 //                    startActivityForResult(intent, 1);
                 }
