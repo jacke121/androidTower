@@ -30,6 +30,7 @@ import com.baseDao.AreasDao;
 import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
+import com.dyr.custom.CustomDialog;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.listview.CHScrollView;
@@ -159,10 +160,11 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add: {
-                Intent intent = new Intent(Activity_TowerList.this,
-                        Activity_Tower.class);
-                    /* 把bundle对象assign给Intent */
-                startActivityForResult(intent, 1);
+                showAlertDialog();
+//                Intent intent = new Intent(Activity_TowerList.this,
+//                        Activity_Tower.class);
+//                    /* 把bundle对象assign给Intent */
+//                startActivityForResult(intent, 1);
             }
             break;
             case R.id.b_back:
@@ -393,5 +395,27 @@ public class Activity_TowerList extends Activity implements OnClickListener {
 
     private class ViewHolder {
         TextView[] txts = new TextView[13];
+    }
+    public void showAlertDialog() {
+
+        CustomDialog.Builder builder = new CustomDialog.Builder(this);
+        builder.setMessage("这个就是自定义的提示框");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //设置你的操作事项
+            }
+        });
+
+        builder.setNegativeButton("取消",
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.create().show();
+
     }
 }
