@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -30,8 +29,6 @@ import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
 import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 import com.tool.FileUtil;
@@ -65,9 +62,9 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
     AreasDao areasDao;
     static Areas curentreas;
-    int gantaid;
-    Ganta mganta;
-     Ganta areas;
+    Ganta parentGanta;
+     Ganta currentGanta;
+    int gantatype;//0代表新增空杆塔，1代表新增父杆塔，2代表子杆塔，3代表修改杆塔
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -82,18 +79,12 @@ public class Activity_Tower extends Activity implements OnClickListener {
         gantaDao = new GantaDao(helper);
         areasDao = new AreasDao(helper);
         //设置初始化视图
-        Bundle bundle = this.getIntent().getExtras();
+        gantatype = this.getIntent().getIntExtra("type",-1);
         /* 获取Bundle中的数据，注意类型和key */
-        if (bundle != null) {
-            gantaid = bundle.getInt("id");
-            if (gantaid == 0) {
-                finish();
-            }
-            SparseArray<Ganta> gantas = gantaDao.queryToList("id =?", new String[]{gantaid + ""});
-            if (gantas == null) {
-                finish();
-            }
-            mganta = gantas.get(0);//模糊查询
+        if (gantatype==0) {
+            parentGanta =null;
+        }else   {
+            parentGanta = (Ganta) this.getIntent().getSerializableExtra("ganta");
         }
 
         SparseArray<Areas> areas = areasDao.queryToList("id =?", new String[]{Activity_TowerList.areaid + ""});//模糊查询
@@ -129,51 +120,51 @@ public class Activity_Tower extends Activity implements OnClickListener {
         Button btn_save = (Button) findViewById(R.id.btn_save);
 
         ivback = (ImageView) findViewById(R.id.title_btn_sequence);
-        if (mganta != null) {
+        if (parentGanta != null && gantatype==3) {
             //编辑
-            File file = new File(mganta.picquanmao);
+            File file = new File(parentGanta.picquanmao);
             bitmap = new FileUtil().getThumbnail(this, file);
             iv_fullview.setImageBitmap(bitmap);
-            file = new File(mganta.pictatou);
+            file = new File(parentGanta.pictatou);
             bitmap = new FileUtil().getThumbnail(this, file);
             iv_tower_head.setImageBitmap(bitmap);
-            file = new File(mganta.picmingpai);
+            file = new File(parentGanta.picmingpai);
             bitmap = new FileUtil().getThumbnail(this, file);
             iv_nameplate.setImageBitmap(bitmap);
-            ext_towername.setText(mganta.name);
-            str_fullview = mganta.picquanmao;
-            str_tower_head = mganta.pictatou;
-            str_nameplate = mganta.picmingpai;
-            if (mganta.caizhi.equals(" 水泥杆")) {
+            ext_towername.setText(parentGanta.name);
+            str_fullview = parentGanta.picquanmao;
+            str_tower_head = parentGanta.pictatou;
+            str_nameplate = parentGanta.picmingpai;
+            if (parentGanta.caizhi.equals(" 水泥杆")) {
                 ((RadioButton) findViewById(R.id.shuini_pole)).setChecked(true);
 
-            } else if (mganta.caizhi.equals(" 木杆")) {
+            } else if (parentGanta.caizhi.equals(" 木杆")) {
                 ((RadioButton) findViewById(R.id.wooden_pole)).setChecked(true);
             } else {
                 ((RadioButton) findViewById(R.id.steel_pole)).setChecked(true);
             }
-            if (mganta.xingzhi.equals(" 直线")) {
+            if (parentGanta.xingzhi.equals(" 直线")) {
                 ((RadioButton) findViewById(R.id.zhixian)).setChecked(true);
 
             } else {
                 ((RadioButton) findViewById(R.id.naizhang)).setChecked(true);
             }
-            if (mganta.dianya.equals(" 交流220V")) {
+            if (parentGanta.dianya.equals(" 交流220V")) {
                 ((RadioButton) findViewById(R.id.voltage220)).setChecked(true);
 
             } else {
                 ((RadioButton) findViewById(R.id.voltage380)).setChecked(true);
             }
-            if (mganta.yunxing.equals(" 在运")) {
+            if (parentGanta.yunxing.equals(" 在运")) {
                 ((RadioButton) findViewById(R.id.inuse)).setChecked(true);
 
-            } else if (mganta.yunxing.equals(" 留用")) {
+            } else if (parentGanta.yunxing.equals(" 留用")) {
                 ((RadioButton) findViewById(R.id.liuyong)).setChecked(true);
             } else {
                 ((RadioButton) findViewById(R.id.nouse)).setChecked(true);
             }
 
-            ext_zuobiao.setText(mganta.zuobiao);
+            ext_zuobiao.setText(parentGanta.zuobiao);
 //            sp_huilu.set
         }
         if (txt_taiqu != null) {
@@ -248,7 +239,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 Activity_Tower.this.finish();
                 break;
             case R.id.btn_save:
-                areas   = new Ganta();
+                currentGanta = new Ganta();
                 String zuobiao = ext_zuobiao.getText().toString();
                 String towername = ext_towername.getText().toString();
                 if (str_fullview == null) {
@@ -264,9 +255,9 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     return;
                 }
 
-                areas.picquanmao = str_fullview;
-                areas.pictatou = str_tower_head;
-                areas.picmingpai = str_nameplate;
+                currentGanta.picquanmao = str_fullview;
+                currentGanta.pictatou = str_tower_head;
+                currentGanta.picmingpai = str_nameplate;
                 bm_fullview = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "全貌.jpg");
 
                 new FileUtil().saveMyBitmap(bm_fullview, str_fullview);
@@ -317,23 +308,38 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     showMsg("坐标点号不能为空!");
                     return;
                 }
-                areas.areaid = Activity_TowerList.areaid;
-                areas.areaname = curentreas.area;
-                areas.xingzhi = selectxingzhi.getText().toString();
-                areas.caizhi = selectcaizhi.getText().toString();
-                areas.yunxing = yunxing.getText().toString();
-                areas.dianya = radiodianya.getText().toString();
-                areas.zuobiao = zuobiao;
-                areas.name = towername;
-                areas.lifeStatus = 1;
-                areas.huilu = strHuilu;
-                if (mganta != null) {
-                    areas.id = mganta.id;
-                    gantaDao.update(areas);
+                currentGanta.areaid = Activity_TowerList.areaid;
+                currentGanta.areaname = curentreas.area;
+                currentGanta.xingzhi = selectxingzhi.getText().toString();
+                currentGanta.caizhi = selectcaizhi.getText().toString();
+                currentGanta.yunxing = yunxing.getText().toString();
+                currentGanta.dianya = radiodianya.getText().toString();
+                currentGanta.zuobiao = zuobiao;
+                currentGanta.name = towername;
+                currentGanta.lifeStatus = 1;
+                currentGanta.huilu = strHuilu;
+                if (parentGanta != null) {
+                    if(gantatype==1){
+                        gantaDao.insertList(new SparseArray<Ganta>() {
+                            {
+                                put(0, currentGanta);
+                            }
+                        });
+                        parentGanta.parentid=currentGanta.id;
+                        gantaDao.update(parentGanta);
+                    }
+                    else if(gantatype==2){
+                        currentGanta.parentid = parentGanta.id;
+                        gantaDao.update(currentGanta);
+                    }
+                    else if(gantatype==3){
+                        currentGanta.id = parentGanta.id;
+                        gantaDao.update(currentGanta);
+                    }
                 } else {
                     gantaDao.insertList(new SparseArray<Ganta>() {
                         {
-                            put(0, areas);
+                            put(0, currentGanta);
                         }
                     });
                 }

@@ -88,6 +88,7 @@ Lock lock = new ReentrantLock();
   		                if (result < 0) {
   		                    return false;
   		                }
+  		            entity.id=(int)result;
   		            }
   		            db.setTransactionSuccessful();
   		        } catch (Exception e) {

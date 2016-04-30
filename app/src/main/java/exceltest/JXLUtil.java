@@ -9,6 +9,7 @@ import java.util.List;
 
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
+import ui.Activity_AreaList;
+import ui.IndexActivity;
 
 public class JXLUtil {
 	public static WritableFont arial14font = null;
@@ -128,7 +131,7 @@ public class JXLUtil {
 
 	}
 
-	public void writeObjInToExcel( SparseArray<Ganta> objList,SparseArray<Biao> biaoList,
+	public void writeObjInToExcel( SparseArray<Ganta> objList, Cursor towercursor,SparseArray<Biao> biaoList,  Cursor biaocursor,
 										String fileName, String[] fieldArr, Context c) {
 		if (objList != null && objList.size() > 0) {
 			format();
@@ -146,28 +149,68 @@ public class JXLUtil {
 					Object tmp = objList.get(j);
 					Class classType = tmp.getClass();
 					sheet.addCell(new Label(0, row, (j+1)+"",arial12format));// 第一列用来写序号
-					sheet.addCell(new Label(1, row, objList.get(j).areaname, arial12format));
 					sheet.addCell(new Label(2, row, objList.get(j).name, arial12format));
-					sheet.addCell(new Label(3, row, objList.get(j).caizhi, arial12format));
-					sheet.addCell(new Label(4, row, objList.get(j).danwei, arial12format));
-					sheet.addCell(new Label(5, row, objList.get(j).dianya, arial12format));
-					sheet.addCell(new Label(6, row, objList.get(j).yunxing, arial12format));
+					sheet.addCell(new Label(4, row, objList.get(j).name, arial12format));
+					sheet.addCell(new Label(5, row, objList.get(j).xingzhi, arial12format));
+					sheet.addCell(new Label(6, row, objList.get(j).zuobiao, arial12format));
+					sheet.addCell(new Label(7, row, IndexActivity.userName+"_"+ Activity_AreaList.todaystr+"_"+objList.get(j).zuobiao, arial12format));
+					sheet.addCell(new Label(8, row, objList.get(j).huilu+"", arial12format));
+					sheet.addCell(new Label(9, row, objList.get(j).caizhi, arial12format));
+					sheet.addCell(new Label(11, row, objList.get(j).danwei, arial12format));
+					sheet.addCell(new Label(21, row, objList.get(j).yunxing, arial12format));
 					row++;
 				}
-				//----------------
-				 sheet = writebook.getSheet(2);
+				//----------------------
+				sheet = writebook.getSheet(1);
 				row=2;
-				for(int j = 0; j < biaoList.size(); j++) {
-					Biao tmp = biaoList.get(j);
-					int col =0;
-					sheet.addCell(new Label(0, row, (j+1)+"",	arial12format));// 第一列用来写序号
-					sheet.addCell(new Label(1, row, tmp.areaname, arial12format));
-					sheet.addCell(new Label(2, row, tmp.code, arial12format));
-					sheet.addCell(new Label(3, row, tmp.name, arial12format));
-					sheet.addCell(new Label(4, row, tmp.zuobiao, arial12format));
+				while (towercursor.moveToNext()) {
+				String startname=	towercursor.isNull(1 )? "" :towercursor.getString(1);
+					String endname=	towercursor.isNull(2)? "" :towercursor.getString(2);
+					String zhuangtai=	towercursor.isNull(4)? "" :towercursor.getString(4);
+						sheet.addCell(new Label(0, row, (row-1)+"",	arial12format));// 第一列用来写序号
+						sheet.addCell(new Label(2, row,startname+"-"+endname, arial12format));
+						sheet.addCell(new Label(4, row, "运行杆塔", arial12format));
+						sheet.addCell(new Label(5, row, startname, arial12format));
+						sheet.addCell(new Label(8, row, endname, arial12format));
+					sheet.addCell(new Label(12, row, zhuangtai, arial12format));
+					row++;
+				}
+				towercursor.close();
+
+				//----------------
+				if(biaoList!=null && biaoList.size()>0) {
+					sheet = writebook.getSheet(2);
+					row = 2;
+					for (int j = 0; j < biaoList.size(); j++) {
+						Biao tmp = biaoList.get(j);
+						int col = 0;
+						sheet.addCell(new Label(0, row, (j + 1) + "", arial12format));// 第一列用来写序号
+						sheet.addCell(new Label(1, row, tmp.areaname, arial12format));
+						sheet.addCell(new Label(2, row, tmp.code, arial12format));
+						sheet.addCell(new Label(3, row, tmp.name, arial12format));
+						sheet.addCell(new Label(4, row,  IndexActivity.userName+"_"+ Activity_AreaList.todaystr+"_"+tmp.zuobiao, arial12format));
 					}
 					row++;
+				}
 
+				//---------------
+				//----------------------
+				sheet = writebook.getSheet(3);
+				row=2;
+				while (biaocursor.moveToNext()) {
+					String startname=	biaocursor.isNull(1 )? "" :biaocursor.getString(1);
+					String endname=	biaocursor.isNull(2)? "" :biaocursor.getString(2);
+					String zhuangtai=	biaocursor.isNull(4)? "" :biaocursor.getString(4);
+					sheet.addCell(new Label(0, row, (row-1)+"",	arial12format));// 第一列用来写序号
+					sheet.addCell(new Label(2, row,startname+"-"+endname, arial12format));
+					sheet.addCell(new Label(4, row, "运行杆塔", arial12format));
+					sheet.addCell(new Label(5, row, startname, arial12format));
+					sheet.addCell(new Label(6, row, "电表箱", arial12format));
+					sheet.addCell(new Label(7, row, endname, arial12format));
+					sheet.addCell(new Label(11, row, zhuangtai, arial12format));
+					row++;
+				}
+				biaocursor.close();
 				writebook.write();
 				Toast.makeText(c, "导出成功", Toast.LENGTH_SHORT).show();
 			} catch (BiffException e) {

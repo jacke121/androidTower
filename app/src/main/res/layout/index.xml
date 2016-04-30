@@ -3,81 +3,81 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/white"
-    android:orientation="vertical" >
-<RelativeLayout
-            android:id="@+id/menu_title"
-            android:layout_width="fill_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/menu_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/attachment_region_bg"
+        android:paddingRight="2.0dip">
+
+        <ImageView
+            android:id="@+id/title_btn_sequence"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8.0dip"
+           />
+
+        <FrameLayout
+            android:id="@+id/title_selector_notes"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/attachment_region_bg"
-            android:paddingRight="2.0dip" >
-
-            <ImageView
-                android:id="@+id/title_btn_sequence"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="8.0dip"
-                android:background="@drawable/login_back" />
-
-            <FrameLayout
-                android:id="@+id/title_selector_notes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="3.0dip"
-                >
-    <!--             下拉选择三角图表背景
-        android:background="@drawable/selector_title_switch" -->
-                <TextView
-                    android:id="@+id/tv_title"
-                    style="@style/title_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="授权验证"
-                    android:paddingRight="@dimen/padding_view_right_14" />
-            </FrameLayout>
-
+            android:layout_centerInParent="true"
+            android:layout_marginTop="3.0dip">
+            <!--             下拉选择三角图表背景
+                android:background="@drawable/selector_title_switch" -->
             <TextView
-                android:id="@+id/tv_progress"
+                android:id="@+id/tv_title"
+                style="@style/title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="3.0dip"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp20"
-                android:visibility="gone" />
+                android:paddingRight="@dimen/padding_view_right_14"
+                android:text="运检低压线路采录" />
+        </FrameLayout>
 
-        </RelativeLayout>
-    
+        <TextView
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="3.0dip"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp20"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
 
     <LinearLayout
         android:id="@+id/main_linearLayout01"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginTop="20dip"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:paddingRight="10dp">
 
         <TextView
             android:id="@+id/main_txtUser"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="IP: "
-            android:textSize="18dip"
-            android:textColor="@color/black" />
+            android:gravity="center_vertical|left"
+            android:text="用户名: "
+            android:textColor="@color/black"
+            android:textSize="18dip" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="2.5"
+            android:layout_weight="3"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/ext_ip"
@@ -93,66 +93,92 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginTop="5dip"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:paddingRight="10dp">
 
-        <!--<TextView-->
-            <!--android:id="@+id/main_txtPwd"-->
-             <!--android:layout_width="0dp"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:gravity="center"-->
-            <!--android:text="@string/pwd"-->
-            <!--android:textSize="18dip"-->
-            <!--android:textColor="@color/black" />-->
-<!--<LinearLayout-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="fill_parent"-->
-            <!--android:layout_weight="2.5"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:orientation="horizontal" >-->
-        <!--<EditText-->
-            <!--android:id="@+id/main_eTxtPwd"-->
-            <!--android:layout_width="250dip"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:hint=""-->
-            <!--android:inputType="textPassword"-->
-            <!--android:textColor="@color/red" />-->
-    <!--</LinearLayout>-->
- </LinearLayout>
+        <TextView
+            android:id="@+id/main_txtPwd"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|left"
+            android:text="@string/pwd"
+            android:textColor="@color/black"
+            android:textSize="18dip" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/ext_Pwd"
+                android:layout_width="250dip"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:inputType="textPassword"
+                android:textColor="@color/red" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dip"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:paddingRight="10dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|left"
+            android:text="记住密码:"
+            android:textColor="@color/black"
+            android:textSize="18dip" />
+        <CheckBox
+            android:id="@+id/check_rember"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/main_linearLayout03"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginTop="25dip"
+        android:gravity="center"
+        android:orientation="horizontal"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:orientation="horizontal" >
+        android:paddingRight="10dp">
 
         <Button
-            android:id="@+id/btnAuthorize"
+            android:id="@+id/btn_login"
             android:layout_width="100dip"
             android:layout_height="40dp"
             android:background="@drawable/desktop_floatbtn_normal"
-            android:text="请求授权" />
+            android:text="登录" />
 
-        <!--
-             <Button
-            android:id="@+id/main_btnCancel"
-            android:layout_width="80dip"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:text="@string/cancel" /> -->
+
+             <!--<Button-->
+            <!--android:id="@+id/main_btnCancel"-->
+            <!--android:layout_width="80dip"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="5dip"-->
+            <!--android:text="自动登录" />-->
 
         <Button
             android:id="@+id/main_raoguo"
             android:layout_width="100dip"
-           android:layout_height="40dp"
-            android:background="@drawable/desktop_floatbtn_normal"
+            android:layout_height="40dp"
             android:layout_marginLeft="15dip"
-            android:text="绕过授权" />
+            android:background="@drawable/desktop_floatbtn_normal"
+            android:text="退出" />
     </LinearLayout>
 
 </LinearLayout>

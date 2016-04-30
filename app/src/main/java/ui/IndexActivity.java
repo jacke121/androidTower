@@ -16,11 +16,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.lbg.yan01.R;
@@ -38,11 +40,12 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import webClient.TimeClientHandler;
 
 public class IndexActivity extends Activity implements OnClickListener {
-    public static String serverIp = "192.168.1.1";
+    public static String userName = "";
     public static String eTxtUser, eTxtPwd, message;
-    EditText ext_ip;
+    EditText ext_user;
+    EditText ext_Pwd;
+    CheckBox check_rember;
     //	ShowDialog mShowDialog;
-    public static String error_message = "", remMsg;
     String msg = null;
     public SharedPreferences sharedPreferences_userInfo;
     Editor editor;
@@ -50,11 +53,54 @@ public class IndexActivity extends Activity implements OnClickListener {
     Socket client;
     String android_id;
     final int serverport = 2001;
+    ArrayMap<String, String> userMap = new ArrayMap<>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题
         setContentView(R.layout.index);
+        userMap.put("SJZ_FCSCZY", "1");
+        userMap.put("SJZ_FCSCZY", "1");
+        userMap.put("SJZ_FCWHK", "1");
+        userMap.put("SJZ_FENGJW1", "1");
+        userMap.put("SJZ_GAOHL", "1");
+        userMap.put("SJZ_GAOLH1", "1");
+        userMap.put("SJZ_GAOYB", "1");
+        userMap.put("SJZ_GAOYL", "1");
+        userMap.put("SJZ_GAOZY", "1");
+        userMap.put("SJZ_GONGJK", "1");
+        userMap.put("SJZ_GUOJXXJ", "1");
+        userMap.put("SJZ_GUOX", "1");
+        userMap.put("SJZ_CJSCZY", "1");
+        userMap.put("SJZ_GUOYM", "1");
+        userMap.put("SJZ_GUOYQ", "1");
+        userMap.put("SJZ_GUZM", "1");
+        userMap.put("SJZ_HANLN", "1");
+        userMap.put("SJZ_HAORT", "1");
+        userMap.put("SJZ_HAOSL", "1");
+        userMap.put("SJZ_HAOYALI", "1");
+        userMap.put("SJZ_HEB1", "1");
+        userMap.put("SJZ_HOUSC", "1");
+        userMap.put("SJZ_HUANGJD", "1");
+        userMap.put("SJZ_JIAMC", "1");
+        userMap.put("SJZ_JINZW", "1");
+        userMap.put("SJZ_JXNYFH", "1");
+        userMap.put("SJZ_ANYH", "1");
+        userMap.put("SJZ_ANXF", "1");
+        userMap.put("SJZ_BOYH", "1");
+        userMap.put("SJZ_CAIH", "1");
+        userMap.put("SJZ_CAOHJ", "1");
+        userMap.put("SJZ_CAOLJ", "1");
+        userMap.put("SJZ_CGWSL", "1");
+        userMap.put("SJZ_CGXUCX", "1");
+        userMap.put("SJZ_CHANGHF", "1");
+        userMap.put("SJZ_CHENGGCZY", "1");
+        userMap.put("SJZ_CSSCZY", "1");
+        userMap.put("SJZ_CSWANGWS", "1");
+        userMap.put("SJZ_CZWSL", "1");
+        userMap.put("SJZ_DINGLC0", "1");
+
         // /在Android2.2以后必须添加以下代码
         // 本应用采用的Android4.0
         // 设置线程的策略
@@ -63,22 +109,22 @@ public class IndexActivity extends Activity implements OnClickListener {
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects().detectLeakedClosableObjects().penaltyLog().penaltyDeath()
                 .build());
         sharedPreferences_userInfo = getSharedPreferences("userInfo", MODE_PRIVATE);
-        ext_ip = (EditText) findViewById(R.id.ext_ip);
-        ext_ip.setText(serverIp);
+        userName = sharedPreferences_userInfo.getString("userName", "");
+
+        ext_user = (EditText) findViewById(R.id.ext_ip);
+        ext_Pwd = (EditText) findViewById(R.id.ext_Pwd);
+        check_rember = (CheckBox) findViewById(R.id.check_rember);
+        ext_user.setText(userName);
+        if (sharedPreferences_userInfo.getBoolean("check_rember", false)) {
+            check_rember.setChecked(true);
+            ext_Pwd.setText(sharedPreferences_userInfo.getString("userPwd", ""));
+        }
         Button main_raoguo = (Button) findViewById(R.id.main_raoguo);
         main_raoguo.setOnClickListener(this);
         // 转到注册页面
 
-        Button btnAuthorize = (Button) findViewById(R.id.btnAuthorize);
+        Button btnAuthorize = (Button) findViewById(R.id.btn_login);
         btnAuthorize.setOnClickListener(this);
-
-        //非首次登陆直接进入笔记页面
-        remMsg = sharedPreferences_userInfo.getString("userName", "");
-        if (remMsg != null && !remMsg.equals("")) {
-            Intent intent = new Intent(IndexActivity.this, Activity_AreaList.class);
-            startActivity(intent);
-            IndexActivity.this.finish();
-        }
 
     }
 
@@ -86,38 +132,44 @@ public class IndexActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.main_raoguo: {
+                finish();
+            }
+            break;
+            case R.id.btn_login:
+
+                String username = ext_user.getText().toString().trim();
+                String userPwd = ext_Pwd.getText().toString();
+
+                if (username.length() == 0) {
+                    showDialog("用户名不能为空");
+                    return;
+                }
+               else if (userPwd.length() == 0) {
+                    showDialog("密码不能为空");
+                    return;
+                }
+                else if (!userMap.containsKey(username.toUpperCase())) {
+                    showDialog("用户名不存在");
+                    return;
+                }
+                else if (!userPwd.equals(userMap.get(username.toUpperCase()))) {
+                    showDialog("密码错误");
+                    ext_Pwd.setText("");
+                    return;
+                }
+                editor = sharedPreferences_userInfo.edit();
+                if (check_rember.isChecked()) {
+                    editor.putBoolean("check_rember", true);
+                } else {
+                    editor.putBoolean("check_rember", false);
+                }
+                editor.putString("userName", username);
+                editor.putString("userPwd", userPwd);
+                editor.commit();
                 Intent intent = new Intent(IndexActivity.this,
                         Activity_AreaList.class);
                     /* 把bundle对象assign给Intent */
                 startActivityForResult(intent, 1);
-            }
-            break;
-            case R.id.btnAuthorize:
-                android_id  = Secure.getString(getApplication().getContentResolver(), Secure.ANDROID_ID);
-                serverIp=ext_ip.getText().toString();
-
-                EventLoopGroup workerGroup = new NioEventLoopGroup();
-                try {
-                    Bootstrap bootstrap = new Bootstrap();
-                    bootstrap.group(workerGroup);
-                    bootstrap.channel(NioSocketChannel.class);
-                    bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-                    bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-
-                        @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new TimeClientHandler());
-
-                        }
-                    });
-                    // 发起异步连接操作
-                    ChannelFuture future = bootstrap.connect(serverIp, serverport).sync();
-
-                    future.channel().closeFuture().sync();
-                } catch (Exception e) {
-                    workerGroup.shutdownGracefully();
-                }
-                Thread desktopServerThread = new Thread(new TCPDesktopServer());
 //                desktopServerThread.start();
 //                showDialog(android_id);
                 break;
@@ -138,7 +190,7 @@ public class IndexActivity extends Activity implements OnClickListener {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }else if (msg.what == 2) {
+            } else if (msg.what == 2) {
                 showDialog("授权成功!");
             }
 
@@ -174,13 +226,13 @@ public class IndexActivity extends Activity implements OnClickListener {
 
         public void run() {
             try {
-                InetAddress serverAddr = InetAddress.getByName(serverIp);//TCPServer.SERVERIP
+                InetAddress serverAddr = InetAddress.getByName(userName);//TCPServer.SERVERIP
 
                 Log.d("TCP", "C: Connecting...");
 
                 client = new Socket(serverAddr, serverport);
 //                client.connect(socketAddress,10);
-                if(client.isConnected()){
+                if (client.isConnected()) {
                     Message msg = new Message();
                     msg.what = 1;
                     handler.sendMessage(msg);
@@ -203,5 +255,33 @@ public class IndexActivity extends Activity implements OnClickListener {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void tcp() {
+        android_id = Secure.getString(getApplication().getContentResolver(), Secure.ANDROID_ID);
+        userName = ext_user.getText().toString();
+
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(workerGroup);
+            bootstrap.channel(NioSocketChannel.class);
+            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+
+                @Override
+                protected void initChannel(SocketChannel ch) throws Exception {
+                    ch.pipeline().addLast(new TimeClientHandler());
+
+                }
+            });
+            // 发起异步连接操作
+            ChannelFuture future = bootstrap.connect(userName, serverport).sync();
+
+            future.channel().closeFuture().sync();
+        } catch (Exception e) {
+            workerGroup.shutdownGracefully();
+        }
+        Thread desktopServerThread = new Thread(new TCPDesktopServer());
     }
 }

@@ -20,7 +20,7 @@
             android:layout_height="40.0dip"
             android:gravity="center"
             android:text="@string/title_alert"
-            android:visibility="visible" />
+            />
 
         <LinearLayout
             android:id="@+id/content"
@@ -35,13 +35,64 @@
                 android:layout_height="wrap_content"
                 android:gravity="left|center"
                 android:lineSpacingMultiplier="1.5"
-                android:minHeight="120.0dip"
+                android:minHeight="80.0dip"
                 android:paddingBottom="15.0dip"
                 android:paddingLeft="20.0dip"
                 android:paddingRight="20.0dip"
+                android:text="确定新增独立的杆塔吗？"
                 android:paddingTop="15.0dip" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/line_ganta"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dip"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20px"
+                android:layout_weight="0.9"
+                android:gravity="top"
+                android:text="杆塔类型:"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+                <RadioGroup
+                    android:id="@+id/radio_xingzhi"
+                    android:gravity="top"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10px"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radfulei"
+                        android:layout_width="80dp"
+                        android:gravity="top"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:checked="true"
+                        android:drawableLeft="@drawable/radio"
+                        android:textSize="17sp"
+                        android:text=" 父杆塔" />
+
+                    <RadioButton
+                        android:id="@+id/radzilei"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/radio"
+                        android:textSize="17sp"
+                        android:text=" 子杆塔" />
+
+                </RadioGroup>
+
+        </LinearLayout>
         <View
             android:layout_width="fill_parent"
             android:layout_height="1.0px"
@@ -51,6 +102,7 @@
             android:layout_width="fill_parent"
             android:layout_height="60.0dip"
             android:layout_gravity="bottom"
+
             android:background="@drawable/dialog_bottom_bg"
             android:gravity="center"
             android:orientation="horizontal" >
@@ -58,6 +110,7 @@
             <Button
                 android:id="@+id/positiveButton"
                 style="@style/common_button_red"
+                android:layout_gravity="center_vertical"
                 android:layout_width="114.0dip"
                 android:layout_height="40.0dip"
                 android:gravity="center"
@@ -66,11 +119,12 @@
             <Button
                 android:id="@+id/negativeButton"
                 style="@style/common_button_red"
+                android:layout_gravity="center_vertical"
                 android:layout_width="114.0dip"
                 android:layout_height="40.0dip"
                 android:layout_marginLeft="20.0dip"
                 android:gravity="center"
-                android:text="@string/cancel" />
+                android:text="取消" />
         </LinearLayout>
     </LinearLayout>
 

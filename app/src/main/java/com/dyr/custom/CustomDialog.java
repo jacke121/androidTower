@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.lbg.yan01.R;
@@ -32,7 +34,34 @@ public class CustomDialog extends Dialog {
 		private View contentView;
 		private OnClickListener positiveButtonClickListener;
 		private OnClickListener negativeButtonClickListener;
+		View layout;
 
+		public int getType() {
+			return type;
+		}
+
+		public void setType(int type) {
+			this.type = type;
+		}
+
+		private int type;
+
+		public int getGantatype() {
+
+			RadioGroup radio_xingzhi = (RadioGroup) layout.findViewById(R.id.radio_xingzhi);
+
+			RadioButton radiodianya = (RadioButton) layout.findViewById(radio_xingzhi.getCheckedRadioButtonId());
+			if (radiodianya.getId() == R.id.radzilei) {
+				return 2;
+			}
+			return 1;
+		}
+
+		public void setGantatype(int gantatype) {
+			this.gantatype = gantatype;
+		}
+
+		private int gantatype;
 		public Builder(Context context) {
 			this.context = context;
 		}
@@ -121,10 +150,15 @@ public class CustomDialog extends Dialog {
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			// instantiate the dialog with the custom Theme
 			final CustomDialog dialog = new CustomDialog(context, R.style.Dialog);
-			View layout = inflater.inflate(R.layout.dialog_normal_layout, null);
+			layout = inflater.inflate(R.layout.dialog_normal_layout, null);
 			dialog.addContentView(layout, new LayoutParams(
 					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 			// set the dialog title
+
+			if(type==0){
+				LinearLayout line_ganta = (LinearLayout) layout.findViewById(R.id.line_ganta);
+				line_ganta.setVisibility(View.GONE);
+			}
 			((TextView) layout.findViewById(R.id.title)).setText(title);
 			// set the confirm button
 			if (positiveButtonText != null) {

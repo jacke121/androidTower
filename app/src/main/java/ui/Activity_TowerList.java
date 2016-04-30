@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.baseDao.Areas;
 import com.baseDao.AreasDao;
+import com.baseDao.Biao;
 import com.baseDao.Ganta;
 import com.baseDao.GantaDao;
 import com.baseDao.SqlHelper;
@@ -160,11 +161,20 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add: {
-                showAlertDialog();
-//                Intent intent = new Intent(Activity_TowerList.this,
-//                        Activity_Tower.class);
-//                    /* 把bundle对象assign给Intent */
-//                startActivityForResult(intent, 1);
+                if(null ==gantaList || gantaList.size()==0){
+                                    Intent intent = new Intent(Activity_TowerList.this,
+                        Activity_Tower.class);
+                    intent.putExtra("type",0);
+                    /* 把bundle对象assign给Intent */
+                startActivityForResult(intent, 1);
+                }
+                else if(gantaList.size() >0 && selectItem==-1){
+                    showAlertDialog(0);
+                }else{
+                    showAlertDialog(1);
+                }
+
+
             }
             break;
             case R.id.b_back:
@@ -189,12 +199,8 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 }
                 Intent intent = new Intent(Activity_TowerList.this, Activity_Tower.class);
                 if (gantaList.size() > selectItem) {
-                    int id = gantaList.get(selectItem).id;
-                    Bundle bundle = new Bundle();
-					/* 字符、字符串、布尔、字节数组、浮点数等等，都可以传 */
-                    bundle.putInt("id", id);
-					/* 把bundle对象assign给Intent */
-                    intent.putExtras(bundle);
+                    intent.putExtra("type", 3);
+                    intent.putExtra("ganta", gantaList.get(selectItem));
                     // startActivity(intent);
                     startActivityForResult(intent, 1);
                 }
@@ -396,14 +402,32 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     private class ViewHolder {
         TextView[] txts = new TextView[13];
     }
-    public void showAlertDialog() {
+    public void showAlertDialog(final int mtype) {
 
-        CustomDialog.Builder builder = new CustomDialog.Builder(this);
-        builder.setMessage("这个就是自定义的提示框");
-        builder.setTitle("提示");
+        final CustomDialog.Builder builder = new CustomDialog.Builder(this);
+
+        if(mtype>0) {
+            builder.setMessage("请选择新增杆塔类型：");
+        }
+        builder.setTitle("温馨提示");
+        builder.setType(mtype);
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                Intent intent = new Intent(Activity_TowerList.this,
+                        Activity_Tower.class);
+                Ganta tmpGanta = new Ganta();
+                if (selectItem > -1) {
+                    tmpGanta = gantaList.get(selectItem);
+                }
+                if (mtype == 0) {
+                    intent.putExtra("type", 0);
+                } else {
+                    intent.putExtra("type", builder.getGantatype());
+                    intent.putExtra("ganta", tmpGanta);
+                }
+                    /* 把bundle对象assign给Intent */
+                startActivityForResult(intent, 1);
                 //设置你的操作事项
             }
         });
@@ -414,8 +438,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                         dialog.dismiss();
                     }
                 });
-
         builder.create().show();
-
     }
 }

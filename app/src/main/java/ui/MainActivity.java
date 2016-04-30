@@ -12,7 +12,6 @@ import android.widget.Button;
 import com.lbg.yan01.R;
 
 import java.io.File;
-import java.util.*;
 
 import exceltest.JXLUtil;
 import exceltest.KeypointAcquisitionBean;
@@ -25,7 +24,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.step_one);
 
-		btn = (Button)findViewById(R.id.btnAuthorize);
+		btn = (Button)findViewById(R.id.btn_login);
 		btn.setOnClickListener(new View.OnClickListener() {
 
 			@Override

@@ -146,17 +146,12 @@
             android:textColor="@color/black"
             android:textSize="17sp" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
 
             <RadioGroup
                 android:id="@+id/group_material"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -184,7 +179,6 @@
                     android:drawableLeft="@drawable/radio"
                     android:text=" 钢塔杆" />
             </RadioGroup>
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -207,17 +201,12 @@
             android:textColor="@color/black"
             android:textSize="17sp" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
 
             <RadioGroup
                 android:id="@+id/radio_xingzhi"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -238,7 +227,6 @@
                     android:text=" 耐张" />
 
             </RadioGroup>
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -299,7 +287,6 @@
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="fill_parent"
@@ -309,18 +296,11 @@
             android:text="电压等级:"
             android:textColor="@color/black"
             android:textSize="17sp" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
             <RadioGroup
                 android:id="@+id/group_voltage"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -340,23 +320,15 @@
                     android:drawableLeft="@drawable/radio"
                     android:text=" 交流380V" />
             </RadioGroup>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="0.3"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/register_txtIsNull3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.3"
                 android:text="@string/isNull"
                 android:textColor="@color/red"
                 android:visibility="gone" />
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

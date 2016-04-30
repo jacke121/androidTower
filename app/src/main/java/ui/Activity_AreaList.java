@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -63,6 +64,8 @@ public class Activity_AreaList extends Activity implements OnClickListener {
     BiaoDao biaoDao;
     SqlHelper helper;
     AreasDao areasDao;
+
+   public static String todaystr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,13 +148,13 @@ public class Activity_AreaList extends Activity implements OnClickListener {
                 Date now = new Date();
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                String datestr = sdf.format(now);
+                todaystr   = sdf.format(now);
                 InputStream is = getResources().openRawResource(R.raw.model);
 
                 InputStreamCacher inputStreamCacher = new InputStreamCacher(is);
                 for (int i = 0; i < areaslist.size(); i++) {
                     String area = areaslist.get(i).area;
-                    String filename = new FileUtil().getSDDir("1tower") + "/坐标点批量导入" + datestr + area + ".xls";
+                    String filename = new FileUtil().getSDDir("1tower") + "/坐标点批量导入" + todaystr + area + ".xls";
                     new FileUtil().insToFile(inputStreamCacher.getInputStream(), filename);
 //                    String[] excelheaders = new String[]{"序号", "台区", "杆塔名称", "单位", "材质", "性质", "回路数", "电压", "运行状态", "坐标点", "发布日期","全貌","塔头","铭牌"};
 //                    jXLUtil.initExcel(filename, excelheaders, COLWIDTH_ARR);
@@ -161,7 +164,10 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 
                     SparseArray<Biao> biaoList = biaoDao.queryBySql("select b.* from Biao b join Ganta g on g.id=b.gantaid where g.areaid=" + areaslist.get(i).id, null);
 
-                    jXLUtil.writeObjInToExcel(gantaList, biaoList, filename, excelfiles, this);
+                    Cursor towercursor  =  helper.getReadableDatabase().rawQuery("select g.id,a.area || g.name as startname,a.area || pg.name as endname,g.areaid,g.yunxing,g.zuobiao,g.createtime,g.updatetime,a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid join Ganta pg on pg.id=g.parentid where a.id=" + areaslist.get(i).id, null);
+                    Cursor biaocursor  =  helper.getReadableDatabase().rawQuery("select g.id,a.area || g.name as startname,a.area || b.name as endname,g.areaid,g.yunxing,g.zuobiao,g.createtime,g.updatetime,a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid join Biao b on b.gantaid=g.id where a.id=" + areaslist.get(i).id, null);
+
+                    jXLUtil.writeObjInToExcel(gantaList,towercursor, biaoList,biaocursor, filename, excelfiles, this);
                 }
                 showMsg("导出目录：" + new FileUtil().getSDDir("1tower"));
                 break;
