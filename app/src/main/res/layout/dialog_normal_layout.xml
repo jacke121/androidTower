@@ -48,7 +48,6 @@
             android:layout_height="60dp"
             android:layout_marginTop="5dip"
             android:orientation="horizontal"
-            android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
             <TextView
@@ -67,28 +66,29 @@
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_marginLeft="10px"
-                    android:layout_weight="2"
+                    android:layout_weight="2.5"
                     android:orientation="horizontal">
 
                     <RadioButton
                         android:id="@+id/radfulei"
-                        android:layout_width="80dp"
+                        android:layout_width="110dp"
                         android:gravity="top"
                         android:layout_height="wrap_content"
                         android:button="@null"
                         android:checked="true"
                         android:drawableLeft="@drawable/radio"
                         android:textSize="17sp"
-                        android:text=" 父杆塔" />
+                        android:text="上一级杆塔" />
 
                     <RadioButton
                         android:id="@+id/radzilei"
-                        android:layout_width="80dp"
+                        android:checked="true"
+                        android:layout_width="110dp"
                         android:layout_height="wrap_content"
                         android:button="@null"
                         android:drawableLeft="@drawable/radio"
                         android:textSize="17sp"
-                        android:text=" 子杆塔" />
+                        android:text="下一级杆塔" />
 
                 </RadioGroup>
 

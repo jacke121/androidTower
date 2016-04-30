@@ -164,7 +164,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
 
                     SparseArray<Biao> biaoList = biaoDao.queryBySql("select b.* from Biao b join Ganta g on g.id=b.gantaid where g.areaid=" + areaslist.get(i).id, null);
 
-                    Cursor towercursor  =  helper.getReadableDatabase().rawQuery("select g.id,a.area || g.name as startname,a.area || pg.name as endname,g.areaid,g.yunxing,g.zuobiao,g.createtime,g.updatetime,a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid join Ganta pg on pg.id=g.parentid where a.id=" + areaslist.get(i).id, null);
+                    Cursor towercursor  =  helper.getReadableDatabase().rawQuery("select g.id,a.area || g.name as endname,a.area || pg.name as startname,g.areaid,g.yunxing,g.zuobiao,g.createtime,g.updatetime,a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid join Ganta pg on pg.id=g.parentid where a.id=" + areaslist.get(i).id, null);
                     Cursor biaocursor  =  helper.getReadableDatabase().rawQuery("select g.id,a.area || g.name as startname,a.area || b.name as endname,g.areaid,g.yunxing,g.zuobiao,g.createtime,g.updatetime,a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid join Biao b on b.gantaid=g.id where a.id=" + areaslist.get(i).id, null);
 
                     jXLUtil.writeObjInToExcel(gantaList,towercursor, biaoList,biaocursor, filename, excelfiles, this);
@@ -185,9 +185,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
                             Activity_TowerList.class);
                     /* 把bundle对象assign给Intent */
                     intent.putExtras(bundle);
-                    startActivity(intent);
-                    Activity_AreaList.this.finish();
-//                    startActivityForResult(intent, 1);
+                    startActivityForResult(intent, 1);
                 }
             }
             break;

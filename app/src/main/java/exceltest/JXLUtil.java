@@ -188,7 +188,8 @@ public class JXLUtil {
 						sheet.addCell(new Label(1, row, tmp.areaname, arial12format));
 						sheet.addCell(new Label(2, row, tmp.code, arial12format));
 						sheet.addCell(new Label(3, row, tmp.name, arial12format));
-						sheet.addCell(new Label(4, row,  IndexActivity.userName+"_"+ Activity_AreaList.todaystr+"_"+tmp.zuobiao, arial12format));
+						sheet.addCell(new Label(5, row,  IndexActivity.userName+"_"+ Activity_AreaList.todaystr+"_"+tmp.zuobiao, arial12format));
+						sheet.addCell(new Label(6, row,  IndexActivity.userName+"_"+ Activity_AreaList.todaystr+"_"+tmp.zuobiao, arial12format));
 					}
 					row++;
 				}
