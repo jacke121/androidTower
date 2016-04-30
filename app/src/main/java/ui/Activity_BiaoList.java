@@ -156,7 +156,7 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
                 Biao tmpGanta=new Biao();
 
                 tmpGanta.gantaid= curentGanta.id;
-                tmpGanta.code="JR"+ String.format("%02d",gantaList.size()+1);
+                tmpGanta.code=curentGanta.name+"JR";//+ String.format("%02d",gantaList.size()+1);
                 intent.putExtra("biao", tmpGanta);
                     /* 把bundle对象assign给Intent */
                 startActivityForResult(intent, 1);

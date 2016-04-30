@@ -62,6 +62,7 @@ public class Activity_Biao extends Activity implements OnClickListener {
 //        txt_gongbian = (EditText) findViewById(R.id.txt_gongbian);
 
         }
+        txt_name.setText(curentreas.code);
             ext_code.setText(curentreas.code);
     }
 

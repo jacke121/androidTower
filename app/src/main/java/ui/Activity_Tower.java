@@ -37,6 +37,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Activity_Tower extends Activity implements OnClickListener {
     public EditText ext_zuobiao, ext_towername;
@@ -166,7 +168,17 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
             ext_zuobiao.setText(parentGanta.zuobiao);
 //            sp_huilu.set
+        }else if(parentGanta != null && gantatype==2){
+            String a=parentGanta.name.substring(parentGanta.name.length()-3);
+            String regEx="[^0-9]";
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(a);
+            int index= Integer.parseInt( m.replaceAll("").trim())+1;
+         String name=parentGanta.name.substring(0, parentGanta.name.length() - 3) + index + parentGanta.name.substring(parentGanta.name.length()-1);
+            ext_towername.setText(name);
         }
+
+
         if (txt_taiqu != null) {
             txt_taiqu.setText(curentreas.area);// + curentreas.gongbian + curentreas.quxian + curentreas.qubian);
             register_btnCancel.setOnClickListener(this);
@@ -330,7 +342,11 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     }
                     else if(gantatype==2){
                         currentGanta.parentid = parentGanta.id;
-                        gantaDao.update(currentGanta);
+                        gantaDao.insertList(new SparseArray<Ganta>() {
+                            {
+                                put(0, currentGanta);
+                            }
+                        });
                     }
                     else if(gantatype==3){
                         currentGanta.id = parentGanta.id;

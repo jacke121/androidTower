@@ -1,12 +1,13 @@
 package ui;
 
-import webClient.DialogFactory;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.WindowManager;
+
+import com.tool.DialogFactory;
 
 public class ShowDialog {
 	Activity mactivity;
