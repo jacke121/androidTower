@@ -1,5 +1,6 @@
 package ui;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import android.app.Activity;
@@ -43,10 +44,11 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     private int selectItem = -1;
     int[] headIds = new int[]{R.id.txt_1100,R.id.txt_1101, R.id.txt_1102, R.id.txt_1103,
             R.id.txt_1104, R.id.txt_1105, R.id.txt_1106, R.id.txt_1107,
-            R.id.txt_1108, R.id.txt_1109, R.id.txt_1110, R.id.txt_1111};
-    String[] headers = new String[]{"序号", "台区名","杆塔名称", "材质", "性质","回路数", "电压", "运行状态", "坐标点", "发布日期", "发布人", "维修人员"};
+            R.id.txt_1108, R.id.txt_1109, R.id.txt_1110};
+    String[] headers = new String[]{"序号", "台区名","杆塔名称", "材质", "性质","回路数", "电压", "运行状态", "坐标点", "发布人", "发布日期"};
     // 方便测试，直接写的public
     Button btn_add, btn_cailu;
+    SimpleDateFormat dfu = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     DataAdapter adapter;
     public HorizontalScrollView mTouchView;
     // 装入所有的HScrollView
@@ -335,18 +337,12 @@ public class Activity_TowerList extends Activity implements OnClickListener {
             holder.txts[2].setText(tmpTowerInfo.name + "");
             holder.txts[3].setText(tmpTowerInfo.caizhi + "");
             holder.txts[4].setText(tmpTowerInfo.xingzhi + "");
-            holder.txts[5].setText(tmpTowerInfo.taiquid + "");
-            holder.txts[6].setText(tmpTowerInfo.huilu + "");
-            holder.txts[7].setText(tmpTowerInfo.dianya);
-            if (tmpTowerInfo.caizhi.toString().endsWith("1")) {
-                holder.txts[8].setText("220V");
-            } else if (tmpTowerInfo.caizhi.toString().endsWith("2")) {
-                holder.txts[8].setText("380V");
-            }
-
-            holder.txts[9].setText(tmpTowerInfo.yunxing + "");
-            holder.txts[10].setText(tmpTowerInfo.zuobiao + "");
-            holder.txts[11].setText(tmpTowerInfo.level + "");
+            holder.txts[5].setText(tmpTowerInfo.huilu + "");
+                holder.txts[6].setText(tmpTowerInfo.dianya);
+            holder.txts[7].setText(tmpTowerInfo.yunxing + "");
+            holder.txts[8].setText(tmpTowerInfo.zuobiao);
+            holder.txts[9].setText(IndexActivity.userName);
+            holder.txts[10].setText(dfu.format(tmpTowerInfo.createtime));
 
             convertView.setTag(holder);
 
@@ -382,6 +378,15 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // 可以根据多个请求代码来作相应的操作
+        switch (resultCode) { //resultCode为回传的标记，我在B中回传的是RESULT_OK
+            case RESULT_OK:
+            case 1:
+                getDatas();
+                adapter.notifyDataSetChanged();
+                break;
+            default:
+                break;
+        }
         if (1 == requestCode) {
             getDatas();
             adapter.notifyDataSetChanged();
@@ -400,7 +405,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     }
 
     private class ViewHolder {
-        TextView[] txts = new TextView[13];
+        TextView[] txts = new TextView[11];
     }
     public void showAlertDialog(final int mtype) {
 
