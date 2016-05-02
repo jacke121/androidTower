@@ -61,6 +61,7 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
     Areas curentreas;
     PopuJar mPopuJar;
     Ganta   curentGanta;
+    ImageButton b_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,8 +143,16 @@ public class Activity_BiaoList extends Activity implements OnClickListener {
         mListView.setAdapter(adapter);
         mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         // mListView = (ListView) this.findViewById(R.id.repair_listview);
-        Button b_back = (Button) findViewById(R.id.btn_back);
-        b_back.setOnClickListener(this);
+
+        b_back= (ImageButton) findViewById(R.id.b_back);
+        b_back.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Activity_BiaoList.this.finish();
+            }
+        });
+        Button btn_back = (Button) findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(this);
     }
 
     @Override

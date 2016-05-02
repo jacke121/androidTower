@@ -169,12 +169,17 @@ public class Activity_Tower extends Activity implements OnClickListener {
 
             ext_zuobiao.setText(parentGanta.zuobiao);
 //            sp_huilu.set
-        } else if (parentGanta != null && gantatype == 2) {
+        } else if (parentGanta != null && (gantatype == 2||gantatype == 1)) {
             if (parentGanta.name.length() > 3) {
                 String str = parentGanta.name.substring(parentGanta.name.length() - 3);
                 int index = getNumbers(str);
                 if (index > 0) {
-                    str = str.replace(index + "", (index + 1) + "");
+                    if(gantatype == 2){
+                        str = str.replace(index + "", (index + 1) + "");
+                    }
+                    else{
+                        str = str.replace(index + "", (index - 1) + "");
+                    }
                     String name = parentGanta.name.substring(0, parentGanta.name.length() - 3) + str;
                     ext_towername.setText(name);
                 } else {
