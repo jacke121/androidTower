@@ -3,6 +3,7 @@ package ui;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -42,12 +43,13 @@ import com.popujar.PopuJar;
 public class Activity_TowerList extends Activity implements OnClickListener {
 
     private int selectItem = -1;
-    int[] headIds = new int[]{R.id.txt_1100,R.id.txt_1101, R.id.txt_1102, R.id.txt_1103,
+    private int parentItem = -1;
+    int[] headIds = new int[]{R.id.txt_1100, R.id.txt_1101, R.id.txt_1102, R.id.txt_1103,
             R.id.txt_1104, R.id.txt_1105, R.id.txt_1106, R.id.txt_1107,
             R.id.txt_1108, R.id.txt_1109, R.id.txt_1110};
-    String[] headers = new String[]{"序号", "台区名","杆塔名称", "材质", "性质","回路数", "电压", "运行状态", "坐标点", "发布人", "发布日期"};
+    String[] headers = new String[]{"序号", "台区名", "杆塔名称", "坐标点", "性质", "回路数", "电压", "运行状态", "材质", "发布人", "发布日期"};
     // 方便测试，直接写的public
-    Button btn_add, btn_cailu;
+    Button btn_add, btn_cailu, btn_guanlian;
     SimpleDateFormat dfu = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     DataAdapter adapter;
     public HorizontalScrollView mTouchView;
@@ -63,6 +65,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     AreasDao areasDao;
     Areas curentreas;
     PopuJar mPopuJar;
+    TextView title_text2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +129,10 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         });
         btn_add = (Button) findViewById(R.id.btn_add);
         btn_cailu = (Button) findViewById(R.id.btn_cailu);
+        title_text2= (TextView) findViewById(R.id.title_text2);
         Button btn_delgan = (Button) findViewById(R.id.btn_delgan);
+        btn_guanlian = (Button) findViewById(R.id.btn_guanlian);
+        btn_guanlian.setOnClickListener(this);
         btn_add.setOnClickListener(this);
         btn_cailu.setOnClickListener(this);
         btn_delgan.setOnClickListener(this);
@@ -162,17 +168,45 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_add: {
-                if(null ==gantaList || gantaList.size()==0){
-                                    Intent intent = new Intent(Activity_TowerList.this,
-                        Activity_Tower.class);
-                    intent.putExtra("type",0);
-                    /* 把bundle对象assign给Intent */
-                startActivityForResult(intent, 1);
+
+            case R.id.btn_guanlian:
+                if (selectItem == -1) {
+                    showMsg("请选择一行!");
+                    return;
                 }
-                else if(gantaList.size() >0 && selectItem==-1){
+                if (parentItem == -1) {
+                    if (gantaList.size() > selectItem) {
+                        parentItem = selectItem;
+                        btn_guanlian.setText("完成关联");
+                        title_text2.setText("上一级杆塔："+parentItem);
+                        showMsg("开始选择下一级杆塔");
+                    }
+                } else {
+                    //caozuo
+                    if(parentItem==selectItem){
+                        showMsg("上下级杆塔不能相同！");
+                        return;
+                    }
+                    gantaList.get(selectItem).parentid = gantaList.get(parentItem).id;
+                    gantaDao.update(gantaList.get(selectItem));
+                    title_text2.setText("");
+                    showMsg("完成杆塔");
+                    btn_guanlian.setText("关联杆塔");
+                    parentItem = -1;
+                    getDatas();
+                    adapter.notifyDataSetChanged();
+                }
+                break;
+            case R.id.btn_add: {
+                if (null == gantaList || gantaList.size() == 0) {
+                    Intent intent = new Intent(Activity_TowerList.this,
+                            Activity_Tower.class);
+                    intent.putExtra("type", 0);
+                    /* 把bundle对象assign给Intent */
+                    startActivityForResult(intent, 1);
+                } else if (gantaList.size() > 0 && selectItem == -1) {
                     showAlertDialog(0);
-                }else{
+                } else {
                     showAlertDialog(1);
                 }
 
@@ -188,7 +222,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                     return;
                 }
                 if (gantaList.size() > selectItem) {
-                    Intent  intent = new Intent(Activity_TowerList.this,
+                    Intent intent = new Intent(Activity_TowerList.this,
                             Activity_BiaoList.class);
                     intent.putExtra("ganta", gantaList.get(selectItem));
                     startActivityForResult(intent, 1);
@@ -215,6 +249,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                 break;
         }
     }
+
     public void showMsg(String msg) {
         new AlertDialog.Builder(Activity_TowerList.this).setTitle("温馨提示")
                 .setMessage(msg)
@@ -224,6 +259,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                     }
                 }).create().show();
     }
+
     public void getDatas() {
 //        gantaList = gantaDao.queryBySql("select g.* from Ganta g left join Areas a on a.id=g.areaid where a.id=", new String[]{id + ""});
         gantaList = gantaDao.queryBySql("select g.id,g.name,g.areaid,g.dianya,g.caizhi,g.xingzhi,g.taiquid,g.huilu,g.yunxing,g.zuobiao,g.level,g.parentid,g.picquanmao,g.pictatou,g.picmingpai,g.createtime,g.updatetime,g.lifeStatus,g.upgradeFlag," +
@@ -330,17 +366,30 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                     return true;
                 }
             });
+            item_Linear.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setSelectItem(position); // 自定义的变量，以便让adapter知道要选中哪一项
+                    Ganta tmpTowerInfo = gantaList.get(position);
+                    if (tmpTowerInfo.caizhi.equals("1")) {
+                        // holder.orderState.setText("发布");
+                        btn_cailu.setEnabled(false);
+                        btn_add.setEnabled(true);
+                    }
+                    notifyDataSetChanged();// 提醒数据已经变动
+                }
+            });
             final Ganta tmpTowerInfo = gantaList.get(position);
             // holder.maintainNum.setText(Html.fromHtml("<u>"+tmpTowerInfo.maintainNum+"</u>"));
             holder.txts[0].setText(position + 1 + "");
             holder.txts[1].setText(tmpTowerInfo.areaname + "");
             holder.txts[2].setText(tmpTowerInfo.name + "");
-            holder.txts[3].setText(tmpTowerInfo.caizhi + "");
+            holder.txts[3].setText(tmpTowerInfo.zuobiao + "");
             holder.txts[4].setText(tmpTowerInfo.xingzhi + "");
             holder.txts[5].setText(tmpTowerInfo.huilu + "");
-                holder.txts[6].setText(tmpTowerInfo.dianya);
+            holder.txts[6].setText(tmpTowerInfo.dianya);
             holder.txts[7].setText(tmpTowerInfo.yunxing + "");
-            holder.txts[8].setText(tmpTowerInfo.zuobiao);
+            holder.txts[8].setText(tmpTowerInfo.caizhi);
             holder.txts[9].setText(IndexActivity.userName);
             holder.txts[10].setText(dfu.format(tmpTowerInfo.createtime));
 
@@ -381,8 +430,6 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         switch (resultCode) { //resultCode为回传的标记，我在B中回传的是RESULT_OK
             case RESULT_OK:
             case 1:
-                getDatas();
-                adapter.notifyDataSetChanged();
                 break;
             default:
                 break;
@@ -407,11 +454,12 @@ public class Activity_TowerList extends Activity implements OnClickListener {
     private class ViewHolder {
         TextView[] txts = new TextView[11];
     }
+
     public void showAlertDialog(final int mtype) {
 
         final CustomDialog.Builder builder = new CustomDialog.Builder(this);
 
-        if(mtype>0) {
+        if (mtype > 0) {
             builder.setMessage("请选择新增杆塔类型：");
         }
         builder.setTitle("温馨提示");

@@ -302,13 +302,12 @@
         <item name="android:background">@drawable/btbg_blue</item>
     </style>
     <style name="common_button_red">
-        <item name="android:textSize">20.0sp</item>
+        <item name="android:textSize">18.0sp</item>
         <item name="android:textColor">#ffffffff</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:background">@drawable/btn_submit</item>
         <item name="android:paddingLeft">10.0dip</item>
         <item name="android:paddingRight">10.0dip</item>
-        <item name="android:layout_marginLeft">10.0dip</item>
         <item name="android:layout_marginTop">5.0dip</item>
         <item name="android:layout_marginRight">10.0dip</item>
         <item name="android:layout_marginBottom">5.0dip</item>

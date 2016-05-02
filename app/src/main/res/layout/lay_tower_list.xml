@@ -153,16 +153,22 @@
             style="@style/common_button_red"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dip"
             android:layout_marginRight="10.0dip"
             android:layout_weight="1"
             android:text="采录" />
+        <Button
+            android:id="@+id/btn_guanlian"
+            style="@style/common_button_red"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10.0dip"
+            android:layout_weight="1"
+            android:text="关联杆塔" />
         <Button
             android:id="@+id/btn_delgan"
             style="@style/common_button_red"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dip"
             android:layout_marginRight="10.0dip"
             android:layout_weight="1"
             android:text="电表箱" />

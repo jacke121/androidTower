@@ -272,8 +272,6 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 camera();
                 break;
             case R.id.btnCancel:
-                Intent intent = new Intent(Activity_Tower.this, IndexActivity.class);
-                startActivity(intent);
                 Activity_Tower.this.finish();
                 break;
             case R.id.title_btn_sequence:
