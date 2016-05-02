@@ -178,7 +178,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
                     if (gantaList.size() > selectItem) {
                         parentItem = selectItem;
                         btn_guanlian.setText("完成关联");
-                        title_text2.setText("上一级杆塔："+parentItem);
+                        title_text2.setText("上一级杆塔："+(parentItem+1));
                         showMsg("开始选择下一级杆塔");
                     }
                 } else {
