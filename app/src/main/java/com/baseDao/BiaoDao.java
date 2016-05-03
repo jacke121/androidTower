@@ -212,17 +212,63 @@ Lock lock = new ReentrantLock();
  if (cursor!= null) cursor.close();
     }   return null;
  }       public boolean update(Biao entity){
-         lock.lock();
-         SQLiteDatabase db=mOpenHelper.getWritableDatabase();
-         try{
-          return update0(db, entity, cOLUMNS.id+"=?", new String[]{String.valueOf(entity.id)} );
-         }catch (Exception e) { e.printStackTrace();
-} finally {
-         lock.unlock();
+               if ( entity == null) {
+                  return false;
+              }
+        lock.lock();
+                        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+                      try {
+   	            String sql ="update Biao set id=?,name=?,code=?,gantaid=?,taiquid=?,yunxing=?,zuobiao=?,level=?,createtime=?,updatetime=?,lifeStatus=?,upgradeFlag=?,areaname=?,danwei=? where id=?";
+   	            SQLiteStatement stat = db.compileStatement(sql);
+   	            db.beginTransaction();
+  if(null==entity.id)    stat.bindNull(1); else
+   stat.bindLong(1,entity.id);
+  if(null==entity.name||entity.name.length()==0)    stat.bindNull(2);else
+   stat.bindString(2,entity.name);
+  if(null==entity.code||entity.code.length()==0)    stat.bindNull(3);else
+   stat.bindString(3,entity.code);
+  if(null==entity.gantaid)    stat.bindNull(4); else
+   stat.bindLong(4,entity.gantaid);
+  if(null==entity.taiquid)    stat.bindNull(5); else
+   stat.bindLong(5,entity.taiquid);
+  if(null==entity.yunxing||entity.yunxing.length()==0)    stat.bindNull(6);else
+   stat.bindString(6,entity.yunxing);
+  if(null==entity.zuobiao||entity.zuobiao.length()==0)    stat.bindNull(7);else
+   stat.bindString(7,entity.zuobiao);
+  if(null==entity.level)    stat.bindNull(8); else
+   stat.bindLong(8,entity.level);
+   stat.bindString(9,dfu.format(new Date()));
+   stat.bindString(10,dfu.format(new Date()));
+  if(null==entity.lifeStatus)    stat.bindLong(11,1);else
+   stat.bindLong(11,entity.lifeStatus);
+  if(null==entity.upgradeFlag)    stat.bindLong(12,1);else
+   stat.bindLong(12,entity.upgradeFlag);
+  if(null==entity.areaname||entity.areaname.length()==0)    stat.bindNull(13);else
+   stat.bindString(13,entity.areaname);
+  if(null==entity.danwei||entity.danwei.length()==0)    stat.bindNull(14);else
+   stat.bindString(14,entity.danwei);
+   stat.bindLong(15,entity.id);
+  		              long result = stat.executeUpdateDelete();
+  		                if (result < 0) {
+  		                    return false;
+  		                }
+  		            db.setTransactionSuccessful();
+  		        } catch (Exception e) {
+  		            e.printStackTrace();
+             return false;
+         } finally {
+        lock.unlock();
+              try {
+                     if (null != db) {
+                         db.endTransaction();
+                     }
+                 } catch (Exception e) {
+                     e.printStackTrace();
+     	            }
+             }
+             return true;
          }
-                      return false;
-         }
-          public boolean clearData(SQLiteDatabase db) {
+         public boolean clearData(SQLiteDatabase db) {
                   try {
                       db.execSQL("delete from Biao");
                       return true;

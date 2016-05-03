@@ -437,6 +437,7 @@ public class Activity_TowerList extends Activity implements OnClickListener {
         if (1 == requestCode) {
             getDatas();
             adapter.notifyDataSetChanged();
+            adapter.setSelectItem(gantaList.size()-1);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

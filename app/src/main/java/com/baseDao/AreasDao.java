@@ -206,17 +206,61 @@ Lock lock = new ReentrantLock();
  if (cursor!= null) cursor.close();
     }   return null;
  }       public boolean update(Areas entity){
-         lock.lock();
-         SQLiteDatabase db=mOpenHelper.getWritableDatabase();
-         try{
-          return update0(db, entity, cOLUMNS.id+"=?", new String[]{String.valueOf(entity.id)} );
-         }catch (Exception e) { e.printStackTrace();
-} finally {
-         lock.unlock();
+               if ( entity == null) {
+                  return false;
+              }
+        lock.lock();
+                        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+                      try {
+   	            String sql ="update Areas set id=?,area=?,areastatus=?,count=?,okcount=?,createtime=?,updatetime=?,lifeStatus=?,upgradeFlag=?,gongbian=?,quxian=?,qubian=?,danwei=? where id=?";
+   	            SQLiteStatement stat = db.compileStatement(sql);
+   	            db.beginTransaction();
+  if(null==entity.id)    stat.bindNull(1); else
+   stat.bindLong(1,entity.id);
+  if(null==entity.area||entity.area.length()==0)    stat.bindNull(2);else
+   stat.bindString(2,entity.area);
+  if(null==entity.areastatus)    stat.bindNull(3); else
+   stat.bindLong(3,entity.areastatus);
+  if(null==entity.count)    stat.bindNull(4); else
+   stat.bindLong(4,entity.count);
+  if(null==entity.okcount)    stat.bindNull(5); else
+   stat.bindLong(5,entity.okcount);
+   stat.bindString(6,dfu.format(new Date()));
+   stat.bindString(7,dfu.format(new Date()));
+  if(null==entity.lifeStatus)    stat.bindLong(8,1);else
+   stat.bindLong(8,entity.lifeStatus);
+  if(null==entity.upgradeFlag)    stat.bindLong(9,1);else
+   stat.bindLong(9,entity.upgradeFlag);
+  if(null==entity.gongbian||entity.gongbian.length()==0)    stat.bindNull(10);else
+   stat.bindString(10,entity.gongbian);
+  if(null==entity.quxian||entity.quxian.length()==0)    stat.bindNull(11);else
+   stat.bindString(11,entity.quxian);
+  if(null==entity.qubian||entity.qubian.length()==0)    stat.bindNull(12);else
+   stat.bindString(12,entity.qubian);
+  if(null==entity.danwei||entity.danwei.length()==0)    stat.bindNull(13);else
+   stat.bindString(13,entity.danwei);
+   stat.bindLong(14,entity.id);
+  		              long result = stat.executeUpdateDelete();
+  		                if (result < 0) {
+  		                    return false;
+  		                }
+  		            db.setTransactionSuccessful();
+  		        } catch (Exception e) {
+  		            e.printStackTrace();
+             return false;
+         } finally {
+        lock.unlock();
+              try {
+                     if (null != db) {
+                         db.endTransaction();
+                     }
+                 } catch (Exception e) {
+                     e.printStackTrace();
+     	            }
+             }
+             return true;
          }
-                      return false;
-         }
-          public boolean clearData(SQLiteDatabase db) {
+         public boolean clearData(SQLiteDatabase db) {
                   try {
                       db.execSQL("delete from Areas");
                       return true;

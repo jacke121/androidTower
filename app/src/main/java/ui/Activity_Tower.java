@@ -285,7 +285,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
             case R.id.btn_save:
                 currentGanta = new Ganta();
                 String zuobiao = ext_zuobiao.getText().toString();
-                String towername = ext_towername.getText().toString();
+                String mtowername = ext_towername.getText().toString();
                 if (str_fullview == null) {
                     showMsg("全貌图片不能为空!");
                     return;
@@ -348,7 +348,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                     return;
                 }
                 int strHuilu = Integer.parseInt(sp_huilu.getSelectedItem().toString());
-                if (zuobiao.equals("") || towername.equals("")) {
+                if (zuobiao.equals("") || mtowername.equals("")) {
                     showMsg("坐标点号不能为空!");
                     return;
                 }
@@ -359,7 +359,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 currentGanta.yunxing = yunxing.getText().toString();
                 currentGanta.dianya = radiodianya.getText().toString();
                 currentGanta.zuobiao = zuobiao;
-                currentGanta.name = towername;
+                currentGanta.name = mtowername;
                 currentGanta.lifeStatus = 1;
                 currentGanta.huilu = strHuilu;
                 if (parentGanta != null) {
