@@ -100,9 +100,36 @@ public class IndexActivity extends Activity implements OnClickListener {
         userMap.put("SJZ_CSWANGWS", "1");
         userMap.put("SJZ_CZWSL", "1");
         userMap.put("SJZ_DINGLC0", "1");
-
-        // /在Android2.2以后必须添加以下代码
-        // 本应用采用的Android4.0
+        userMap.put("SJZ_KANGYW0","1");
+        userMap.put("SJZ_KOUCY","1");
+        userMap.put("SJZ_LBDONGJS","1");
+        userMap.put("SJZ_LBSCZY","1");
+        userMap.put("SJZ_LBWANGWS","1");
+        userMap.put("SJZ_LBXUCX","1");
+        userMap.put("SJZ_LIANGCC","1");
+        userMap.put("SJZ_LIANGMQ","1");
+        userMap.put("SJZ_LIANGYJ2","1");
+        userMap.put("SJZ_LIANGZJ","1");
+        userMap.put("SJZ_LIB","1");
+        userMap.put("SJZ_LIHUIJUAN","1");
+        userMap.put("SJZ_LIJING","1");
+        userMap.put("SJZ_LIKY","1");
+        userMap.put("SJZ_LIL11","1");
+        userMap.put("SJZ_LIUAL","1");
+        userMap.put("SJZ_LIUBH1","1");
+        userMap.put("SJZ_LIUBQ1","1");
+        userMap.put("SJZ_LIUCJ","1");
+        userMap.put("SJZ_LIUFP1","1");
+        userMap.put("SJZ_LIUHL","1");
+        userMap.put("SJZ_LIUJ3","1");
+        userMap.put("SJZ_LIUJG","1");
+        userMap.put("SJZ_LIUSY1","1");
+        userMap.put("SJZ_LIUTY","1");
+        userMap.put("SJZ_LIUX8","1");
+        userMap.put("SJZ_LIUYP1","1");
+        userMap.put("SJZ_LIUZHAO","1");
+        userMap.put("SJZ_LIUZY5","1");
+        userMap.put("SJZ_LIXY11","1");
         // 设置线程的策略
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork() // or
                 .penaltyLog().build());
