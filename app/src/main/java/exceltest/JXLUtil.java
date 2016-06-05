@@ -179,7 +179,7 @@ public class JXLUtil {
 
 				//----------------
 				if(biaoList!=null && biaoList.size()>0) {
-					sheet = writebook.getSheet(2);
+					sheet = writebook.getSheet(9);
 					row = 2;
 					for (int j = 0; j < biaoList.size(); j++) {
 						Biao tmp = biaoList.get(j);
@@ -196,7 +196,7 @@ public class JXLUtil {
 
 				//---------------
 				//----------------------
-				sheet = writebook.getSheet(3);
+				sheet = writebook.getSheet(10);
 				row=2;
 				while (biaocursor.moveToNext()) {
 					String startname=	biaocursor.isNull(1 )? "" :biaocursor.getString(1);

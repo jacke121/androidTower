@@ -146,7 +146,6 @@ public class Activity_AreaList extends Activity implements OnClickListener {
             case R.id.taiqu_export:
                 JXLUtil jXLUtil = new JXLUtil();
                 Date now = new Date();
-
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                 todaystr   = sdf.format(now);
                 InputStream is = getResources().openRawResource(R.raw.model);

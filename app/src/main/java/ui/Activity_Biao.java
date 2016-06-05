@@ -26,7 +26,7 @@ import com.lbg.yan01.MyApplication;
 import com.lbg.yan01.R;
 
 public class Activity_Biao extends Activity implements OnClickListener {
-    public static EditText txt_name,ext_zuobiao;
+    public static EditText txt_name, ext_zuobiao;
     TextView ext_code;
     Button btn_save;
     ImageView title_btn_sequence;
@@ -34,12 +34,12 @@ public class Activity_Biao extends Activity implements OnClickListener {
     public static Dialog mdlg;
     public String msg_show;
     SqlHelper helper;
-    GantaDao   gantaDao;
+    GantaDao gantaDao;
     BiaoDao biaoDao;
     String type;
     int biaoid;
-    Biao  curentreas;
-  Biao  mganta;
+    Biao curentreas;
+
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,22 +48,21 @@ public class Activity_Biao extends Activity implements OnClickListener {
         MyApplication myApplication = (MyApplication) getApplication();
         helper = myApplication.getSqlHelper();
         gantaDao = new GantaDao(helper);
-        biaoDao  = new BiaoDao(helper);
+        biaoDao = new BiaoDao(helper);
         //设置初始化视图
         Intent intent = getIntent();
-        curentreas =(Biao)intent.getSerializableExtra("biao");
+        curentreas = (Biao) intent.getSerializableExtra("biao");
 
         setContentView(R.layout.lay_biao_detail);
 
         initView();
-        if(curentreas.id!=null){
+        if (curentreas.id != null) {
             txt_name.setText(curentreas.name);
             ext_zuobiao.setText(curentreas.zuobiao);
 //        txt_gongbian = (EditText) findViewById(R.id.txt_gongbian);
-
         }
         txt_name.setText(curentreas.code);
-            ext_code.setText(curentreas.code);
+        ext_code.setText(curentreas.code);
     }
 
     @SuppressLint("HandlerLeak")
@@ -79,7 +78,7 @@ public class Activity_Biao extends Activity implements OnClickListener {
                     }
                     break;
                 case 12:
-              break;
+                    break;
 
             }
         }
@@ -139,25 +138,25 @@ public class Activity_Biao extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
-               String name = txt_name.getText().toString();
+                String name = txt_name.getText().toString();
                 String code = ext_code.getText().toString();
                 String zuobiao = ext_zuobiao.getText().toString();
 
                 if (name.equals("") || code.equals("")) {
                     showMsg("信息不能为空!");
                 } else {
-                    curentreas.code=code;
-                    curentreas.name=name;
-                    curentreas.zuobiao=zuobiao;
-                    curentreas.upgradeFlag=1l;
-                    curentreas.lifeStatus=1;
-                    if(curentreas.id==null){
+                    curentreas.code = code;
+                    curentreas.name = name;
+                    curentreas.zuobiao = zuobiao;
+                    curentreas.upgradeFlag = 1l;
+                    curentreas.lifeStatus = 1;
+                    if (curentreas.id == null) {
                         biaoDao.insertList(new SparseArray<Biao>() {
                             {
                                 put(0, curentreas);
                             }
                         });
-                    }else{
+                    } else {
                         biaoDao.update(curentreas);
                     }
 

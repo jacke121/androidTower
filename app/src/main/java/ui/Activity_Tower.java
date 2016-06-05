@@ -287,45 +287,47 @@ public class Activity_Tower extends Activity implements OnClickListener {
                 String zuobiao = ext_zuobiao.getText().toString();
                 String mtowername = ext_towername.getText().toString();
                 if (str_fullview == null) {
-                    showMsg("全貌图片不能为空!");
-                    return;
+                  //  showMsg("全貌图片不能为空!");
+                  //  return;
                 }
                 if (str_tower_head == null) {
-                    showMsg("塔头图片不能为空!");
-                    return;
+                  //  showMsg("塔头图片不能为空!");
+                  //  return;
                 }
                 if (str_nameplate == null) {
-                    showMsg("铭牌图片不能为空!");
-                    return;
+                  //  showMsg("铭牌图片不能为空!");
+                  // return;
+                }else{
+                    currentGanta.picquanmao = str_fullview;
+                    currentGanta.pictatou = str_tower_head;
+                    currentGanta.picmingpai = str_nameplate;
+                    bm_fullview = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "全貌.jpg");
+
+                    new FileUtil().saveMyBitmap(bm_fullview, str_fullview);
+
+                    File aaa = new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "全貌.jpg");
+                    if (aaa.exists()) {
+                        aaa.delete();
+                    }
+                    bm_towerhead = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "塔头.jpg");
+
+                    new FileUtil().saveMyBitmap(bm_towerhead, str_tower_head);
+
+                    aaa = new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "塔头.jpg");
+                    if (aaa.exists()) {
+                        aaa.delete();
+                    }
+                    bm_nameplate = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "铭牌.jpg");
+
+                    new FileUtil().saveMyBitmap(bm_nameplate, str_nameplate);
+
+                    aaa = new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "铭牌.jpg");
+                    if (aaa.exists()) {
+                        aaa.delete();
+                    }
                 }
 
-                currentGanta.picquanmao = str_fullview;
-                currentGanta.pictatou = str_tower_head;
-                currentGanta.picmingpai = str_nameplate;
-                bm_fullview = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "全貌.jpg");
 
-                new FileUtil().saveMyBitmap(bm_fullview, str_fullview);
-
-                File aaa = new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "全貌.jpg");
-                if (aaa.exists()) {
-                    aaa.delete();
-                }
-                bm_towerhead = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "塔头.jpg");
-
-                new FileUtil().saveMyBitmap(bm_towerhead, str_tower_head);
-
-                aaa = new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "塔头.jpg");
-                if (aaa.exists()) {
-                    aaa.delete();
-                }
-                bm_nameplate = new FileUtil().createImageThumbnail(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "铭牌.jpg");
-
-                new FileUtil().saveMyBitmap(bm_nameplate, str_nameplate);
-
-                aaa = new File(Environment.getExternalStorageDirectory() + "/" + ext_towername.getText().toString() + "铭牌.jpg");
-                if (aaa.exists()) {
-                    aaa.delete();
-                }
                 RadioButton selectcaizhi = (RadioButton) findViewById(radio_caizhi.getCheckedRadioButtonId());
                 if (selectcaizhi == null) {
                     showMsg("材质不能为空!");
