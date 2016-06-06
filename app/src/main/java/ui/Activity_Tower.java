@@ -294,7 +294,7 @@ public class Activity_Tower extends Activity implements OnClickListener {
                   //  showMsg("塔头图片不能为空!");
                   //  return;
                 }
-                if (str_nameplate == null) {
+                if (str_nameplate == null|| str_nameplate.length()==0) {
                   //  showMsg("铭牌图片不能为空!");
                   // return;
                 }else{

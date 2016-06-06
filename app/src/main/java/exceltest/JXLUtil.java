@@ -132,7 +132,7 @@ public class JXLUtil {
 	}
 
 	public void writeObjInToExcel( SparseArray<Ganta> objList, Cursor towercursor,SparseArray<Biao> biaoList,  Cursor biaocursor,
-										String fileName, String[] fieldArr, Context c) {
+										String fileName, String[] fieldArr, Context c,String areaname) {
 		if (objList != null && objList.size() > 0) {
 			format();
 			row=2;
@@ -151,13 +151,13 @@ public class JXLUtil {
 					sheet.addCell(new Label(0, row, (j+1)+"",arial12format));// 第一列用来写序号
 					sheet.addCell(new Label(2, row, objList.get(j).name, arial12format));
 					sheet.addCell(new Label(4, row, objList.get(j).name, arial12format));
-					sheet.addCell(new Label(5, row, objList.get(j).xingzhi, arial12format));
+					sheet.addCell(new Label(5, row, objList.get(j).xingzhi.trim(), arial12format));
 					sheet.addCell(new Label(6, row, objList.get(j).zuobiao, arial12format));
 					sheet.addCell(new Label(7, row, IndexActivity.userName+"_"+ Activity_AreaList.todaystr+"_"+objList.get(j).zuobiao, arial12format));
 					sheet.addCell(new Label(8, row, objList.get(j).huilu+"", arial12format));
-					sheet.addCell(new Label(9, row, objList.get(j).caizhi, arial12format));
-					sheet.addCell(new Label(11, row, objList.get(j).danwei, arial12format));
-					sheet.addCell(new Label(21, row, objList.get(j).yunxing, arial12format));
+					sheet.addCell(new Label(9, row, objList.get(j).caizhi.trim(), arial12format));
+					sheet.addCell(new Label(11, row, objList.get(j).danwei.trim(), arial12format));
+					sheet.addCell(new Label(21, row, objList.get(j).yunxing.trim(), arial12format));
 					row++;
 				}
 				//----------------------
@@ -185,9 +185,9 @@ public class JXLUtil {
 						Biao tmp = biaoList.get(j);
 						int col = 0;
 						sheet.addCell(new Label(0, row, (j + 1) + "", arial12format));// 第一列用来写序号
-						sheet.addCell(new Label(1, row, tmp.areaname, arial12format));
-						sheet.addCell(new Label(2, row, tmp.code, arial12format));
-						sheet.addCell(new Label(3, row, tmp.name, arial12format));
+						sheet.addCell(new Label(1, row, "", arial12format));
+						sheet.addCell(new Label(2, row,areaname+tmp.name, arial12format));
+						sheet.addCell(new Label(4, row, areaname+tmp.code , arial12format));
 						sheet.addCell(new Label(5, row,  IndexActivity.userName+"_"+ Activity_AreaList.todaystr+"_"+tmp.zuobiao, arial12format));
 						sheet.addCell(new Label(6, row,  IndexActivity.userName+"_"+ Activity_AreaList.todaystr+"_"+tmp.zuobiao, arial12format));
 						row++;

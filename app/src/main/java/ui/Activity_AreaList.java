@@ -166,7 +166,7 @@ public class Activity_AreaList extends Activity implements OnClickListener {
                     Cursor towercursor  =  helper.getReadableDatabase().rawQuery("select g.id,a.area || pg.name as startname,a.area || g.name as endname,g.areaid,g.yunxing,g.zuobiao,g.createtime,g.updatetime,a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid join Ganta pg on pg.id=g.parentid where a.id=" + areaslist.get(i).id, null);
                     Cursor biaocursor  =  helper.getReadableDatabase().rawQuery("select g.id,a.area || g.name as startname,a.area || b.name as endname,g.areaid,g.yunxing,g.zuobiao,g.createtime,g.updatetime,a.area as areaname,a.danwei from Ganta g join Areas a on a.id=g.areaid join Biao b on b.gantaid=g.id where a.id=" + areaslist.get(i).id, null);
 
-                    jXLUtil.writeObjInToExcel(gantaList,towercursor, biaoList,biaocursor, filename, excelfiles, this);
+                    jXLUtil.writeObjInToExcel(gantaList,towercursor, biaoList,biaocursor, filename, excelfiles, this,area);
                 }
                 showMsg("导出目录：" + new FileUtil().getSDDir("1tower"));
                 break;
